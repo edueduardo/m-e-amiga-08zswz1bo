@@ -8,8 +8,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Check } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/components/ui/use-toast'
 
 const features = [
   'Diário de voz ilimitado',
@@ -20,12 +21,26 @@ const features = [
 ]
 
 const PricingPage = () => {
-  const { isAuthenticated, isSubscribed } = useAuth()
+  const { isAuthenticated, isSubscribed, subscribe } = useAuth()
+  const { toast } = useToast()
+  const navigate = useNavigate()
 
-  const getCtaLink = () => {
-    if (isAuthenticated && isSubscribed) return '/app'
-    if (isAuthenticated && !isSubscribed) return '#' // Stripe checkout link
-    return '/signup'
+  const handleSubscription = () => {
+    if (!isAuthenticated) {
+      navigate('/signup')
+      return
+    }
+    if (isSubscribed) {
+      navigate('/app')
+      return
+    }
+    // Simulate Stripe checkout and success
+    subscribe()
+    toast({
+      title: 'Assinatura Ativada!',
+      description: 'Bem-vinda, filha! Agora você tem acesso a tudo.',
+    })
+    navigate('/app')
   }
 
   return (
@@ -52,8 +67,8 @@ const PricingPage = () => {
           </ul>
         </CardContent>
         <CardFooter>
-          <Button asChild className="w-full" size="lg">
-            <Link to={getCtaLink()}>Ativar Mãe Amiga por R$ 10</Link>
+          <Button onClick={handleSubscription} className="w-full" size="lg">
+            {isSubscribed ? 'Ir para o App' : 'Ativar Mãe Amiga por R$ 10'}
           </Button>
         </CardFooter>
       </Card>

@@ -8,6 +8,7 @@ interface AuthContextType {
   login: (user: UserProfile, isSubscribed: boolean) => void
   logout: () => void
   updateUser: (data: Partial<UserProfile>) => void
+  subscribe: () => void
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -37,6 +38,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser((prevUser) => (prevUser ? { ...prevUser, ...data } : prevUser))
   }, [])
 
+  const subscribe = useCallback(() => {
+    if (user) {
+      setIsSubscribed(true)
+    }
+  }, [user])
+
   // For development: auto-login with a mock user
   // To test the public view, comment out the login() call inside this useMemo
   useMemo(() => {
@@ -52,8 +59,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
       updateUser,
+      subscribe,
     }),
-    [user, isSubscribed, login, logout, updateUser],
+    [user, isSubscribed, login, logout, updateUser, subscribe],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

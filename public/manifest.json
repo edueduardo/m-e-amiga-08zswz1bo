@@ -1,20 +1,27 @@
 {
   "name": "Mãe Amiga",
   "short_name": "Mãe Amiga",
+  "description": "Um SaaS que oferece apoio emocional e conselhos de vida para mulheres casadas, com respostas carinhosas de uma IA no tom de mãe e melhor amiga.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFF7F0",
-  "theme_color": "#F4B6C2",
+  "background_color": "#FEF6F6",
+  "theme_color": "#F472B6",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "https://img.usecurling.com/i?q=heart&color=rose&shape=fill&w=192&h=192",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "https://img.usecurling.com/i?q=heart&color=rose&shape=fill&w=512&h=512",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "https://img.usecurling.com/i?q=heart&color=rose&shape=fill&w=512&h=512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

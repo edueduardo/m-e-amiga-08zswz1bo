@@ -1,11 +1,17 @@
 const CACHE_NAME = 'mae-amiga-cache-v1'
-const urlsToCache = ['/', '/index.html', '/manifest.json']
+const URLS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/favicon.ico',
+  '/skip.png',
+]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Opened cache')
-      return cache.addAll(urlsToCache)
+      return cache.addAll(URLS_TO_CACHE)
     }),
   )
 })
@@ -16,22 +22,7 @@ self.addEventListener('fetch', (event) => {
       if (response) {
         return response
       }
-
-      const fetchRequest = event.request.clone()
-
-      return fetch(fetchRequest).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response
-        }
-
-        const responseToCache = response.clone()
-
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache)
-        })
-
-        return response
-      })
+      return fetch(event.request)
     }),
   )
 })
