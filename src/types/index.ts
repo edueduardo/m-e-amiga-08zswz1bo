@@ -217,3 +217,14 @@ export interface HooponoponoJournalEntry {
   prompt: string
   content: string
 }
+
+export interface CommunityChallenge {
+  id: string
+  title: string
+  description: string
+  goal: number
+  currentProgress: number
+  unit: string
+  rewardPoints: number
+  endDate: string
+}

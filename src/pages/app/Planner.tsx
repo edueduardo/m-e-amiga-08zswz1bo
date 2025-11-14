@@ -8,10 +8,24 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PlusCircle, GripVertical } from 'lucide-react'
+import {
+  PlusCircle,
+  GripVertical,
+  Calendar as CalendarIcon,
+} from 'lucide-react'
 import { PlannerTask, PlannerTaskStatus } from '@/types'
 import { plannerTasks as initialTasks } from '@/lib/data'
 import { cn } from '@/lib/utils'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  generateGoogleCalendarLink,
+  generateOutlookCalendarLink,
+} from '@/lib/calendar'
 
 const statusMap: Record<
   PlannerTaskStatus,
@@ -49,8 +63,34 @@ const PlannerColumn = ({
         {tasks.map((task) => (
           <Card key={task.id} className="bg-background p-3 shadow-sm">
             <div className="flex items-start justify-between">
-              <p className="flex-grow">{task.content}</p>
-              <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+              <p className="flex-grow pr-2">{task.content}</p>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <CalendarIcon className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem asChild>
+                    <a
+                      href={generateGoogleCalendarLink(task)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Adicionar ao Google Agenda
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a
+                      href={generateOutlookCalendarLink(task)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Adicionar ao Outlook
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="flex gap-2 mt-2">
               {otherStatuses.map((newStatus) => (
@@ -81,6 +121,7 @@ const PlannerPage = () => {
         id: `task-${Date.now()}`,
         content: newTaskContent,
         status: 'todo',
+        due_date: new Date().toISOString(),
       }
       setTasks([...tasks, newTask])
       setNewTaskContent('')

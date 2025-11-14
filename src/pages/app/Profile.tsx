@@ -22,7 +22,8 @@ const ProfilePage = () => {
   const { user } = useAuth()
   const { profile } = useGamification()
   const pointsForNextLevel = profile.level * 100
-  const progressToNextLevel = profile.points % 100
+  const progressToNextLevel =
+    ((profile.points - (profile.level - 1) * 100) / 100) * 100
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
@@ -57,7 +58,8 @@ const ProfilePage = () => {
               </div>
               <Progress value={progressToNextLevel} />
               <p className="text-xs text-muted-foreground text-right">
-                {100 - progressToNextLevel} pontos para o próximo nível
+                {pointsForNextLevel - profile.points} pontos para o próximo
+                nível
               </p>
             </div>
           </div>

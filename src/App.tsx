@@ -34,6 +34,7 @@ import SettingsPage from './pages/app/Settings'
 import MeditationsPage from './pages/app/Meditations'
 import PlannerPage from './pages/app/Planner'
 import ChallengesPage from './pages/app/Challenges'
+import CommunityChallengesPage from './pages/app/CommunityChallenges'
 import LibraryPage from './pages/app/Library'
 import HooponoponoJournalPage from './pages/app/HooponoponoJournal'
 import ProfilePage from './pages/app/Profile'
@@ -109,6 +110,10 @@ const App = () => {
                   <Route path="courses/:slug" element={<CourseDetailPage />} />
                   <Route path="planner" element={<PlannerPage />} />
                   <Route path="challenges" element={<ChallengesPage />} />
+                  <Route
+                    path="community-challenges"
+                    element={<CommunityChallengesPage />}
+                  />
                   <Route path="library" element={<LibraryPage />} />
                   <Route path="summary" element={<SummaryPage />} />
                   <Route path="profile" element={<ProfilePage />} />

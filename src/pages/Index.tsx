@@ -5,6 +5,7 @@ import { AppFeaturesGrid } from '@/components/landing/AppFeaturesGrid'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { EthicalNoticeSection } from '@/components/landing/EthicalNoticeSection'
+import { HooponoponoDesireSection } from '@/components/landing/HooponoponoDesireSection'
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <PainPointsSection />
       <HowItWorksSection />
       <AppFeaturesGrid />
+      <HooponoponoDesireSection />
       <TestimonialsSection />
       <PricingSection />
       <EthicalNoticeSection />

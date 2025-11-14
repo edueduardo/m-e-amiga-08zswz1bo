@@ -13,8 +13,9 @@ import {
   HooponoponoPractice,
   SoothingSound,
   GamificationBadge,
+  CommunityChallenge,
 } from '@/types'
-import { format, subDays } from 'date-fns'
+import { format, subDays, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import {
   BookHeart,
@@ -22,6 +23,7 @@ import {
   Sparkles,
   Star,
   Trophy,
+  Users2,
 } from 'lucide-react'
 
 export const testimonials: Testimonial[] = [
@@ -176,6 +178,13 @@ const allGuidedAudios: MeditationAudio[] = [
     duration_seconds: 720,
     audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
   },
+  {
+    id: 'ga2',
+    title: 'Hoʻoponopono para o Coração',
+    theme: 'gratitude',
+    duration_seconds: 600,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+  },
 ]
 
 export const getDynamicMeditations = () => shuffleAndTake(allMeditations, 5)
@@ -203,6 +212,7 @@ export const plannerTasks: PlannerTask[] = [
     id: 'task1',
     content: 'Tirar 10 minutos para ler um livro',
     status: 'todo',
+    due_date: new Date().toISOString(),
   },
 ]
 
@@ -232,6 +242,32 @@ export const weeklyChallenges: Challenge[] = [
     ],
     personalized_tip:
       'Encontre um lugar tranquilo, feche os olhos e repita as frases "Sinto muito, me perdoe, te amo, sou grata" focando em uma situação específica que te incomoda.',
+  },
+  {
+    id: 'chal4',
+    title: 'Comunicação Consciente',
+    description:
+      'Pratique a escuta ativa em uma conversa importante esta semana.',
+    theme: 'communication',
+    steps: [
+      {
+        id: 'c1',
+        description: 'Escolha a conversa e a pessoa',
+        is_completed: false,
+      },
+      {
+        id: 'c2',
+        description: 'Pratique ouvir sem interromper',
+        is_completed: false,
+      },
+      {
+        id: 'c3',
+        description: 'Reflita sobre como se sentiu',
+        is_completed: false,
+      },
+    ],
+    personalized_tip:
+      'O objetivo não é concordar, mas sim compreender o ponto de vista do outro. Tente repetir o que ouviu com suas palavras para confirmar o entendimento.',
   },
 ]
 
@@ -329,6 +365,25 @@ export const hooponoponoPractices: HooponoponoPractice[] = [
         'Naquela noite, ao invés de lutar contra os pensamentos, ela os imaginou sendo tocados por uma "Gota de Orvalho", que os dissolvia suavemente.',
     },
   },
+  {
+    id: 'hoop4',
+    title: 'Chave de Luz',
+    phrase: 'Chave de Luz.',
+    explanation:
+      'Use esta ferramenta para "acender a luz" em qualquer situação de escuridão, conflito ou confusão. É um interruptor para as memórias que estão tocando.',
+    practice_tip:
+      'Quando se sentir em uma situação negativa ou em um impasse, simplesmente pense ou diga "Chave de Luz". Imagine um interruptor sendo ligado e a luz preenchendo a situação.',
+    aidaStory: {
+      attention:
+        'Marta se sentia paralisada pela indecisão, com duas opções importantes à sua frente e sem saber qual caminho seguir.',
+      interest:
+        "Ela descobriu uma ferramenta do Ho'oponopono para trazer clareza a momentos de confusão, como ligar uma luz em um quarto escuro.",
+      desire:
+        'Ela queria mais do que tudo sentir a certeza e a paz de uma decisão clara, sem o tormento da dúvida.',
+      action:
+        'Respirando fundo, ela focou na sua confusão e mentalizou: "Chave de Luz", pedindo que a clareza iluminasse sua mente.',
+    },
+  },
 ]
 
 export const getDailyHooponopono = (): HooponoponoPractice => {
@@ -360,6 +415,16 @@ export const soothingSounds: SoothingSound[] = [
     id: 'sound3',
     name: 'Som Branco (White Noise)',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  },
+  {
+    id: 'sound4',
+    name: 'Canto dos Pássaros',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+  },
+  {
+    id: 'sound5',
+    name: 'Música Clássica Calma',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
   },
 ]
 
@@ -400,5 +465,37 @@ export const gamificationBadges: (GamificationBadge & {
     description: 'Escreveu 5 vezes no Diário Hoʻoponopono.',
     icon: Sparkles,
     pointsThreshold: 250,
+  },
+  {
+    id: 'badge6',
+    name: 'Elo de Apoio',
+    description: 'Participou de um Desafio da Comunidade.',
+    icon: Users2,
+    pointsThreshold: 350,
+  },
+]
+
+export const communityChallenges: CommunityChallenge[] = [
+  {
+    id: 'cc1',
+    title: 'Maratona de Gratidão Coletiva',
+    description:
+      'Vamos juntas registrar 1.000 momentos de gratidão esta semana! Cada vez que você usar o Diário Hoʻoponopono com foco em gratidão, você contribui.',
+    goal: 1000,
+    currentProgress: 452,
+    unit: 'momentos',
+    rewardPoints: 100,
+    endDate: addDays(today, 5).toISOString(),
+  },
+  {
+    id: 'cc2',
+    title: 'Onda de Cuidado',
+    description:
+      'Complete 500 trilhas de autocuidado "Cuidar de Mim" como comunidade para desbloquear uma meditação exclusiva para todas!',
+    goal: 500,
+    currentProgress: 123,
+    unit: 'trilhas',
+    rewardPoints: 150,
+    endDate: addDays(today, 10).toISOString(),
   },
 ]

@@ -15,6 +15,7 @@ import {
   Users,
   Award,
   BookMarked,
+  Users2,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -76,6 +77,12 @@ const navItems = [
     label: 'Desafios',
     icon: Trophy,
     description: 'Pequenos desafios semanais para seu bem-estar.',
+  },
+  {
+    href: '/app/community-challenges',
+    label: 'Desafios da Comunidade',
+    icon: Users2,
+    description: 'Junte-se a outras mulheres em desafios coletivos.',
   },
   {
     href: '/app/library',

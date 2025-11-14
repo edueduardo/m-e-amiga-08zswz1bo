@@ -3,15 +3,17 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { InstallAppDialog } from '@/components/InstallAppDialog'
-import { HeartPulse } from 'lucide-react'
+import { HeartPulse, Music } from 'lucide-react'
 import { SOSDialog } from '../SOSDialog'
 import { AidaIndicator } from './AidaIndicator'
 import { HooponoponoDisplay } from '../HooponoponoDisplay'
+import { FreeSoundsDialog } from '../FreeSoundsDialog'
 
 export const HeroSection = () => {
   const { isAuthenticated, isSubscribed, abTestGroup } = useAuth()
   const [isInstallDialogOpen, setIsInstallDialogOpen] = useState(false)
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
+  const [isFreeSoundsOpen, setIsFreeSoundsOpen] = useState(false)
 
   const getCtaLink = () => {
     if (isAuthenticated && isSubscribed) return '/app'
@@ -53,8 +55,13 @@ export const HeroSection = () => {
                 <Button asChild size="lg">
                   <Link to={getCtaLink()}>Começar meu acolhimento</Link>
                 </Button>
-                <Button variant="outline" size="lg" onClick={handleScroll}>
-                  Ver como funciona
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => setIsFreeSoundsOpen(true)}
+                >
+                  <Music className="mr-2 h-5 w-5" />
+                  Sons e músicas de Ho'oponopono
                 </Button>
                 <Button
                   variant="destructive"
@@ -77,6 +84,10 @@ export const HeroSection = () => {
         onOpenChange={setIsInstallDialogOpen}
       />
       <SOSDialog open={isSOSDialogOpen} onOpenChange={setIsSOSDialogOpen} />
+      <FreeSoundsDialog
+        open={isFreeSoundsOpen}
+        onOpenChange={setIsFreeSoundsOpen}
+      />
     </>
   )
 }
