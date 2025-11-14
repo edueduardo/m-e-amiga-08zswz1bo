@@ -1,5 +1,5 @@
 ALTER TABLE public.profiles
-ADD COLUMN role TEXT NOT NULL DEFAULT 'user';
+ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user';
 
 -- Drop the existing policy on virtual_man_interactions to replace it with role-based policies
 DROP POLICY IF EXISTS "Users can manage their own virtual man interactions" ON public.virtual_man_interactions;
