@@ -540,14 +540,24 @@ export const generateVirtualManReply = async (
 
   const systemPrompt = `Você é um consultor de IA que simula perspectivas masculinas para ajudar mulheres a entenderem melhor os homens em suas vidas. Você deve se basear em psicologia, sociologia e tendências comportamentais. Sua resposta DEVE ser um objeto JSON e NADA MAIS. A usuária selecionou o perfil "${profile.name}", descrito como "${profile.description}" com as seguintes características: ${JSON.stringify(profile.characteristics)}. A situação apresentada por ela é: "${query}".`
 
-  const userPrompt = `Analise a situação e gere uma resposta estruturada. Forneça insights sobre comunicação, comportamentos sociais, expectativas/inseguranças e situações familiares, sempre sob a ótica do perfil selecionado. Finalize com dicas práticas. A resposta DEVE seguir estritamente o seguinte formato JSON:
+  const userPrompt = `Analise a situação e gere uma resposta estruturada. Forneça insights sobre comunicação, comportamentos sociais, expectativas/inseguranças e situações familiares, sempre sob a ótica do perfil selecionado. Finalize com dicas práticas. Se você usar informações factuais ou baseadas em pesquisas, CITE SUAS FONTES no campo "references". A resposta DEVE seguir estritamente o seguinte formato JSON:
   {
     "disclaimer": "string (Um aviso de que esta é uma simulação generalizada e não uma verdade absoluta)",
     "communication": "string (Análise sobre o estilo de comunicação do perfil)",
     "social_behaviors": "string (Análise sobre comportamentos sociais e influências externas)",
     "expectations_insecurities": "string (Análise sobre possíveis expectativas e inseguranças do perfil)",
     "family_situations": "string (Análise sobre como o perfil pode reagir em contextos familiares)",
-    "practical_tips": ["string", "string", "string"]
+    "practical_tips": ["string", "string", "string"],
+    "references": [
+      {
+        "type": "string",
+        "title": "string",
+        "author": "string | null",
+        "publisher": "string | null",
+        "url": "string | null",
+        "date": "string | null"
+      }
+    ] | null
   }`
 
   try {

@@ -30,7 +30,7 @@ const coreFeatures = [
     icon: Bot,
     title: 'Coaching com IA',
     aida: {
-      attention: 'Sinta-se ouvido e compreendido a qualquer momento.',
+      attention: 'Sinta-se ouvida e compreendida a qualquer momento.',
       interest:
         'Com as Sessões de Aconselhamento Guiadas por IA, você tem uma coach pessoal disponível 24/7 para conversas profundas e exercícios práticos.',
       desire:
@@ -47,7 +47,7 @@ const coreFeatures = [
       interest:
         'A Jornada de Autoconhecimento com Análise de Padrões Emocionais usa IA para analisar suas interações, anotações e humor, revelando gatilhos e padrões emocionais únicos.',
       desire:
-        'Obtenha insights profundos sobre você, entenda o que te afeta e receba recomendações personalizadas para cultivar um bem-estar duradouro. Transforme a forma como você se relaciona com suas emoções.',
+        'Obtenha insights profundos sobre você, entenda o que te afeta e receba recomendações personalizadas para cultivar um bem-estar duradouro. Transforme como você se relaciona com suas emoções.',
       action:
         'Explore seus padrões emocionais e comece a construir uma vida mais equilibrada!',
     },
