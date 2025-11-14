@@ -11,7 +11,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '13.0.5'
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -83,7 +83,7 @@ export type Database = {
       }
       checkins: {
         Row: {
-          hunger_type: Database['public']['Enums']['hunger_type'] | null
+          hunger_type: Database["public"]["Enums"]["hunger_type"] | null
           id: string
           mood: number | null
           sleep_hours: number | null
@@ -92,7 +92,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          hunger_type?: Database['public']['Enums']['hunger_type'] | null
+          hunger_type?: Database["public"]["Enums"]["hunger_type"] | null
           id?: string
           mood?: number | null
           sleep_hours?: number | null
@@ -101,7 +101,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          hunger_type?: Database['public']['Enums']['hunger_type'] | null
+          hunger_type?: Database["public"]["Enums"]["hunger_type"] | null
           id?: string
           mood?: number | null
           sleep_hours?: number | null
@@ -163,15 +163,7 @@ export type Database = {
           message?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: 'custom_reminders_user_id_fkey'
-            columns: ['user_id']
-            isOneToOne: false
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
-        ]
+        Relationships: []
       }
       emergency_contacts: {
         Row: {
@@ -242,11 +234,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'org_aggregates_org_id_fkey'
-            columns: ['org_id']
+            foreignKeyName: "org_aggregates_org_id_fkey"
+            columns: ["org_id"]
             isOneToOne: false
-            referencedRelation: 'orgs'
-            referencedColumns: ['id']
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -271,11 +263,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'org_members_org_id_fkey'
-            columns: ['org_id']
+            foreignKeyName: "org_members_org_id_fkey"
+            columns: ["org_id"]
             isOneToOne: false
-            referencedRelation: 'orgs'
-            referencedColumns: ['id']
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -301,21 +293,21 @@ export type Database = {
         Row: {
           id: string
           insight: string | null
-          kind: Database['public']['Enums']['insight_kind']
+          kind: Database["public"]["Enums"]["insight_kind"]
           ts: string | null
           user_id: string
         }
         Insert: {
           id?: string
           insight?: string | null
-          kind: Database['public']['Enums']['insight_kind']
+          kind: Database["public"]["Enums"]["insight_kind"]
           ts?: string | null
           user_id: string
         }
         Update: {
           id?: string
           insight?: string | null
-          kind?: Database['public']['Enums']['insight_kind']
+          kind?: Database["public"]["Enums"]["insight_kind"]
           ts?: string | null
           user_id?: string
         }
@@ -348,21 +340,21 @@ export type Database = {
       safety_flags: {
         Row: {
           id: string
-          level: Database['public']['Enums']['safety_flag_level']
+          level: Database["public"]["Enums"]["safety_flag_level"]
           source: string | null
           ts: string | null
           user_id: string
         }
         Insert: {
           id?: string
-          level: Database['public']['Enums']['safety_flag_level']
+          level: Database["public"]["Enums"]["safety_flag_level"]
           source?: string | null
           ts?: string | null
           user_id: string
         }
         Update: {
           id?: string
-          level?: Database['public']['Enums']['safety_flag_level']
+          level?: Database["public"]["Enums"]["safety_flag_level"]
           source?: string | null
           ts?: string | null
           user_id?: string
@@ -426,18 +418,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'sos_sessions_technique_usage_id_fkey'
-            columns: ['technique_usage_id']
+            foreignKeyName: "sos_sessions_technique_usage_id_fkey"
+            columns: ["technique_usage_id"]
             isOneToOne: false
-            referencedRelation: 'technique_usage'
-            referencedColumns: ['id']
+            referencedRelation: "technique_usage"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'sos_sessions_urge_id_fkey'
-            columns: ['urge_id']
+            foreignKeyName: "sos_sessions_urge_id_fkey"
+            columns: ["urge_id"]
             isOneToOne: false
-            referencedRelation: 'urges'
-            referencedColumns: ['id']
+            referencedRelation: "urges"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -473,21 +465,21 @@ export type Database = {
       }
       technique_catalog: {
         Row: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           description: string | null
           duration_minutes: number | null
           id: string
           name: string
         }
         Insert: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           description?: string | null
           duration_minutes?: number | null
           id?: string
           name: string
         }
         Update: {
-          category?: Database['public']['Enums']['technique_category']
+          category?: Database["public"]["Enums"]["technique_category"]
           description?: string | null
           duration_minutes?: number | null
           id?: string
@@ -519,11 +511,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'technique_usage_technique_id_fkey'
-            columns: ['technique_id']
+            foreignKeyName: "technique_usage_technique_id_fkey"
+            columns: ["technique_id"]
             isOneToOne: false
-            referencedRelation: 'technique_catalog'
-            referencedColumns: ['id']
+            referencedRelation: "technique_catalog"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -563,7 +555,7 @@ export type Database = {
           notification_preferences: Json | null
           preferred_interaction_times: Json | null
           preferred_techniques:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status: string | null
           trigger_patterns: string[] | null
@@ -581,7 +573,7 @@ export type Database = {
           notification_preferences?: Json | null
           preferred_interaction_times?: Json | null
           preferred_techniques?:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status?: string | null
           trigger_patterns?: string[] | null
@@ -599,7 +591,7 @@ export type Database = {
           notification_preferences?: Json | null
           preferred_interaction_times?: Json | null
           preferred_techniques?:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status?: string | null
           trigger_patterns?: string[] | null
@@ -614,7 +606,7 @@ export type Database = {
     }
     Functions: {
       get_success_by_hour: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           hour_of_day: number
           successful_interventions: number
@@ -622,31 +614,26 @@ export type Database = {
         }[]
       }
       get_technique_success_by_urge: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           intensity: number
           successful_interventions: number
           total_interventions: number
         }[]
       }
-      upsert_user_preferences: {
-        Args: {
-          p: Json
-        }
-        Returns: undefined
-      }
+      upsert_user_preferences: { Args: { p: Json }; Returns: undefined }
     }
     Enums: {
-      hunger_type: 'physical' | 'emotional'
-      insight_kind: 'emotion' | 'trigger'
-      safety_flag_level: 'green' | 'yellow' | 'red'
+      hunger_type: "physical" | "emotional"
+      insight_kind: "emotion" | "trigger"
+      safety_flag_level: "green" | "yellow" | "red"
       technique_category:
-        | 'breathing'
-        | 'urge_surfing'
-        | 'delay'
-        | 'safe_plate'
-        | 'reframing'
+        | "breathing"
+        | "urge_surfing"
+        | "delay"
+        | "safe_plate"
+        | "reframing"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -654,27 +641,33 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, 'public'>]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema['Tables'] & PublicSchema['Views'])
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-        Database[PublicTableNameOrOptions['schema']]['Views'])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-      Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] &
-        PublicSchema['Views'])
-    ? (PublicSchema['Tables'] &
-        PublicSchema['Views'])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -682,20 +675,24 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema['Tables']
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -703,20 +700,24 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema['Tables']
-    | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -724,29 +725,53 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema['Enums']
-    | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
-    ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema['CompositeTypes']
-    | { schema: keyof Database },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
-    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      hunger_type: ["physical", "emotional"],
+      insight_kind: ["emotion", "trigger"],
+      safety_flag_level: ["green", "yellow", "red"],
+      technique_category: [
+        "breathing",
+        "urge_surfing",
+        "delay",
+        "safe_plate",
+        "reframing",
+      ],
+    },
+  },
+} as const
+
