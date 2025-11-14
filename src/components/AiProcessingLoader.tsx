@@ -43,7 +43,7 @@ export const AiProcessingLoader = ({ maxTime }: AiProcessingLoaderProps) => {
         <Loader2 className="h-24 w-24 text-primary/30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin" />
       </div>
       <h2 className="text-2xl font-semibold">
-        Um momento, a resposta está sendo pensada com carinho...
+        A resposta está sendo pensada...
       </h2>
       <p className="text-muted-foreground max-w-md">{pollingStatus}</p>
       <div className="w-full max-w-sm pt-4">

@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider } from './contexts/AuthContext'
 import { ConversationsProvider } from './contexts/ConversationsContext'
 import { SupportCircleProvider } from './contexts/SupportCircleContext'
+import { AiResponseProvider } from './contexts/AiResponseContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -22,6 +23,7 @@ import VerifyPhoneNumberByEmailPage from './pages/VerifyPhoneNumberByEmail'
 import DashboardPage from './pages/app/Dashboard'
 import ConversationsPage from './pages/app/Conversations'
 import CarePage from './pages/app/Care'
+import ResponsePage from './pages/app/Response'
 import SupportCirclePage from './pages/app/SupportCircle'
 import CoursesPage from './pages/app/Courses'
 import CourseDetailPage from './pages/app/CourseDetail'
@@ -71,7 +73,9 @@ const App = () => {
                   <ProtectedRoute>
                     <ConversationsProvider>
                       <SupportCircleProvider>
-                        <AppLayout />
+                        <AiResponseProvider>
+                          <AppLayout />
+                        </AiResponseProvider>
                       </SupportCircleProvider>
                     </ConversationsProvider>
                   </ProtectedRoute>
@@ -80,6 +84,7 @@ const App = () => {
                 <Route index element={<DashboardPage />} />
                 <Route path="conversations" element={<ConversationsPage />} />
                 <Route path="care" element={<CarePage />} />
+                <Route path="response" element={<ResponsePage />} />
                 <Route path="support-circle" element={<SupportCirclePage />} />
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="courses/:slug" element={<CourseDetailPage />} />
