@@ -16,14 +16,25 @@ import {
   Award,
   BookMarked,
   Users2,
+  Bot,
+  BrainCircuit,
+  Flower2,
 } from 'lucide-react'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { ReactNode } from 'react'
 
-const navItems = [
+interface NavItem {
+  href: string
+  label: string
+  icon: React.ElementType
+  description: ReactNode
+}
+
+const navItems: NavItem[] = [
   {
     href: '/app',
     label: 'Início',
@@ -37,10 +48,92 @@ const navItems = [
     description: 'Seu diário de voz. Desabafe e receba acolhimento.',
   },
   {
+    href: '/app/coaching',
+    label: 'Coaching com IA',
+    icon: Bot,
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Attention:</strong>{' '}
+          Feel heard and understood at any time.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interest:</strong> With
+          AI-Guided Coaching Sessions, you have a personal coach available 24/7
+          for deep conversations and practical exercises.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desire:</strong>{' '}
+          Discover clarity, find solutions to your challenges, and track your
+          progress in a safe and confidential environment. It's like having
+          constant support for your emotional well-being.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Action:</strong> Start
+          your session and begin your self-discovery journey today!
+        </p>
+      </div>
+    ),
+  },
+  {
+    href: '/app/self-knowledge',
+    label: 'Autoconhecimento',
+    icon: BrainCircuit,
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Attention:</strong>{' '}
+          Unravel the secrets of your emotions.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interest:</strong> The
+          Self-Knowledge Journey with Emotional Pattern Analysis uses AI to
+          analyze your interactions, notes, and mood, revealing unique emotional
+          triggers and patterns.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desire:</strong> Gain
+          deep insights into yourself, understand what affects you, and receive
+          personalized recommendations to cultivate lasting well-being.
+          Transform how you relate to your emotions.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Action:</strong>{' '}
+          Explore your emotional patterns and start building a more balanced
+          life!
+        </p>
+      </div>
+    ),
+  },
+  {
     href: '/app/care',
     label: 'Cuidar de mim',
     icon: HeartHandshake,
-    description: 'Crie trilhas de autocuidado personalizadas para você.',
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Attention:</strong>{' '}
+          Learn and grow at your own pace, your way.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interest:</strong>{' '}
+          Adaptive AI-Generated Learning Paths create personalized
+          'mini-workshops' for you, dynamically adjusting to your needs and
+          learning style.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desire:</strong>{' '}
+          Receive relevant and effective content to overcome specific
+          challenges, develop new skills, and deepen your knowledge on topics
+          that truly matter to you. Your personal development has never been so
+          personalized.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Action:</strong>{' '}
+          Discover your learning path and boost your personal growth!
+        </p>
+      </div>
+    ),
   },
   {
     href: '/app/journal',
@@ -59,7 +152,30 @@ const navItems = [
     href: '/app/support-circle',
     label: 'Círculo de Apoio',
     icon: Users,
-    description: 'Conecte-se com outras mulheres em um espaço seguro.',
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Attention:</strong>{' '}
+          Connect and share in a community that understands you.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interest:</strong> The
+          enhanced Support Circle offers discussion rooms focused on specific
+          themes, such as 'Mothers of Babies' or 'Relationship Challenges', with
+          AI assisting in moderation.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desire:</strong> Find
+          support, share experiences, and build bonds with other mothers in a
+          safe, welcoming, and constructive environment. Feel part of something
+          bigger, where your voice is valued.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Action:</strong> Join a
+          thematic room and find your tribe!
+        </p>
+      </div>
+    ),
   },
   {
     href: '/app/courses',
@@ -84,6 +200,35 @@ const navItems = [
     label: 'Desafios da Comunidade',
     icon: Users2,
     description: 'Junte-se a outras mulheres em desafios coletivos.',
+  },
+  {
+    href: '/app/growth-garden',
+    label: 'Jardim do Crescimento',
+    icon: Flower2,
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Attention:</strong>{' '}
+          Transform your self-care into a fun and rewarding journey.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interest:</strong> With
+          the 'Growth Garden', your goals and progress are visually represented
+          by seeds that bloom and elements that grow as you advance in your
+          well-being.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desire:</strong> Stay
+          motivated, celebrate your achievements, and watch your efforts bloom
+          in a playful and rewarding way. Every step towards your well-being is
+          a new flower in your garden!
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Action:</strong>{' '}
+          Cultivate your garden and watch your progress bloom!
+        </p>
+      </div>
+    ),
   },
   {
     href: '/app/library',
@@ -143,7 +288,11 @@ export const AppSidebar = () => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p>{item.description}</p>
+                {typeof item.description === 'string' ? (
+                  <p>{item.description}</p>
+                ) : (
+                  item.description
+                )}
               </TooltipContent>
             </Tooltip>
           ))}
