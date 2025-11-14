@@ -7,6 +7,29 @@ import { HeartPulse, Music } from 'lucide-react'
 import { SOSDialog } from '../SOSDialog'
 import { AidaIndicator } from './AidaIndicator'
 import { FreeSoundsDialog } from '../FreeSoundsDialog'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+import Autoplay from 'embla-carousel-autoplay'
+
+const carouselImages = [
+  {
+    src: 'https://img.usecurling.com/p/600/800?q=woman%20listening%20calmly',
+    alt: 'Mulher ouvindo com calma',
+  },
+  {
+    src: 'https://img.usecurling.com/p/600/800?q=woman%20smiling%20serenely',
+    alt: 'Mulher sorrindo serenamente',
+  },
+  {
+    src: 'https://img.usecurling.com/p/600/800?q=woman%20writing%20in%20journal',
+    alt: 'Mulher escrevendo em um diário',
+  },
+]
 
 export const HeroSection = () => {
   const { isAuthenticated, isSubscribed, abTestGroup } = useAuth()
@@ -66,12 +89,26 @@ export const HeroSection = () => {
                 </Button>
               </div>
             </div>
-            <div className="flex items-center justify-center animate-fade-in">
-              <img
-                src="https://img.usecurling.com/p/600/800?q=empowered%20woman%20serene%20looking%20away"
-                alt="Mulher Imponderada"
-                className="rounded-lg shadow-2xl object-cover aspect-[3/4] max-w-sm w-full"
-              />
+            <div className="flex items-center justify-center">
+              <Carousel
+                className="w-full max-w-sm"
+                plugins={[Autoplay({ delay: 3000 })]}
+                opts={{ loop: true }}
+              >
+                <CarouselContent>
+                  {carouselImages.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <img
+                        src={image.src}
+                        alt={image.alt}
+                        className="rounded-lg shadow-2xl object-cover aspect-[3/4] w-full"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2" />
+                <CarouselNext className="right-2" />
+              </Carousel>
             </div>
           </div>
         </div>

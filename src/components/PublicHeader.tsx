@@ -14,6 +14,7 @@ import {
 
 const navLinks = [
   { href: '/#how-it-works', label: 'Como Funciona' },
+  { href: '/#solutions', label: 'Soluções' },
   { href: '/pricing', label: 'Preço' },
   { href: '/#faqs', label: 'Dúvidas' },
 ]
@@ -100,8 +101,11 @@ export const PublicHeader = () => {
                 <HeartPulse className="mr-2 h-4 w-4" />
                 SOS
               </Button>
-              <Button asChild>
+              <Button variant="ghost" asChild>
                 <Link to="/login">Entrar</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/signup">Começar Grátis</Link>
               </Button>
             </nav>
             <div className="md:hidden flex items-center">

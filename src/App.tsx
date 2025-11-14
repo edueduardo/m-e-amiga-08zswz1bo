@@ -32,6 +32,8 @@ import ResetPasswordPage from './pages/ResetPassword'
 import VerifyEmailPage from './pages/VerifyEmail'
 import VerifyPhoneNumberByEmailPage from './pages/VerifyPhoneNumberByEmail'
 import CookiePolicyPage from './pages/CookiePolicy'
+import TermsOfUsePage from './pages/TermsOfUse'
+import ContactPage from './pages/Contact'
 import SearchResultsPage from './pages/SearchResults'
 import DashboardPage from './pages/app/Dashboard'
 import ConversationsPage from './pages/app/Conversations'
@@ -98,6 +100,8 @@ const App = () => {
                     element={<VerifyPhoneNumberByEmailPage />}
                   />
                   <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+                  <Route path="/terms-of-use" element={<TermsOfUsePage />} />
+                  <Route path="/contact" element={<ContactPage />} />
                   <Route path="/search" element={<SearchResultsPage />} />
 
                   <Route

@@ -50,8 +50,14 @@ export const Footer = () => {
         <div className="container mx-auto py-4 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>© Mãe Amiga {new Date().getFullYear()}</p>
           <div className="flex gap-4 mt-2 md:mt-0">
+            <Link to="/terms-of-use" className="hover:text-primary">
+              Termos de Uso
+            </Link>
             <Link to="/cookie-policy" className="hover:text-primary">
               Política de Cookies
+            </Link>
+            <Link to="/contact" className="hover:text-primary">
+              Contato
             </Link>
           </div>
         </div>
