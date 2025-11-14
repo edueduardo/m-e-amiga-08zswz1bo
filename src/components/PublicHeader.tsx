@@ -113,8 +113,8 @@ export const PublicHeader = () => {
                   <Button asChild variant="ghost" size="sm">
                     <Link to="/login">Entrar</Link>
                   </Button>
-                  <Button asChild variant="outline" size="sm">
-                    <Link to="/pricing">Preço</Link>
+                  <Button asChild size="sm">
+                    <Link to="/signup">Começar Grátis</Link>
                   </Button>
                 </>
               )}
