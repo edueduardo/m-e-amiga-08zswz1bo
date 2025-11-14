@@ -663,33 +663,6 @@ export type Database = {
         }
         Relationships: []
       }
-      virtual_man_profiles: {
-        Row: {
-          characteristics: Json | null
-          created_at: string
-          description: string | null
-          id: string
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          characteristics?: Json | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          characteristics?: Json | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -864,3 +837,4 @@ export const Constants = {
     },
   },
 } as const
+
