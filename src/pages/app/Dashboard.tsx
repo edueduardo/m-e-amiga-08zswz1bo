@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Card,
@@ -26,12 +27,14 @@ import {
   Award,
   Cog,
   Loader2,
+  LayoutDashboard,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { HooponoponoDisplay } from '@/components/HooponoponoDisplay'
 import { useLayout } from '@/contexts/LayoutContext'
+import { HomePageCustomizer } from '@/components/HomePageCustomizer'
 
 const featuresMap = new Map([
   [
@@ -234,6 +237,7 @@ const featuresMap = new Map([
 const DashboardPage = () => {
   const { isSubscribed } = useAuth()
   const { layout, isLoading } = useLayout()
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false)
 
   if (isLoading) {
     return (
@@ -249,86 +253,100 @@ const DashboardPage = () => {
     .filter(Boolean)
 
   return (
-    <div className="space-y-8">
-      {!isSubscribed && (
-        <Alert variant="destructive">
-          <AlertTitle>Assinatura Inativa</AlertTitle>
-          <AlertDescription className="flex justify-between items-center">
-            <span>
-              Sua assinatura não está ativa. Ative para ter acesso a todos os
-              recursos.
-            </span>
-            <Button asChild>
-              <Link to="/pricing">Ativar Assinatura</Link>
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
+    <>
+      <div className="space-y-8">
+        {!isSubscribed && (
+          <Alert variant="destructive">
+            <AlertTitle>Assinatura Inativa</AlertTitle>
+            <AlertDescription className="flex justify-between items-center">
+              <span>
+                Sua assinatura não está ativa. Ative para ter acesso a todos os
+                recursos.
+              </span>
+              <Button asChild>
+                <Link to="/pricing">Ativar Assinatura</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
 
-      <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Oi, filha. Como você está se sentindo?
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Lembre-se de ser gentil consigo mesma hoje.
-        </p>
-      </div>
-
-      <HooponoponoDisplay variant="daily" />
-
-      <Card className="bg-primary/10 border-primary shadow-lg animate-fade-in-up">
-        <CardHeader className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-          <div className="bg-primary/20 p-4 rounded-full">
-            <Mic className="h-8 w-8 text-primary" />
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Oi, filha. Como você está se sentindo?
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Lembre-se de ser gentil consigo mesma hoje.
+            </p>
           </div>
-          <div>
-            <CardTitle className="text-2xl">Novo Desabafo</CardTitle>
-            <CardDescription>
-              Clique aqui para registrar como você está se sentindo agora.
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="flex justify-center md:justify-start md:pl-24">
-          <Button asChild size="lg" disabled={!isSubscribed}>
-            <Link to="/app/conversations">
-              Gravar meu desabafo
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
+          <Button variant="outline" onClick={() => setIsCustomizerOpen(true)}>
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            Personalizar Página Inicial
           </Button>
-        </CardContent>
-      </Card>
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {visibleCards.map((feature, index) => {
-          if (!feature) return null
-          const Icon = feature.icon
-          return (
-            <Card
-              key={feature.link}
-              className={cn(
-                'flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl animate-fade-in-up',
-                feature.className,
-              )}
-              style={{ animationDelay: `${(index + 1) * 100}ms` }}
-            >
-              <CardHeader className="flex-grow">
-                <Icon className={cn('h-10 w-10 mb-4', feature.iconClassName)} />
-                <CardTitle>{feature.title}</CardTitle>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to={feature.link}>
-                    Acessar
-                    <ArrowRight className="ml-auto h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )
-        })}
+        <HooponoponoDisplay variant="daily" />
+
+        <Card className="bg-primary/10 border-primary shadow-lg animate-fade-in-up">
+          <CardHeader className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+            <div className="bg-primary/20 p-4 rounded-full">
+              <Mic className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl">Novo Desabafo</CardTitle>
+              <CardDescription>
+                Clique aqui para registrar como você está se sentindo agora.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="flex justify-center md:justify-start md:pl-24">
+            <Button asChild size="lg" disabled={!isSubscribed}>
+              <Link to="/app/conversations">
+                Gravar meu desabafo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {visibleCards.map((feature, index) => {
+            if (!feature) return null
+            const Icon = feature.icon
+            return (
+              <Card
+                key={feature.link}
+                className={cn(
+                  'flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl animate-fade-in-up',
+                  feature.className,
+                )}
+                style={{ animationDelay: `${(index + 1) * 100}ms` }}
+              >
+                <CardHeader className="flex-grow">
+                  <Icon
+                    className={cn('h-10 w-10 mb-4', feature.iconClassName)}
+                  />
+                  <CardTitle>{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to={feature.link}>
+                      Acessar
+                      <ArrowRight className="ml-auto h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       </div>
-    </div>
+      <HomePageCustomizer
+        open={isCustomizerOpen}
+        onOpenChange={setIsCustomizerOpen}
+      />
+    </>
   )
 }
 
