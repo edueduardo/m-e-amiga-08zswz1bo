@@ -122,7 +122,7 @@ export interface MeditationAudio {
 export interface Affirmation {
   id: string
   text: string
-  mood_target: 'general' | 'sadness' | 'anxiety' | 'stress' | 'confidence'
+  type: 'affirmation' | 'hooponopono'
 }
 
 export type PlannerTaskStatus = 'todo' | 'in-progress' | 'done'
@@ -163,4 +163,12 @@ export interface LibraryResource {
     | 'relationships'
     | 'motherhood'
     | 'personal_development'
+}
+
+export interface HooponoponoPractice {
+  id: string
+  title: string
+  phrase: string
+  explanation: string
+  practice_tip: string
 }

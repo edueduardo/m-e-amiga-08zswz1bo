@@ -2,22 +2,23 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { RefreshCw, Sparkles } from 'lucide-react'
-import { getDailyAffirmation } from '@/lib/data'
+import { getDailyInspiration } from '@/lib/data'
 import { Affirmation } from '@/types'
+import { Badge } from './ui/badge'
 
-export const DailyAffirmation = () => {
-  const [affirmation, setAffirmation] = useState<Affirmation | null>(null)
+export const DailyInspiration = () => {
+  const [inspiration, setInspiration] = useState<Affirmation | null>(null)
 
-  const fetchAffirmation = () => {
-    setAffirmation(getDailyAffirmation())
+  const fetchInspiration = () => {
+    setInspiration(getDailyInspiration())
   }
 
   useEffect(() => {
-    fetchAffirmation()
-    // Mocking 12-hour refresh with a new affirmation on each component mount
+    fetchInspiration()
+    // Simulates content refreshing every 12 hours by refreshing on component mount
   }, [])
 
-  if (!affirmation) {
+  if (!inspiration) {
     return null
   }
 
@@ -26,14 +27,17 @@ export const DailyAffirmation = () => {
       <CardContent className="p-6 flex flex-col items-center text-center gap-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
           <Sparkles className="h-4 w-4" />
-          <span>Sua afirmação de hoje</span>
+          <span>Sua inspiração de hoje</span>
+          {inspiration.type === 'hooponopono' && (
+            <Badge variant="outline">Ho'oponopono</Badge>
+          )}
         </div>
         <p className="text-xl md:text-2xl font-medium italic">
-          "{affirmation.text}"
+          "{inspiration.text}"
         </p>
-        <Button variant="ghost" size="sm" onClick={fetchAffirmation}>
+        <Button variant="ghost" size="sm" onClick={fetchInspiration}>
           <RefreshCw className="mr-2 h-4 w-4" />
-          Nova afirmação
+          Nova inspiração
         </Button>
       </CardContent>
     </Card>

@@ -33,9 +33,9 @@ export const HeroSection = () => {
                 Sinta-se ouvida. Encontre seu equilíbrio.
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                O apoio emocional que você merece, no seu tempo. Grave seus
-                desabafos e receba o carinho e a sabedoria de uma mãe e melhor
-                amiga, com a ajuda da IA.
+                Para você, mulher casada, que se sente sobrecarregada e anseia
+                por um espaço seguro para desabafar. Receba o carinho e a
+                sabedoria de uma mãe e melhor amiga, a qualquer hora.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4">

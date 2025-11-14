@@ -8,13 +8,23 @@ export const EthicalNoticeSection = () => {
           <div className="flex items-start space-x-4">
             <AlertTriangle className="h-6 w-6 text-primary mt-1" />
             <div>
-              <h3 className="text-xl font-semibold">Aviso Ético Importante</h3>
+              <h3 className="text-xl font-semibold">
+                Nosso Compromisso com Você
+              </h3>
               <ul className="list-disc pl-5 mt-2 space-y-1 text-muted-foreground">
-                <li>Não é terapia, não é consulta médica.</li>
-                <li>É apoio e conselho de vida, com carinho e empatia.</li>
                 <li>
-                  Em casos de risco, procure ajuda profissional. Sua saúde
-                  mental é prioridade.
+                  <span className="font-semibold">Não é terapia:</span> Este é
+                  um espaço de apoio e conselho de vida, não substitui consultas
+                  médicas ou psicológicas.
+                </li>
+                <li>
+                  <span className="font-semibold">Sua privacidade:</span> Seus
+                  desabafos são seus. Nós respeitamos e protegemos seus dados.
+                </li>
+                <li>
+                  <span className="font-semibold">Procure ajuda:</span> Em casos
+                  de risco, procure ajuda profissional. Sua saúde mental é a
+                  maior prioridade.
                 </li>
               </ul>
             </div>

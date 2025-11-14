@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { Check } from 'lucide-react'
 
 export const PricingSection = () => {
   const { isAuthenticated, isSubscribed } = useAuth()
@@ -16,14 +17,23 @@ export const PricingSection = () => {
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-2xl text-center space-y-6">
           <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl">
-            Tudo isso por R$ 10
+            Invista em você por menos de um café por dia
           </h2>
           <p className="text-muted-foreground md:text-xl">
-            Experimente sem compromisso, cancele a qualquer momento. Um pequeno
-            investimento no seu bem-estar.
+            Acesso ilimitado a todas as ferramentas por apenas{' '}
+            <span className="font-bold text-primary">R$ 10 por mês</span>.
+            Cancele a qualquer momento, sem burocracia.
           </p>
+          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+            <span className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-primary" /> Acesso ilimitado
+            </span>
+            <span className="flex items-center gap-2">
+              <Check className="h-4 w-4 text-primary" /> Cancele quando quiser
+            </span>
+          </div>
           <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link to={getCtaLink()}>Quero começar agora</Link>
+            <Link to={getCtaLink()}>Quero meu bem-estar de volta</Link>
           </Button>
         </div>
       </div>

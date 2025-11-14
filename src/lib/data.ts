@@ -10,6 +10,7 @@ import {
   PlannerTask,
   Challenge,
   LibraryResource,
+  HooponoponoPractice,
 } from '@/types'
 import { format, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -435,41 +436,51 @@ const allGuidedAudios: MeditationAudio[] = [
 export const getDynamicMeditations = () => shuffleAndTake(allMeditations, 5)
 export const getDynamicGuidedAudios = () => shuffleAndTake(allGuidedAudios, 5)
 
-const allAffirmations: Affirmation[] = [
+const allInspirations: Affirmation[] = [
   {
     id: 'aff1',
     text: 'Eu sou capaz de lidar com todos os desafios que surgirem hoje.',
-    mood_target: 'confidence',
+    type: 'affirmation',
   },
   {
     id: 'aff2',
     text: 'Eu permito que a calma preencha minha mente e meu corpo.',
-    mood_target: 'anxiety',
+    type: 'affirmation',
   },
   {
     id: 'aff3',
     text: 'Está tudo bem não ser perfeita. Eu sou suficiente como sou.',
-    mood_target: 'stress',
+    type: 'affirmation',
   },
   {
     id: 'aff4',
     text: 'Eu escolho focar no que posso controlar e liberar o resto.',
-    mood_target: 'general',
+    type: 'affirmation',
   },
   {
     id: 'aff5',
     text: 'Meu valor não é medido pela minha produtividade.',
-    mood_target: 'stress',
+    type: 'affirmation',
   },
   {
     id: 'aff6',
     text: 'Eu sou digna de amor, descanso e felicidade.',
-    mood_target: 'sadness',
+    type: 'affirmation',
+  },
+  {
+    id: 'hoop1',
+    text: 'Sinto muito. Me perdoe. Te amo. Sou grata.',
+    type: 'hooponopono',
+  },
+  {
+    id: 'hoop2',
+    text: 'Divino Criador, limpe em mim as memórias que causam este sentimento.',
+    type: 'hooponopono',
   },
 ]
 
-export const getDailyAffirmation = (): Affirmation => {
-  return allAffirmations[Math.floor(Math.random() * allAffirmations.length)]
+export const getDailyInspiration = (): Affirmation => {
+  return allInspirations[Math.floor(Math.random() * allInspirations.length)]
 }
 
 export const plannerTasks: PlannerTask[] = [
@@ -631,3 +642,40 @@ export const getDynamicLibraryResources = (): {
 
 export const { resources: libraryResources, topics: libraryTopics } =
   getDynamicLibraryResources()
+
+const allHooponoponoPractices: HooponoponoPractice[] = [
+  {
+    id: 'hoop1',
+    title: 'Limpando Memórias de Dor',
+    phrase: 'Sinto muito. Me perdoe. Te amo. Sou grata.',
+    explanation:
+      "Esta é a prática central do Ho'oponopono. Ao repeti-la, você pede ao Divino para limpar as memórias dolorosas em você que se manifestam como problemas no mundo.",
+    practice_tip:
+      'Repita as quatro frases mentalmente, focando no sentimento ou situação que te incomoda. Não precisa sentir nada especial, apenas confie no processo de limpeza.',
+  },
+  {
+    id: 'hoop2',
+    title: 'Assumindo 100% de Responsabilidade',
+    phrase:
+      'Divindade, limpe em mim o que está contribuindo para este problema.',
+    explanation:
+      "O Ho'oponopono nos ensina que somos 100% responsáveis por tudo em nossa realidade. Esta frase é uma forma de entregar o problema para a Divindade, pedindo que a causa dentro de você seja curada.",
+    practice_tip:
+      'Quando se deparar com um conflito ou uma situação difícil, repita esta frase. É um ato de humildade e entrega, liberando a necessidade de controlar o resultado.',
+  },
+  {
+    id: 'hoop3',
+    title: "A Gota d'Água",
+    phrase: 'Gota de Orvalho.',
+    explanation:
+      'Esta é uma ferramenta de limpeza poderosa para apagar memórias. Imagine uma gota de orvalho caindo sobre a situação ou sentimento, purificando-o completamente.',
+    practice_tip:
+      'Pense na situação que te aflige e repita mentalmente "Gota de Orvalho". Visualize a pureza da gota limpando toda a negatividade associada.',
+  },
+]
+
+export const getDynamicHooponoponoPractice = (): HooponoponoPractice => {
+  return allHooponoponoPractices[
+    Math.floor(Math.random() * allHooponoponoPractices.length)
+  ]
+}

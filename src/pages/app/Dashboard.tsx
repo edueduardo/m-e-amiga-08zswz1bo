@@ -18,7 +18,7 @@ import {
 import { useAuth } from '@/hooks/useAuth'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import { DailyAffirmation } from '@/components/DailyAffirmation'
+import { DailyInspiration } from '@/components/DailyInspiration'
 
 const DashboardPage = () => {
   const { isSubscribed } = useAuth()
@@ -88,7 +88,7 @@ const DashboardPage = () => {
         </p>
       </div>
 
-      <DailyAffirmation />
+      <DailyInspiration />
 
       <Card className="bg-primary/10 border-primary shadow-lg animate-fade-in-up">
         <CardHeader className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">

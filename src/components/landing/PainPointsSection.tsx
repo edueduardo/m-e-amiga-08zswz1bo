@@ -2,9 +2,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle2 } from 'lucide-react'
 
 const painPoints = [
-  'Seguro o choro pra não preocupar ninguém.',
-  'Estou cansada, mas me sinto culpada por dizer isso.',
-  'Parece que todo mundo tem com quem desabafar, menos eu.',
+  'Você segura o choro para não preocupar ninguém?',
+  'Sente-se exausta, mas a culpa de "reclamar" te impede de falar?',
+  'Parece que todas têm um ombro amigo, menos você?',
 ]
 
 export const PainPointsSection = () => {
@@ -14,12 +14,11 @@ export const PainPointsSection = () => {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Mulher casada sobrecarregada, choro escondido, sensação de
-              solidão.
+              A solidão, o choro escondido, a sobrecarga...
             </h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               Se você se identifica com alguma dessas situações, saiba que não
-              está sozinha.
+              está sozinha. Este espaço foi criado para você.
             </p>
           </div>
         </div>
