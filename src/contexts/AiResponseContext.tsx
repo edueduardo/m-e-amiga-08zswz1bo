@@ -32,6 +32,7 @@ interface AiResponseContextType extends AiResponseState {
   refinePlan: (feedback: string) => void
   elaboratePlan: (elaboration: string) => void
   reset: () => void
+  retry: () => void
 }
 
 export const AiResponseContext = createContext<
@@ -84,8 +85,9 @@ export function AiResponseProvider({ children }: { children: ReactNode }) {
       )
 
       setState({
-        ...state,
         status: 'processing',
+        plan: null,
+        error: null,
         maxTime: estimatedTime,
         quizAnswers: requestData.answers,
         focus: requestData.focus,
@@ -112,7 +114,7 @@ export function AiResponseProvider({ children }: { children: ReactNode }) {
         }))
       }
     },
-    [state],
+    [],
   )
 
   const generatePlan = useCallback(
@@ -166,6 +168,18 @@ export function AiResponseProvider({ children }: { children: ReactNode }) {
     [state.plan, state.quizAnswers, state.focus, handleAiInteraction],
   )
 
+  const retry = useCallback(() => {
+    if (state.quizAnswers && state.focus) {
+      handleAiInteraction(
+        () => generateSelfCarePlan(state.quizAnswers!, state.focus!),
+        {
+          answers: state.quizAnswers!,
+          focus: state.focus!,
+        },
+      )
+    }
+  }, [state.quizAnswers, state.focus, handleAiInteraction])
+
   const reset = useCallback(() => {
     resetTimeout()
     setState({
@@ -186,8 +200,9 @@ export function AiResponseProvider({ children }: { children: ReactNode }) {
       refinePlan,
       elaboratePlan,
       reset,
+      retry,
     }),
-    [state, generatePlan, refinePlan, elaboratePlan, reset],
+    [state, generatePlan, refinePlan, elaboratePlan, reset, retry],
   )
 
   return (

@@ -17,6 +17,7 @@ const ResponsePage = () => {
     refinePlan,
     elaboratePlan,
     reset,
+    retry,
   } = useAiResponse()
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -69,7 +70,7 @@ const ResponsePage = () => {
             <AlertTriangle className="h-16 w-16 mx-auto text-destructive" />
             <h2 className="text-2xl font-bold">Ocorreu um problema</h2>
             <p className="text-muted-foreground">{error}</p>
-            <Button onClick={reset}>Tentar Novamente</Button>
+            <Button onClick={retry}>Tentar Novamente</Button>
           </div>
         )
       default:

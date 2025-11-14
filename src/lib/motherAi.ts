@@ -295,7 +295,7 @@ export const generateSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
-  const processingTime = Math.random() * 15000 + 5000
+  const processingTime = Math.random() * 20000 + 5000 // 5 to 25 seconds to test timeout
   await delay(processingTime)
 
   const fallbackPlan: SelfCarePlan = {
@@ -337,7 +337,8 @@ export const generateSelfCarePlan = async (
       }),
     })
     const data = await response.json()
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.3) {
+      // 30% chance of failure
       throw new Error('Simulated AI system failure.')
     }
     return JSON.parse(data.choices[0]?.message?.content)
