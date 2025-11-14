@@ -114,27 +114,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [fetchProfile])
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
     return { error }
-  }
+  }, [])
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    })
-    return { error }
-  }
+  const signUp = useCallback(
+    async (email: string, password: string, fullName: string) => {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      })
+      return { error }
+    },
+    [],
+  )
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut()
     setProfile(null)
-  }
+  }, [])
 
   const updateUser = useCallback(
     async (data: Partial<UserProfile>) => {
@@ -154,17 +157,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const subscribe = useCallback(() => setIsSubscribed(true), [])
 
-  const sendPasswordResetEmail = async (email: string) => {
+  const sendPasswordResetEmail = useCallback(async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     })
     return { error }
-  }
+  }, [])
 
-  const updatePassword = async (password: string) => {
+  const updatePassword = useCallback(async (password: string) => {
     const { error } = await supabase.auth.updateUser({ password })
     return { error }
-  }
+  }, [])
 
   const requestPhoneEmailVerification = useCallback(async () => {
     if (!profile) return ''
