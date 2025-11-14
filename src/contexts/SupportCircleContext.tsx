@@ -5,12 +5,15 @@ import {
   useMemo,
   useCallback,
   useContext,
+  useEffect,
 } from 'react'
 import { SupportPost, SupportReply } from '@/types'
 import {
   supportPosts as initialSupportPosts,
   anonymousAliases,
 } from '@/lib/data'
+
+const SUPPORT_CIRCLE_KEY = 'mae-amiga-support-circle'
 
 interface SupportCircleContextType {
   posts: SupportPost[]
@@ -26,7 +29,23 @@ const getRandomAlias = () =>
   anonymousAliases[Math.floor(Math.random() * anonymousAliases.length)]
 
 export function SupportCircleProvider({ children }: { children: ReactNode }) {
-  const [posts, setPosts] = useState<SupportPost[]>(initialSupportPosts)
+  const [posts, setPosts] = useState<SupportPost[]>(() => {
+    try {
+      const stored = localStorage.getItem(SUPPORT_CIRCLE_KEY)
+      return stored ? JSON.parse(stored) : initialSupportPosts
+    } catch (error) {
+      console.error('Failed to parse support posts', error)
+      return initialSupportPosts
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SUPPORT_CIRCLE_KEY, JSON.stringify(posts))
+    } catch (error) {
+      console.error('Failed to save support posts', error)
+    }
+  }, [posts])
 
   const addPost = useCallback((title: string, content: string) => {
     const newPost: SupportPost = {

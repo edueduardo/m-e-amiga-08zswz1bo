@@ -10,6 +10,10 @@ import { AiResponseProvider } from './contexts/AiResponseContext'
 import { UserPreferencesProvider } from './contexts/UserPreferencesContext'
 import { GamificationProvider } from './contexts/GamificationContext'
 import { PlaylistProvider } from './contexts/PlaylistContext'
+import { JournalProvider } from './contexts/JournalContext'
+import { ChallengesProvider } from './contexts/ChallengesContext'
+import { PlannerProvider } from './contexts/PlannerContext'
+import { SelfCareProvider } from './contexts/SelfCareContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -85,17 +89,25 @@ const App = () => {
                   path="/app"
                   element={
                     <ProtectedRoute>
-                      <ConversationsProvider>
-                        <SupportCircleProvider>
-                          <AiResponseProvider>
-                            <GamificationProvider>
-                              <PlaylistProvider>
-                                <AppLayout />
-                              </PlaylistProvider>
-                            </GamificationProvider>
-                          </AiResponseProvider>
-                        </SupportCircleProvider>
-                      </ConversationsProvider>
+                      <GamificationProvider>
+                        <ConversationsProvider>
+                          <SupportCircleProvider>
+                            <SelfCareProvider>
+                              <AiResponseProvider>
+                                <PlaylistProvider>
+                                  <JournalProvider>
+                                    <ChallengesProvider>
+                                      <PlannerProvider>
+                                        <AppLayout />
+                                      </PlannerProvider>
+                                    </ChallengesProvider>
+                                  </JournalProvider>
+                                </PlaylistProvider>
+                              </AiResponseProvider>
+                            </SelfCareProvider>
+                          </SupportCircleProvider>
+                        </ConversationsProvider>
+                      </GamificationProvider>
                     </ProtectedRoute>
                   }
                 >

@@ -1,11 +1,21 @@
-import { createContext, useState, ReactNode, useMemo, useCallback } from 'react'
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react'
 import { UserProfile } from '@/types'
 import { getOrAssignABTestGroup, ABTestGroup } from '@/lib/abTesting'
 
-interface AuthContextType {
+interface AuthState {
   user: UserProfile | null
-  isAuthenticated: boolean
   isSubscribed: boolean
+}
+
+interface AuthContextType extends AuthState {
+  isAuthenticated: boolean
   abTestGroup: ABTestGroup | null
   login: (user: UserProfile, isSubscribed: boolean) => void
   logout: () => void
@@ -17,81 +27,100 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Mock user data
-const mockUser: UserProfile = {
-  id: '123',
-  full_name: 'Maria',
-  email: 'maria@example.com',
-  is_email_verified: true,
-  phone_number: '+55 11999998888',
-  phone_verification_status: 'not_verified',
-  is_two_factor_enabled: false,
-}
-
-// Mock a verification token store
+const AUTH_KEY = 'mae-amiga-auth'
 const mockVerificationStore: { [key: string]: string } = {}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(null)
-  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [authState, setAuthState] = useState<AuthState>({
+    user: null,
+    isSubscribed: false,
+  })
   const [abTestGroup, setAbTestGroup] = useState<ABTestGroup | null>(null)
 
-  const login = useCallback((userData: UserProfile, subscribed: boolean) => {
-    setUser(userData)
-    setIsSubscribed(subscribed)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(AUTH_KEY)
+      if (stored) {
+        const savedState: AuthState = JSON.parse(stored)
+        setAuthState(savedState)
+        setAbTestGroup(getOrAssignABTestGroup())
+      }
+    } catch (error) {
+      console.error('Failed to parse auth state', error)
+      localStorage.removeItem(AUTH_KEY)
+    }
+  }, [])
+
+  const persistAuthState = (state: AuthState) => {
+    try {
+      localStorage.setItem(AUTH_KEY, JSON.stringify(state))
+    } catch (error) {
+      console.error('Failed to save auth state', error)
+    }
+  }
+
+  const login = useCallback((user: UserProfile, isSubscribed: boolean) => {
+    const newState = { user, isSubscribed }
+    setAuthState(newState)
+    persistAuthState(newState)
     setAbTestGroup(getOrAssignABTestGroup())
   }, [])
 
   const logout = useCallback(() => {
-    setUser(null)
-    setIsSubscribed(false)
+    setAuthState({ user: null, isSubscribed: false })
+    localStorage.removeItem(AUTH_KEY)
     setAbTestGroup(null)
   }, [])
 
   const updateUser = useCallback((data: Partial<UserProfile>) => {
-    setUser((prevUser) => (prevUser ? { ...prevUser, ...data } : null))
+    setAuthState((prevState) => {
+      if (!prevState.user) return prevState
+      const newUser = { ...prevState.user, ...data }
+      const newState = { ...prevState, user: newUser }
+      persistAuthState(newState)
+      return newState
+    })
   }, [])
 
   const subscribe = useCallback(() => {
-    if (user) {
-      setIsSubscribed(true)
-    }
-  }, [user])
+    setAuthState((prevState) => {
+      if (!prevState.user) return prevState
+      const newState = { ...prevState, isSubscribed: true }
+      persistAuthState(newState)
+      return newState
+    })
+  }, [])
 
   const requestPhoneEmailVerification = useCallback(() => {
-    if (!user) return ''
+    if (!authState.user) return ''
     const token = `mock_token_${Date.now()}`
-    mockVerificationStore[token] = user.id
+    mockVerificationStore[token] = authState.user.id
     updateUser({ phone_verification_status: 'pending_email' })
     console.log(
-      `Verification email sent to ${user.email} for phone ${user.phone_number}. Token: ${token}`,
+      `Verification email sent to ${authState.user.email} for phone ${authState.user.phone_number}. Token: ${token}`,
     )
     return token
-  }, [user, updateUser])
+  }, [authState.user, updateUser])
 
   const confirmPhoneEmailVerification = useCallback(
     (token: string) => {
-      if (user && mockVerificationStore[token] === user.id) {
+      if (
+        authState.user &&
+        mockVerificationStore[token] === authState.user.id
+      ) {
         updateUser({ phone_verification_status: 'verified' })
         delete mockVerificationStore[token]
         return true
       }
       return false
     },
-    [user, updateUser],
+    [authState.user, updateUser],
   )
-
-  // For development: auto-login with a mock user
-  useMemo(() => {
-    // login(mockUser, true); // auto-login with active subscription
-    // login(mockUser, false); // auto-login with inactive subscription
-  }, [])
 
   const value = useMemo(
     () => ({
-      user,
-      isAuthenticated: !!user,
-      isSubscribed,
+      ...authState,
+      isAuthenticated: !!authState.user,
       abTestGroup,
       login,
       logout,
@@ -101,8 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       confirmPhoneEmailVerification,
     }),
     [
-      user,
-      isSubscribed,
+      authState,
       abTestGroup,
       login,
       logout,

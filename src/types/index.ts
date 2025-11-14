@@ -95,6 +95,12 @@ export interface SelfCarePlan {
   professional_help_suggestion?: string
 }
 
+export interface QuizResult {
+  date: string
+  answers: Record<string, string>
+  plan: SelfCarePlan
+}
+
 export interface SupportReply {
   id: string
   postId: string

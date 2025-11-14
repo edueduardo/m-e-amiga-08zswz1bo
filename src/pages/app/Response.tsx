@@ -6,6 +6,7 @@ import { SelfCarePlan } from '@/components/SelfCarePlan'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { useSelfCare } from '@/contexts/SelfCareContext'
 
 const ResponsePage = () => {
   const {
@@ -14,27 +15,31 @@ const ResponsePage = () => {
     error,
     maxTime,
     focus,
+    quizAnswers,
     refinePlan,
     elaboratePlan,
     reset,
     retry,
   } = useAiResponse()
+  const { saveQuizAndPlan } = useSelfCare()
   const navigate = useNavigate()
   const { toast } = useToast()
 
   useEffect(() => {
     if (status === 'idle') {
-      // If user lands here directly or state is reset, redirect them.
       navigate('/app/care')
     }
   }, [status, navigate])
 
   const handleAcceptPlan = () => {
-    toast({
-      title: 'Que bom que gostou, filha!',
-      description: 'Sua trilha de cuidado está salva.',
-    })
-    navigate('/app/care')
+    if (plan && quizAnswers) {
+      saveQuizAndPlan(quizAnswers, plan)
+      toast({
+        title: 'Que bom que gostou, filha!',
+        description: 'Sua trilha de cuidado está salva.',
+      })
+      navigate('/app/care')
+    }
   }
 
   const renderContent = () => {
@@ -53,7 +58,6 @@ const ResponsePage = () => {
             />
           )
         }
-        // Fallback in case plan/focus is missing
         return (
           <div className="text-center space-y-6 p-8 max-w-lg mx-auto">
             <AlertTriangle className="h-16 w-16 mx-auto text-destructive" />

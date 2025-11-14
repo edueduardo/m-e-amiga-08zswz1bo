@@ -5,9 +5,11 @@ import {
   useMemo,
   useCallback,
   useContext,
+  useEffect,
 } from 'react'
 import { VoiceEntry, Feedback } from '@/types'
-import { voiceEntries as initialVoiceEntries } from '@/lib/data'
+
+const CONVERSATIONS_KEY = 'mae-amiga-conversations'
 
 interface ConversationsContextType {
   entries: VoiceEntry[]
@@ -22,7 +24,23 @@ export const ConversationsContext = createContext<
 >(undefined)
 
 export function ConversationsProvider({ children }: { children: ReactNode }) {
-  const [entries, setEntries] = useState<VoiceEntry[]>(initialVoiceEntries)
+  const [entries, setEntries] = useState<VoiceEntry[]>(() => {
+    try {
+      const stored = localStorage.getItem(CONVERSATIONS_KEY)
+      return stored ? JSON.parse(stored) : []
+    } catch (error) {
+      console.error('Failed to parse conversations', error)
+      return []
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(entries))
+    } catch (error) {
+      console.error('Failed to save conversations', error)
+    }
+  }, [entries])
 
   const addEntry = useCallback((entry: VoiceEntry) => {
     setEntries((prevEntries) => [entry, ...prevEntries])

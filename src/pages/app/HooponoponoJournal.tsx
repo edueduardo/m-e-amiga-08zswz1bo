@@ -12,8 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BookHeart, PlusCircle } from 'lucide-react'
-import { useGamification } from '@/contexts/GamificationContext'
-import { HooponoponoJournalEntry } from '@/types'
+import { useJournal } from '@/contexts/JournalContext'
 
 const journalPrompts = [
   'Que memória ou sentimento doloroso você gostaria de limpar hoje?',
@@ -31,23 +30,13 @@ const getDailyPrompt = () => {
 }
 
 const HooponoponoJournalPage = () => {
-  const { addPoints } = useGamification()
-  const [entries, setEntries] = useState<HooponoponoJournalEntry[]>([])
+  const { entries, addEntry } = useJournal()
   const [currentEntry, setCurrentEntry] = useState('')
   const dailyPrompt = getDailyPrompt()
 
   const handleSaveEntry = () => {
-    if (currentEntry.trim()) {
-      const newEntry: HooponoponoJournalEntry = {
-        id: new Date().toISOString(),
-        date: new Date().toISOString(),
-        prompt: dailyPrompt,
-        content: currentEntry,
-      }
-      setEntries([newEntry, ...entries])
-      setCurrentEntry('')
-      addPoints(25, "Escreveu no Diário Ho'oponopono")
-    }
+    addEntry(currentEntry, dailyPrompt)
+    setCurrentEntry('')
   }
 
   return (
@@ -77,7 +66,7 @@ const HooponoponoJournalPage = () => {
           />
         </CardContent>
         <CardContent>
-          <Button onClick={handleSaveEntry}>
+          <Button onClick={handleSaveEntry} disabled={!currentEntry.trim()}>
             <PlusCircle className="mr-2 h-4 w-4" /> Salvar Reflexão
           </Button>
         </CardContent>

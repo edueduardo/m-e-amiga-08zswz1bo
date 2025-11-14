@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   Card,
   CardContent,
@@ -11,38 +10,15 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Lightbulb, Trophy } from 'lucide-react'
-import { weeklyChallenges } from '@/lib/data'
 import { Challenge, ChallengeStep } from '@/types'
 import { Label } from '@/components/ui/label'
-import { useGamification } from '@/contexts/GamificationContext'
+import { useChallenges } from '@/contexts/ChallengesContext'
 
-const ChallengeCard = ({
-  initialChallenge,
-}: {
-  initialChallenge: Challenge
-}) => {
-  const [challenge, setChallenge] = useState<Challenge>(initialChallenge)
-  const { addPoints } = useGamification()
+const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
+  const { updateStepCompletion } = useChallenges()
 
   const handleStepToggle = (stepId: string) => {
-    const isCompleting = !challenge.steps.find((s) => s.id === stepId)
-      ?.is_completed
-    if (isCompleting) {
-      addPoints(10, `Completou um passo do desafio: ${challenge.title}`)
-    }
-
-    setChallenge((prevChallenge) => {
-      const updatedSteps = prevChallenge.steps.map((step) =>
-        step.id === stepId
-          ? { ...step, is_completed: !step.is_completed }
-          : step,
-      )
-      const allCompleted = updatedSteps.every((step) => step.is_completed)
-      if (allCompleted && !prevChallenge.steps.every((s) => s.is_completed)) {
-        addPoints(50, `Completou o desafio: ${challenge.title}`)
-      }
-      return { ...prevChallenge, steps: updatedSteps }
-    })
+    updateStepCompletion(challenge.id, stepId)
   }
 
   const completedSteps = challenge.steps.filter(
@@ -92,6 +68,8 @@ const ChallengeCard = ({
 }
 
 const ChallengesPage = () => {
+  const { challenges } = useChallenges()
+
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -105,8 +83,8 @@ const ChallengesPage = () => {
         </p>
       </div>
       <div className="grid gap-8 md:grid-cols-2">
-        {weeklyChallenges.map((challenge) => (
-          <ChallengeCard key={challenge.id} initialChallenge={challenge} />
+        {challenges.map((challenge) => (
+          <ChallengeCard key={challenge.id} challenge={challenge} />
         ))}
       </div>
     </div>

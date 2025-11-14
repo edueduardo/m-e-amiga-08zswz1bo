@@ -1,20 +1,9 @@
 import { useState } from 'react'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  PlusCircle,
-  GripVertical,
-  Calendar as CalendarIcon,
-} from 'lucide-react'
-import { PlannerTask, PlannerTaskStatus } from '@/types'
-import { plannerTasks as initialTasks } from '@/lib/data'
+import { PlusCircle, Calendar as CalendarIcon } from 'lucide-react'
+import { PlannerTaskStatus } from '@/types'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -26,6 +15,7 @@ import {
   generateGoogleCalendarLink,
   generateOutlookCalendarLink,
 } from '@/lib/calendar'
+import { usePlanner } from '@/contexts/PlannerContext'
 
 const statusMap: Record<
   PlannerTaskStatus,
@@ -40,16 +30,10 @@ const statusMap: Record<
   done: { title: 'Feito!', bg: 'bg-green-50', border: 'border-green-200' },
 }
 
-const PlannerColumn = ({
-  status,
-  tasks,
-  onStatusChange,
-}: {
-  status: PlannerTaskStatus
-  tasks: PlannerTask[]
-  onStatusChange: (taskId: string, newStatus: PlannerTaskStatus) => void
-}) => {
+const PlannerColumn = ({ status }: { status: PlannerTaskStatus }) => {
+  const { tasks, updateTaskStatus } = usePlanner()
   const { title, bg, border } = statusMap[status]
+  const columnTasks = tasks.filter((t) => t.status === status)
   const otherStatuses = (Object.keys(statusMap) as PlannerTaskStatus[]).filter(
     (s) => s !== status,
   )
@@ -60,7 +44,7 @@ const PlannerColumn = ({
         <CardTitle className="text-lg">{title}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-3 flex-grow">
-        {tasks.map((task) => (
+        {columnTasks.map((task) => (
           <Card key={task.id} className="bg-background p-3 shadow-sm">
             <div className="flex items-start justify-between">
               <p className="flex-grow pr-2">{task.content}</p>
@@ -98,7 +82,7 @@ const PlannerColumn = ({
                   key={newStatus}
                   size="sm"
                   variant="outline"
-                  onClick={() => onStatusChange(task.id, newStatus)}
+                  onClick={() => updateTaskStatus(task.id, newStatus)}
                 >
                   {statusMap[newStatus].title}
                 </Button>
@@ -112,28 +96,12 @@ const PlannerColumn = ({
 }
 
 const PlannerPage = () => {
-  const [tasks, setTasks] = useState<PlannerTask[]>(initialTasks)
+  const { addTask } = usePlanner()
   const [newTaskContent, setNewTaskContent] = useState('')
 
   const handleAddTask = () => {
-    if (newTaskContent.trim()) {
-      const newTask: PlannerTask = {
-        id: `task-${Date.now()}`,
-        content: newTaskContent,
-        status: 'todo',
-        due_date: new Date().toISOString(),
-      }
-      setTasks([...tasks, newTask])
-      setNewTaskContent('')
-    }
-  }
-
-  const handleStatusChange = (taskId: string, newStatus: PlannerTaskStatus) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task,
-      ),
-    )
+    addTask(newTaskContent)
+    setNewTaskContent('')
   }
 
   return (
@@ -154,19 +122,14 @@ const PlannerPage = () => {
             onChange={(e) => setNewTaskContent(e.target.value)}
             placeholder="Ex: Marcar 15 minutos para meditar"
           />
-          <Button onClick={handleAddTask}>
+          <Button onClick={handleAddTask} disabled={!newTaskContent.trim()}>
             <PlusCircle className="mr-2 h-4 w-4" /> Adicionar
           </Button>
         </CardContent>
       </Card>
       <div className="grid md:grid-cols-3 gap-6">
         {(Object.keys(statusMap) as PlannerTaskStatus[]).map((status) => (
-          <PlannerColumn
-            key={status}
-            status={status}
-            tasks={tasks.filter((t) => t.status === status)}
-            onStatusChange={handleStatusChange}
-          />
+          <PlannerColumn key={status} status={status} />
         ))}
       </div>
     </div>
