@@ -133,5 +133,3 @@ export const useVirtualMan = () => {
   }
   return context
 }
-
-

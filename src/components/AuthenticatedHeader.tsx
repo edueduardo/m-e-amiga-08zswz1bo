@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { LogOut, Menu, HeartPulse } from 'lucide-react'
@@ -10,7 +9,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { NotificationCenter } from './NotificationCenter'
 
 export const AuthenticatedHeader = () => {
-  const { logout } = useAuth()
+  const { signOut } = useAuth()
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
 
   return (
@@ -40,7 +39,7 @@ export const AuthenticatedHeader = () => {
             <HeartPulse className="h-5 w-5" />
             <span className="sr-only">SOS</span>
           </Button>
-          <Button variant="ghost" size="icon" onClick={logout}>
+          <Button variant="ghost" size="icon" onClick={signOut}>
             <LogOut className="h-5 w-5" />
             <span className="sr-only">Sair</span>
           </Button>

@@ -7,142 +7,221 @@ import {
   useEffect,
   useContext,
 } from 'react'
+import { Session, User } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase/client'
 import { UserProfile } from '@/types'
 import { getOrAssignABTestGroup, ABTestGroup } from '@/lib/abTesting'
 
-interface AuthState {
-  user: UserProfile | null
+interface AuthContextType {
+  session: Session | null
+  user: User | null
+  profile: UserProfile | null
   isSubscribed: boolean
-}
-
-interface AuthContextType extends AuthState {
   isAuthenticated: boolean
   abTestGroup: ABTestGroup | null
   isLoading: boolean
-  login: (user: UserProfile, isSubscribed: boolean) => void
-  logout: () => void
-  updateUser: (data: Partial<UserProfile>) => void
+  signIn: (email: string, password: string) => Promise<{ error: any }>
+  signUp: (
+    email: string,
+    password: string,
+    fullName: string,
+  ) => Promise<{ error: any }>
+  signOut: () => Promise<void>
+  updateUser: (data: Partial<UserProfile>) => Promise<void>
   subscribe: () => void
-  requestPhoneEmailVerification: () => string
-  confirmPhoneEmailVerification: (token: string) => boolean
+  sendPasswordResetEmail: (email: string) => Promise<{ error: any }>
+  updatePassword: (password: string) => Promise<{ error: any }>
+  requestPhoneEmailVerification: () => Promise<string>
+  confirmPhoneEmailVerification: (token: string) => Promise<boolean>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const AUTH_KEY = 'mae-amiga-auth'
 const mockVerificationStore: { [key: string]: string } = {}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [authState, setAuthState] = useState<AuthState>({
-    user: null,
-    isSubscribed: false,
-  })
+  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [isSubscribed, setIsSubscribed] = useState(false) // Mocked for now
   const [abTestGroup, setAbTestGroup] = useState<ABTestGroup | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(AUTH_KEY)
-      if (stored) {
-        const savedState: AuthState = JSON.parse(stored)
-        setAuthState(savedState)
-      }
-      setAbTestGroup(getOrAssignABTestGroup())
-    } catch (error) {
-      console.error('Failed to parse auth state', error)
-      localStorage.removeItem(AUTH_KEY)
-    } finally {
-      setIsLoading(false)
+  const fetchProfile = useCallback(async (user: User) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching profile:', error)
+      return null
     }
+
+    if (data) {
+      const userProfile: UserProfile = {
+        id: user.id,
+        full_name: data.full_name || '',
+        email: user.email || '',
+        phone_number: data.phone_number || '',
+        is_email_verified: !!user.email_confirmed_at,
+        phone_verification_status:
+          data.phone_verification_status || 'not_verified',
+        is_two_factor_enabled: data.is_two_factor_enabled || false,
+      }
+      setProfile(userProfile)
+      return userProfile
+    }
+    return null
   }, [])
 
-  const persistAuthState = (state: AuthState) => {
-    try {
-      localStorage.setItem(AUTH_KEY, JSON.stringify(state))
-    } catch (error) {
-      console.error('Failed to save auth state', error)
-    }
+  useEffect(() => {
+    setAbTestGroup(getOrAssignABTestGroup())
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session)
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      if (currentUser) {
+        fetchProfile(currentUser)
+      } else {
+        setProfile(null)
+      }
+      if (event === 'SIGNED_IN') {
+        // This handles both signup and signin
+        // In a real app, you'd check subscription status from your DB
+        setIsSubscribed(true)
+      }
+      if (event === 'SIGNED_OUT') {
+        setIsSubscribed(false)
+      }
+      setIsLoading(false)
+    })
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      if (currentUser) {
+        fetchProfile(currentUser)
+      }
+      setIsLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [fetchProfile])
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    return { error }
   }
 
-  const login = useCallback((user: UserProfile, isSubscribed: boolean) => {
-    const newState = { user, isSubscribed }
-    setAuthState(newState)
-    persistAuthState(newState)
-    setAbTestGroup(getOrAssignABTestGroup())
-  }, [])
-
-  const logout = useCallback(() => {
-    setAuthState({ user: null, isSubscribed: false })
-    localStorage.removeItem(AUTH_KEY)
-    // We keep the AB test group even on logout for consistency
-  }, [])
-
-  const updateUser = useCallback((data: Partial<UserProfile>) => {
-    setAuthState((prevState) => {
-      if (!prevState.user) return prevState
-      const newUser = { ...prevState.user, ...data }
-      const newState = { ...prevState, user: newUser }
-      persistAuthState(newState)
-      return newState
+  const signUp = async (email: string, password: string, fullName: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
     })
-  }, [])
+    return { error }
+  }
 
-  const subscribe = useCallback(() => {
-    setAuthState((prevState) => {
-      if (!prevState.user) return prevState
-      const newState = { ...prevState, isSubscribed: true }
-      persistAuthState(newState)
-      return newState
+  const signOut = async () => {
+    await supabase.auth.signOut()
+    setProfile(null)
+  }
+
+  const updateUser = useCallback(
+    async (data: Partial<UserProfile>) => {
+      if (!user) return
+      const { error } = await supabase
+        .from('profiles')
+        .update(data)
+        .eq('id', user.id)
+      if (!error) {
+        await fetchProfile(user)
+      } else {
+        console.error('Error updating profile:', error)
+      }
+    },
+    [user, fetchProfile],
+  )
+
+  const subscribe = useCallback(() => setIsSubscribed(true), [])
+
+  const sendPasswordResetEmail = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
     })
-  }, [])
+    return { error }
+  }
 
-  const requestPhoneEmailVerification = useCallback(() => {
-    if (!authState.user) return ''
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password })
+    return { error }
+  }
+
+  const requestPhoneEmailVerification = useCallback(async () => {
+    if (!profile) return ''
     const token = `mock_token_${Date.now()}`
-    mockVerificationStore[token] = authState.user.id
-    updateUser({ phone_verification_status: 'pending_email' })
+    mockVerificationStore[token] = profile.id
+    await updateUser({ phone_verification_status: 'pending_email' })
     console.log(
-      `Verification email sent to ${authState.user.email} for phone ${authState.user.phone_number}. Token: ${token}`,
+      `Verification email sent to ${profile.email} for phone ${profile.phone_number}. Token: ${token}`,
     )
     return token
-  }, [authState.user, updateUser])
+  }, [profile, updateUser])
 
   const confirmPhoneEmailVerification = useCallback(
-    (token: string) => {
-      if (
-        authState.user &&
-        mockVerificationStore[token] === authState.user.id
-      ) {
-        updateUser({ phone_verification_status: 'verified' })
+    async (token: string) => {
+      if (profile && mockVerificationStore[token] === profile.id) {
+        await updateUser({ phone_verification_status: 'verified' })
         delete mockVerificationStore[token]
         return true
       }
       return false
     },
-    [authState.user, updateUser],
+    [profile, updateUser],
   )
 
   const value = useMemo(
     () => ({
-      ...authState,
-      isAuthenticated: !!authState.user,
+      session,
+      user,
+      profile,
+      isSubscribed,
+      isAuthenticated: !!session && !!user,
       abTestGroup,
       isLoading,
-      login,
-      logout,
+      signIn,
+      signUp,
+      signOut,
       updateUser,
       subscribe,
+      sendPasswordResetEmail,
+      updatePassword,
       requestPhoneEmailVerification,
       confirmPhoneEmailVerification,
     }),
     [
-      authState,
+      session,
+      user,
+      profile,
+      isSubscribed,
       abTestGroup,
       isLoading,
-      login,
-      logout,
+      signIn,
+      signUp,
+      signOut,
       updateUser,
       subscribe,
+      sendPasswordResetEmail,
+      updatePassword,
       requestPhoneEmailVerification,
       confirmPhoneEmailVerification,
     ],

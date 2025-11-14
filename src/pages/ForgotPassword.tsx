@@ -11,20 +11,35 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
 import { useState } from 'react'
+import { useAuth } from '@/hooks/useAuth'
+import { Loader2 } from 'lucide-react'
 
 const ForgotPasswordPage = () => {
+  const { sendPasswordResetEmail } = useAuth()
   const { toast } = useToast()
   const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    console.log('Password reset requested for:', email)
-    toast({
-      title: 'Link de recuperação enviado',
-      description:
-        'Se uma conta com este e-mail existir, um link para redefinir sua senha foi enviado.',
-    })
-    setEmail('')
+    setIsLoading(true)
+    const { error } = await sendPasswordResetEmail(email)
+
+    if (error) {
+      toast({
+        title: 'Erro ao enviar e-mail',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'Link de recuperação enviado',
+        description:
+          'Se uma conta com este e-mail existir, um link para redefinir sua senha foi enviado.',
+      })
+      setEmail('')
+    }
+    setIsLoading(false)
   }
 
   return (
@@ -47,9 +62,11 @@ const ForgotPasswordPage = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Enviar link de recuperação
             </Button>
           </form>

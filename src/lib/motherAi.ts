@@ -574,5 +574,3 @@ export const generateVirtualManReply = async (
     throw new Error('Failed to generate virtual man reply.')
   }
 }
-
-

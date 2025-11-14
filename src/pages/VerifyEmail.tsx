@@ -8,13 +8,36 @@ import {
 } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
 import { MailCheck } from 'lucide-react'
+import { supabase } from '@/lib/supabase/client'
+import { useToast } from '@/components/ui/use-toast'
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
 const VerifyEmailPage = () => {
   const { user } = useAuth()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleResendEmail = () => {
-    // Mock resend logic
-    console.log('Resending verification email to:', user?.email)
+  const handleResendEmail = async () => {
+    if (!user?.email) return
+    setIsLoading(true)
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: user.email,
+    })
+    if (error) {
+      toast({
+        title: 'Erro ao reenviar',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'E-mail reenviado!',
+        description: 'Verifique sua caixa de entrada.',
+      })
+    }
+    setIsLoading(false)
   }
 
   return (
@@ -35,7 +58,13 @@ const VerifyEmailPage = () => {
           <p className="text-sm text-muted-foreground">
             Não recebeu o e-mail? Verifique sua pasta de spam ou
           </p>
-          <Button variant="link" className="px-0" onClick={handleResendEmail}>
+          <Button
+            variant="link"
+            className="px-0"
+            onClick={handleResendEmail}
+            disabled={isLoading}
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             clique aqui para reenviar.
           </Button>
         </CardContent>

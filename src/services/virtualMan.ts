@@ -85,4 +85,3 @@ export const updateVirtualManInteractionFeedback = async (
   }
   return data as VirtualManInteraction
 }
-

@@ -19,11 +19,13 @@ import {
 import { cn } from '@/lib/utils'
 
 const ProfilePage = () => {
-  const { user } = useAuth()
-  const { profile } = useGamification()
-  const pointsForNextLevel = profile.level * 100
+  const { profile: authProfile } = useAuth()
+  const { profile: gamificationProfile } = useGamification()
+  const pointsForNextLevel = gamificationProfile.level * 100
   const progressToNextLevel =
-    ((profile.points - (profile.level - 1) * 100) / 100) * 100
+    ((gamificationProfile.points - (gamificationProfile.level - 1) * 100) /
+      100) *
+    100
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
@@ -36,7 +38,7 @@ const ProfilePage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Olá, {user?.full_name}!</CardTitle>
+          <CardTitle>Olá, {authProfile?.full_name}!</CardTitle>
           <CardDescription>
             Continue se dedicando ao seu bem-estar.
           </CardDescription>
@@ -46,20 +48,20 @@ const ProfilePage = () => {
             <div className="relative">
               <Star className="h-16 w-16 text-yellow-400 fill-yellow-300" />
               <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-xl text-yellow-800">
-                {profile.level}
+                {gamificationProfile.level}
               </span>
             </div>
             <div className="flex-grow space-y-2">
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Nível {profile.level}</span>
+                <span>Nível {gamificationProfile.level}</span>
                 <span>
-                  {profile.points} / {pointsForNextLevel} Pontos
+                  {gamificationProfile.points} / {pointsForNextLevel} Pontos
                 </span>
               </div>
               <Progress value={progressToNextLevel} />
               <p className="text-xs text-muted-foreground text-right">
-                {pointsForNextLevel - profile.points} pontos para o próximo
-                nível
+                {pointsForNextLevel - gamificationProfile.points} pontos para o
+                próximo nível
               </p>
             </div>
           </div>
@@ -76,7 +78,9 @@ const ProfilePage = () => {
         <CardContent>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 text-center">
             {gamificationBadges.map((badge) => {
-              const isUnlocked = profile.unlockedBadges.includes(badge.id)
+              const isUnlocked = gamificationProfile.unlockedBadges.includes(
+                badge.id,
+              )
               return (
                 <TooltipProvider key={badge.id}>
                   <Tooltip>

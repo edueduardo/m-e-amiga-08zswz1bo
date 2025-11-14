@@ -24,7 +24,6 @@ import { VirtualManProvider } from './contexts/VirtualManContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
-import { ProtectedRoute } from './components/ProtectedRoute'
 
 import Index from './pages/Index'
 import LoginPage from './pages/Login'
@@ -108,88 +107,74 @@ const App = () => {
                   <Route path="/terms-of-use" element={<TermsOfUsePage />} />
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/about" element={<AboutPage />} />
+                </Route>
 
+                <Route
+                  path="/app"
+                  element={
+                    <NotificationProvider>
+                      <LayoutProvider>
+                        <GamificationProvider>
+                          <ConversationsProvider>
+                            <GrowthGardenProvider>
+                              <SupportCircleProvider>
+                                <SelfCareProvider>
+                                  <AiResponseProvider>
+                                    <PlaylistProvider>
+                                      <JournalProvider>
+                                        <ChallengesProvider>
+                                          <PlannerProvider>
+                                            <CoachingProvider>
+                                              <SelfKnowledgeProvider>
+                                                <VirtualManProvider>
+                                                  <AppLayout />
+                                                </VirtualManProvider>
+                                              </SelfKnowledgeProvider>
+                                            </CoachingProvider>
+                                          </PlannerProvider>
+                                        </ChallengesProvider>
+                                      </JournalProvider>
+                                    </PlaylistProvider>
+                                  </AiResponseProvider>
+                                </SelfCareProvider>
+                              </SupportCircleProvider>
+                            </GrowthGardenProvider>
+                          </ConversationsProvider>
+                        </GamificationProvider>
+                      </LayoutProvider>
+                    </NotificationProvider>
+                  }
+                >
+                  <Route index element={<DashboardPage />} />
+                  <Route path="conversations" element={<ConversationsPage />} />
+                  <Route path="virtual-man" element={<VirtualManPage />} />
+                  <Route path="coaching" element={<CoachingPage />} />
                   <Route
-                    path="/app"
-                    element={
-                      <ProtectedRoute>
-                        <NotificationProvider>
-                          <LayoutProvider>
-                            <GamificationProvider>
-                              <ConversationsProvider>
-                                <GrowthGardenProvider>
-                                  <SupportCircleProvider>
-                                    <SelfCareProvider>
-                                      <AiResponseProvider>
-                                        <PlaylistProvider>
-                                          <JournalProvider>
-                                            <ChallengesProvider>
-                                              <PlannerProvider>
-                                                <CoachingProvider>
-                                                  <SelfKnowledgeProvider>
-                                                    <VirtualManProvider>
-                                                      <AppLayout />
-                                                    </VirtualManProvider>
-                                                  </SelfKnowledgeProvider>
-                                                </CoachingProvider>
-                                              </PlannerProvider>
-                                            </ChallengesProvider>
-                                          </JournalProvider>
-                                        </PlaylistProvider>
-                                      </AiResponseProvider>
-                                    </SelfCareProvider>
-                                  </SupportCircleProvider>
-                                </GrowthGardenProvider>
-                              </ConversationsProvider>
-                            </GamificationProvider>
-                          </LayoutProvider>
-                        </NotificationProvider>
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route index element={<DashboardPage />} />
-                    <Route
-                      path="conversations"
-                      element={<ConversationsPage />}
-                    />
-                    <Route path="virtual-man" element={<VirtualManPage />} />
-                    <Route path="coaching" element={<CoachingPage />} />
-                    <Route
-                      path="self-knowledge"
-                      element={<SelfKnowledgePage />}
-                    />
-                    <Route path="care" element={<CarePage />} />
-                    <Route path="response" element={<ResponsePage />} />
-                    <Route
-                      path="journal"
-                      element={<HooponoponoJournalPage />}
-                    />
-                    <Route path="music" element={<MusicPage />} />
-                    <Route
-                      path="support-circle"
-                      element={<SupportCirclePage />}
-                    />
-                    <Route path="courses" element={<CoursesPage />} />
-                    <Route
-                      path="courses/:slug"
-                      element={<CourseDetailPage />}
-                    />
-                    <Route path="planner" element={<PlannerPage />} />
-                    <Route path="challenges" element={<ChallengesPage />} />
-                    <Route
-                      path="community-challenges"
-                      element={<CommunityChallengesPage />}
-                    />
-                    <Route
-                      path="growth-garden"
-                      element={<GrowthGardenPage />}
-                    />
-                    <Route path="library" element={<LibraryPage />} />
-                    <Route path="summary" element={<SummaryPage />} />
-                    <Route path="profile" element={<ProfilePage />} />
-                    <Route path="admin" element={<AdminPage />} />
-                    <Route path="settings" element={<SettingsPage />} />
-                  </Route>
+                    path="self-knowledge"
+                    element={<SelfKnowledgePage />}
+                  />
+                  <Route path="care" element={<CarePage />} />
+                  <Route path="response" element={<ResponsePage />} />
+                  <Route path="journal" element={<HooponoponoJournalPage />} />
+                  <Route path="music" element={<MusicPage />} />
+                  <Route
+                    path="support-circle"
+                    element={<SupportCirclePage />}
+                  />
+                  <Route path="courses" element={<CoursesPage />} />
+                  <Route path="courses/:slug" element={<CourseDetailPage />} />
+                  <Route path="planner" element={<PlannerPage />} />
+                  <Route path="challenges" element={<ChallengesPage />} />
+                  <Route
+                    path="community-challenges"
+                    element={<CommunityChallengesPage />}
+                  />
+                  <Route path="growth-garden" element={<GrowthGardenPage />} />
+                  <Route path="library" element={<LibraryPage />} />
+                  <Route path="summary" element={<SummaryPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="admin" element={<AdminPage />} />
+                  <Route path="settings" element={<SettingsPage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

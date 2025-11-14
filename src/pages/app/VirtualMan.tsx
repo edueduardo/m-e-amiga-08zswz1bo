@@ -103,5 +103,3 @@ const VirtualManPage = () => {
 }
 
 export default VirtualManPage
-
-

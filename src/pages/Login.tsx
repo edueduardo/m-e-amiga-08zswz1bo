@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,23 +11,34 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/components/ui/use-toast'
+import { Loader2 } from 'lucide-react'
 
 const LoginPage = () => {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { signIn } = useAuth()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleLogin = (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault()
-    // Mock login logic
-    const mockUser = {
-      id: '123',
-      full_name: 'Maria',
-      email: 'maria@example.com',
-      is_email_verified: true,
-      is_phone_verified: false,
+    setIsLoading(true)
+    const formData = new FormData(event.target as HTMLFormElement)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    const { error } = await signIn(email, password)
+
+    if (error) {
+      toast({
+        title: 'Erro ao entrar',
+        description: 'E-mail ou senha inválidos.',
+        variant: 'destructive',
+      })
+    } else {
+      navigate('/app')
     }
-    login(mockUser, true) // Assume user is subscribed for demo
-    navigate('/app')
+    setIsLoading(false)
   }
 
   return (
@@ -44,9 +56,11 @@ const LoginPage = () => {
               <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -59,9 +73,16 @@ const LoginPage = () => {
                   Esqueceu sua senha?
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                disabled={isLoading}
+              />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Entrar
             </Button>
           </form>

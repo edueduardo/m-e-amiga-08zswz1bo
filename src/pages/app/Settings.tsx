@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/components/ui/use-toast'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PasswordStrength } from '@/components/PasswordStrength'
 import { Switch } from '@/components/ui/switch'
 import { PhoneNumberInput } from '@/components/PhoneNumberInput'
@@ -39,6 +39,7 @@ import {
   Sparkles,
   LayoutDashboard,
   Bell,
+  Loader2,
 } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useUserPreferences } from '@/contexts/UserPreferencesContext'
@@ -55,38 +56,45 @@ import { RelationshipStatus } from '@/types'
 import { CustomReminders } from '@/components/CustomReminders'
 
 const SettingsPage = () => {
-  const { user, isSubscribed, updateUser, requestPhoneEmailVerification } =
-    useAuth()
+  const {
+    profile,
+    isSubscribed,
+    updateUser,
+    requestPhoneEmailVerification,
+    updatePassword,
+  } = useAuth()
   const { deleteAllEntries } = useConversations()
   const { toast } = useToast()
   const { preferences, updatePreferences } = useUserPreferences()
   const [newPassword, setNewPassword] = useState('')
-  const [phone, setPhone] = useState(user?.phone_number || '')
-  const [originalPhone, setOriginalPhone] = useState(user?.phone_number || '')
+  const [phone, setPhone] = useState(profile?.phone_number || '')
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false)
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false)
 
-  const handleProfileUpdate = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setPhone(profile?.phone_number || '')
+  }, [profile?.phone_number])
+
+  const handleProfileUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const fullName = formData.get('full_name') as string
-    updateUser({ full_name: fullName })
+    await updateUser({ full_name: fullName })
     toast({
       title: 'Perfil atualizado!',
       description: 'Suas informações foram salvas com sucesso.',
     })
   }
 
-  const handlePhoneUpdate = (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePhoneUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const isNewNumber = phone !== originalPhone
-    updateUser({
+    const isNewNumber = phone !== profile?.phone_number
+    await updateUser({
       phone_number: phone,
       phone_verification_status: isNewNumber
         ? 'not_verified'
-        : user?.phone_verification_status,
+        : profile?.phone_verification_status,
     })
-    setOriginalPhone(phone)
     toast({
       title: 'Número de telefone salvo!',
       description: isNewNumber
@@ -95,8 +103,8 @@ const SettingsPage = () => {
     })
   }
 
-  const handleRequestVerification = () => {
-    const token = requestPhoneEmailVerification()
+  const handleRequestVerification = async () => {
+    const token = await requestPhoneEmailVerification()
     toast({
       title: 'E-mail de verificação enviado!',
       description:
@@ -105,8 +113,23 @@ const SettingsPage = () => {
     console.log(`Verification link: /verify-phone-by-email?token=${token}`)
   }
 
+  const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const { error } = await updatePassword(newPassword)
+    if (error) {
+      toast({
+        title: 'Erro ao alterar senha',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({ title: 'Senha alterada com sucesso!' })
+      setNewPassword('')
+    }
+  }
+
   const getVerificationStatusBadge = () => {
-    switch (user?.phone_verification_status) {
+    switch (profile?.phone_verification_status) {
       case 'verified':
         return <Badge variant="secondary">Verificado</Badge>
       case 'pending_email':
@@ -118,20 +141,19 @@ const SettingsPage = () => {
   }
 
   const handleDeleteAllConversations = () => {
-    try {
-      deleteAllEntries()
-      toast({
-        title: 'Conversas excluídas!',
-        description: 'Todas as suas conversas foram excluídas com sucesso.',
-      })
-    } catch (error) {
-      toast({
-        title: 'Erro ao excluir',
-        description:
-          'Não foi possível excluir suas conversas. Tente novamente.',
-        variant: 'destructive',
-      })
-    }
+    deleteAllEntries()
+    toast({
+      title: 'Conversas excluídas!',
+      description: 'Todas as suas conversas foram excluídas com sucesso.',
+    })
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
@@ -179,7 +201,7 @@ const SettingsPage = () => {
                   <Input
                     id="full_name"
                     name="full_name"
-                    defaultValue={user?.full_name}
+                    defaultValue={profile.full_name}
                   />
                 </div>
                 <div className="space-y-2">
@@ -187,7 +209,7 @@ const SettingsPage = () => {
                   <Input
                     id="email"
                     type="email"
-                    defaultValue={user?.email}
+                    defaultValue={profile.email}
                     readOnly
                     disabled
                   />
@@ -237,7 +259,7 @@ const SettingsPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
-              <form className="space-y-4">
+              <form onSubmit={handlePasswordUpdate} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="new_password">Nova Senha</Label>
                   <Input
@@ -254,14 +276,14 @@ const SettingsPage = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="phone">Número de Telefone</Label>
-                    {user?.phone_number && getVerificationStatusBadge()}
+                    {profile.phone_number && getVerificationStatusBadge()}
                   </div>
                   <PhoneNumberInput value={phone} onChange={setPhone} />
                 </div>
                 <div className="flex gap-2">
                   <Button type="submit">Salvar Telefone</Button>
-                  {user?.phone_verification_status !== 'verified' &&
-                    user?.phone_number && (
+                  {profile.phone_verification_status !== 'verified' &&
+                    profile.phone_number && (
                       <Button
                         type="button"
                         variant="outline"
@@ -282,11 +304,11 @@ const SettingsPage = () => {
                   </p>
                 </div>
                 <Switch
-                  checked={user?.is_two_factor_enabled}
+                  checked={profile.is_two_factor_enabled}
                   onCheckedChange={(checked) =>
                     updateUser({ is_two_factor_enabled: checked })
                   }
-                  disabled={user?.phone_verification_status !== 'verified'}
+                  disabled={profile.phone_verification_status !== 'verified'}
                 />
               </div>
             </CardContent>

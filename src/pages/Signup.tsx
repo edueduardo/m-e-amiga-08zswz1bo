@@ -12,27 +12,40 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 import { PasswordStrength } from '@/components/PasswordStrength'
+import { useToast } from '@/components/ui/use-toast'
+import { Loader2 } from 'lucide-react'
 
 const SignupPage = () => {
-  const navigate = useNavigate()
-  const { login } = useAuth()
+  const { signUp } = useAuth()
+  const { toast } = useToast()
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignup = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setIsLoading(true)
     const formData = new FormData(event.currentTarget)
     const fullName = formData.get('full-name') as string
     const email = formData.get('email') as string
+    const password = formData.get('password') as string
 
-    // Mock signup logic
-    const mockUser = {
-      id: new Date().toISOString(),
-      full_name: fullName,
-      email: email,
-      is_email_verified: false, // Email is not verified on signup
+    const { error } = await signUp(email, password, fullName)
+
+    if (error) {
+      toast({
+        title: 'Erro ao criar conta',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'Conta criada com sucesso!',
+        description: 'Enviamos um e-mail de verificação para você.',
+      })
+      // The onAuthStateChange listener in AuthContext will handle navigation
+      // or display of a "verify email" message.
     }
-    login(mockUser, false) // New user is not subscribed
-    navigate('/verify-email')
+    setIsLoading(false)
   }
 
   return (
@@ -53,6 +66,7 @@ const SignupPage = () => {
                 name="full-name"
                 placeholder="Maria da Silva"
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -63,6 +77,7 @@ const SignupPage = () => {
                 type="email"
                 placeholder="m@example.com"
                 required
+                disabled={isLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -74,10 +89,12 @@ const SignupPage = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
               <PasswordStrength password={password} />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Criar conta
             </Button>
           </form>

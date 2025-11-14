@@ -10,7 +10,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet'
-import { useIsMobile } from '@/hooks/use-mobile'
+import { useAuth } from '@/hooks/useAuth'
 
 const navLinks = [
   { href: '/#how-it-works', label: 'Como Funciona' },
@@ -21,8 +21,8 @@ const navLinks = [
 ]
 
 export const PublicHeader = () => {
+  const { isAuthenticated } = useAuth()
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
-  const isMobile = useIsMobile()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
 
@@ -90,7 +90,7 @@ export const PublicHeader = () => {
           </Sheet>
 
           <div className="flex flex-1 items-center justify-end space-x-2">
-            <nav className="hidden md:flex items-center space-x-2">
+            <nav className="flex items-center space-x-2">
               <ThemeToggle />
               <Button
                 variant="destructive"
@@ -100,33 +100,21 @@ export const PublicHeader = () => {
                 <HeartPulse className="mr-2 h-4 w-4" />
                 SOS
               </Button>
-              <Button variant="ghost" asChild>
-                <Link to="/login">Entrar</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/signup">Começar Grátis</Link>
-              </Button>
-            </nav>
-            <div className="md:hidden flex items-center gap-2">
-              {isHomePage && (
+              {isAuthenticated ? (
+                <Button asChild>
+                  <Link to="/app">Ir para o App</Link>
+                </Button>
+              ) : (
                 <>
-                  <Button asChild variant="ghost" size="sm">
+                  <Button variant="ghost" asChild>
                     <Link to="/login">Entrar</Link>
                   </Button>
-                  <Button asChild size="sm">
+                  <Button asChild>
                     <Link to="/signup">Começar Grátis</Link>
                   </Button>
                 </>
               )}
-              <ThemeToggle />
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => setIsSOSDialogOpen(true)}
-              >
-                <HeartPulse className="h-4 w-4" />
-              </Button>
-            </div>
+            </nav>
           </div>
         </div>
       </header>

@@ -414,5 +414,3 @@ export interface VirtualManInteraction {
   feedback_comment?: string | null
   created_at: string
 }
-
-

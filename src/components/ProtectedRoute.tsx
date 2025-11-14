@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Loader2 } from 'lucide-react'
 
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { user, isAuthenticated, isLoading } = useAuth()
+  const { user, isAuthenticated, isLoading, profile } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -19,7 +19,7 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (!user?.is_email_verified) {
+  if (user && !profile?.is_email_verified) {
     return <Navigate to="/verify-email" state={{ from: location }} replace />
   }
 

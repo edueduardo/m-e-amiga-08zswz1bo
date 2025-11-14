@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -12,29 +12,33 @@ import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
 import { useState, useEffect } from 'react'
 import { PasswordStrength } from '@/components/PasswordStrength'
+import { useAuth } from '@/hooks/useAuth'
+import { Loader2 } from 'lucide-react'
 
 const ResetPasswordPage = () => {
+  const { updatePassword } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [token, setToken] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isTokenValid, setIsTokenValid] = useState(false)
 
   useEffect(() => {
-    const resetToken = searchParams.get('token')
-    if (!resetToken) {
-      toast({
-        title: 'Token inválido',
-        description: 'O link de redefinição de senha é inválido ou expirou.',
-        variant: 'destructive',
-      })
-      navigate('/forgot-password')
-    }
-    setToken(resetToken)
-  }, [searchParams, navigate, toast])
+    // Supabase handles the token from the URL fragment (#) automatically
+    // We just need to check if the user is in a recovery session
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsTokenValid(true)
+      }
+    })
 
-  const handleSubmit = (event: React.FormEvent) => {
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (password !== confirmPassword) {
       toast({
@@ -44,12 +48,39 @@ const ResetPasswordPage = () => {
       })
       return
     }
-    console.log('Password reset for token:', token)
-    toast({
-      title: 'Senha redefinida com sucesso!',
-      description: 'Você já pode entrar com sua nova senha.',
-    })
-    navigate('/login')
+    setIsLoading(true)
+    const { error } = await updatePassword(password)
+
+    if (error) {
+      toast({
+        title: 'Erro ao redefinir senha',
+        description:
+          error.message || 'O link pode ter expirado. Tente novamente.',
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'Senha redefinida com sucesso!',
+        description: 'Você já pode entrar com sua nova senha.',
+      })
+      navigate('/login')
+    }
+    setIsLoading(false)
+  }
+
+  if (!isTokenValid) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-150px)] py-12">
+        <Card className="mx-auto max-w-sm text-center">
+          <CardHeader>
+            <CardTitle>Verificando link...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -69,6 +100,7 @@ const ResetPasswordPage = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
               <PasswordStrength password={password} />
             </div>
@@ -80,9 +112,11 @@ const ResetPasswordPage = () => {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Redefinir Senha
             </Button>
           </form>
