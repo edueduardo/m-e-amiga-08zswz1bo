@@ -17,6 +17,7 @@ import {
   MessageSquareHeart,
   AlertTriangle,
   Trash2,
+  Share2,
 } from 'lucide-react'
 import { VoiceEntry, Feedback } from '@/types'
 import { format } from 'date-fns'
@@ -44,6 +45,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { SocialShareButtons } from '@/components/SocialShareButtons'
 
 const moodMap: { [key: string]: { color: string; border: string } } = {
   triste: { color: 'bg-blue-100 text-blue-800', border: 'border-blue-200' },
@@ -286,7 +293,7 @@ const ConversationsPage = () => {
                         </AlertDialog>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 group">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>MA</AvatarFallback>
                       </Avatar>
@@ -324,6 +331,23 @@ const ConversationsPage = () => {
                           onFeedbackSubmit={handleFeedbackSubmit}
                         />
                       </div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Share2 className="h-4 w-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <SocialShareButtons
+                            url={window.location.href}
+                            title={`Um conselho da Mãe Amiga: "${entry.mother_reply.substring(0, 100)}..."`}
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
                 ))}

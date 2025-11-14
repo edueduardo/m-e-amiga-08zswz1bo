@@ -6,6 +6,8 @@ import { LogOut, Menu, HeartPulse } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { AppSidebar } from './AppSidebar'
 import { SOSDialog } from './SOSDialog'
+import { ThemeToggle } from './ThemeToggle'
+import { SiteSearch } from './SiteSearch'
 
 export const AuthenticatedHeader = () => {
   const { user, logout } = useAuth()
@@ -28,22 +30,23 @@ export const AuthenticatedHeader = () => {
           </Sheet>
         </div>
         <div className="flex-1">
-          <h1 className="text-lg font-semibold">
-            Oi, filha, {user?.full_name || 'bem-vinda'}
-          </h1>
+          <SiteSearch />
         </div>
-        <Button
-          variant="destructive"
-          size="icon"
-          onClick={() => setIsSOSDialogOpen(true)}
-        >
-          <HeartPulse className="h-5 w-5" />
-          <span className="sr-only">SOS</span>
-        </Button>
-        <Button variant="ghost" size="icon" onClick={logout}>
-          <LogOut className="h-5 w-5" />
-          <span className="sr-only">Sair</span>
-        </Button>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={() => setIsSOSDialogOpen(true)}
+          >
+            <HeartPulse className="h-5 w-5" />
+            <span className="sr-only">SOS</span>
+          </Button>
+          <Button variant="ghost" size="icon" onClick={logout}>
+            <LogOut className="h-5 w-5" />
+            <span className="sr-only">Sair</span>
+          </Button>
+        </div>
       </header>
       <SOSDialog open={isSOSDialogOpen} onOpenChange={setIsSOSDialogOpen} />
     </>

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { SOSDialog } from './SOSDialog'
 import { HeartPulse } from 'lucide-react'
+import { ThemeToggle } from './ThemeToggle'
+import { SiteSearch } from './SiteSearch'
 
 export const PublicHeader = () => {
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
@@ -16,8 +18,12 @@ export const PublicHeader = () => {
               <span className="font-bold">Mãe Amiga</span>
             </Link>
           </div>
+          <div className="flex-1 md:flex-grow-0">
+            <SiteSearch />
+          </div>
           <div className="flex flex-1 items-center justify-end space-x-2">
             <nav className="flex items-center space-x-2">
+              <ThemeToggle />
               <Button
                 variant="destructive"
                 size="sm"

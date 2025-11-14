@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
 import { useGrowthGarden } from '@/contexts/GrowthGardenContext'
 import { useGamification } from '@/contexts/GamificationContext'
+import { SocialShareButtons } from '@/components/SocialShareButtons'
 
 const CourseDetailPage = () => {
   const { slug } = useParams()
@@ -101,19 +102,25 @@ const CourseDetailPage = () => {
           />
         </CardContent>
       </Card>
-      <div className="flex justify-between">
-        <Button onClick={goToPrevLesson} disabled={isFirstLesson}>
-          <ChevronLeft className="mr-2 h-4 w-4" /> Lição Anterior
-        </Button>
-        {isLastLesson ? (
-          <Button onClick={finishCourse}>
-            <CheckCircle className="mr-2 h-4 w-4" /> Concluir Curso
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex gap-2">
+          <Button onClick={goToPrevLesson} disabled={isFirstLesson}>
+            <ChevronLeft className="mr-2 h-4 w-4" /> Lição Anterior
           </Button>
-        ) : (
-          <Button onClick={goToNextLesson}>
-            Próxima Lição <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
-        )}
+          {isLastLesson ? (
+            <Button onClick={finishCourse}>
+              <CheckCircle className="mr-2 h-4 w-4" /> Concluir Curso
+            </Button>
+          ) : (
+            <Button onClick={goToNextLesson}>
+              Próxima Lição <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        <SocialShareButtons
+          url={window.location.href}
+          title={`Estou fazendo o curso "${course.title}" no Mãe Amiga!`}
+        />
       </div>
     </div>
   )
