@@ -377,3 +377,25 @@ export interface CustomReminder {
   cron_schedule: string
   is_active: boolean
 }
+
+export type VirtualManProfile = 'avô' | 'marido' | 'filho adolescente'
+
+export interface VirtualManAiResponse {
+  disclaimer: string
+  communication: string
+  social_behaviors: string
+  expectations_insecurities: string
+  family_situations: string
+  practical_tips: string[]
+}
+
+export interface VirtualManInteraction {
+  id: string
+  user_id: string
+  profile_selected: VirtualManProfile
+  user_query: string
+  ai_response: VirtualManAiResponse
+  feedback_rating?: 'helpful' | 'not_helpful' | null
+  feedback_comment?: string | null
+  created_at: string
+}

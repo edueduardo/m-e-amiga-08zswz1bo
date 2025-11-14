@@ -19,6 +19,7 @@ import {
   Bot,
   BrainCircuit,
   Flower2,
+  UserRound,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -46,6 +47,35 @@ const navItems: NavItem[] = [
     label: 'Conversas',
     icon: MessageSquare,
     description: 'Seu diário de voz. Desabafe e receba acolhimento.',
+  },
+  {
+    href: '/app/virtual-man',
+    label: 'Homem Virtual',
+    icon: UserRound,
+    description: (
+      <div className="p-2 space-y-2 max-w-xs text-left">
+        <p>
+          <strong className="font-semibold text-primary">Atenção:</strong> Já se
+          perguntou "o que ele está pensando?"
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Interesse:</strong> O
+          Homem Virtual é um consultor de IA que te ajuda a entender a
+          perspectiva masculina em diversas situações, com base em perfis
+          geracionais.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Desejo:</strong> Receba
+          insights sobre comunicação, comportamentos e expectativas para
+          antecipar reações e melhorar seus relacionamentos, seja com seu avô,
+          marido ou filho.
+        </p>
+        <p>
+          <strong className="font-semibold text-primary">Ação:</strong> Consulte
+          o Homem Virtual e ganhe clareza nas suas interações!
+        </p>
+      </div>
+    ),
   },
   {
     href: '/app/coaching',

@@ -5,6 +5,8 @@ import {
   VoiceEntry,
   CoachingMessage,
   EmotionalPattern,
+  VirtualManProfile,
+  VirtualManAiResponse,
 } from '@/types'
 
 const API_URL = 'https://api.openai.com/v1'
@@ -525,4 +527,45 @@ export const moderateSupportPost = async (
     }
   }
   return { isSafe: true }
+}
+
+export const generateVirtualManReply = async (
+  query: string,
+  profile: VirtualManProfile,
+): Promise<VirtualManAiResponse> => {
+  await delay(2000) // Simulate API call
+
+  const profileMap = {
+    avô: {
+      name: 'Avô',
+      perspective:
+        'baseada na experiência de vida, valores tradicionais e um olhar protetor.',
+    },
+    marido: {
+      name: 'Marido',
+      perspective:
+        'focada na parceria, nas responsabilidades compartilhadas e na dinâmica do relacionamento a dois.',
+    },
+    'filho adolescente': {
+      name: 'Filho Adolescente',
+      perspective:
+        'influenciada pela busca por identidade, pressões sociais da sua geração e a transição para a vida adulta.',
+    },
+  }
+
+  const selected = profileMap[profile]
+
+  return {
+    disclaimer: `Esta é uma simulação da perspectiva de um ${selected.name}, ${selected.perspective}. Lembre-se que cada pessoa é única. Use estes insights como um ponto de partida para uma conversa aberta e empática, e não como uma verdade absoluta.`,
+    communication: `Do ponto de vista de um ${selected.name}, a forma como você aborda o assunto é crucial. Para a situação "${query}", uma abordagem direta pode ser interpretada como cobrança. Talvez ele prefira uma conversa mais calma, em um momento neutro, sem a pressão de ter que resolver algo imediatamente.`,
+    social_behaviors: `Socialmente, um ${selected.name} pode valorizar a independência e a resolução de problemas de forma autônoma. Pedir ajuda pode, para alguns, soar como um atestado de que ele não é capaz. Isso não é sobre você, mas sobre uma construção social que ele internalizou.`,
+    expectations_insecurities: `A expectativa de "ser forte" e "ser o provedor" ainda é muito presente. Sua preocupação, mesmo que vinda de um lugar de amor, pode acionar uma insegurança sobre sua capacidade de lidar com as coisas. Ele pode reagir com irritação como uma forma de defesa para não demonstrar vulnerabilidade.`,
+    family_situations: `No contexto familiar, um ${selected.name} muitas vezes se vê no papel de pilar. Situações que desafiam esse papel, como dificuldades financeiras ou problemas com os filhos, podem gerar um estresse que ele não sabe como expressar. A irritação pode ser um sintoma desse estresse não comunicado.`,
+    practical_tips: [
+      'Escolha um momento calmo e neutro para conversar, não durante ou logo após o problema acontecer.',
+      'Use frases que comecem com "Eu sinto..." em vez de "Você fez...". Ex: "Eu me sinto sobrecarregada" em vez de "Você não me ajuda".',
+      'Reconheça o esforço dele em outras áreas antes de apontar uma falha. Ex: "Eu sei que você trabalhou muito hoje, e eu agradeço. Eu também tive um dia cheio e estou precisando de um apoio com...".',
+      'Seja específica no seu pedido. Em vez de "Preciso de mais ajuda", tente "Você poderia, por favor, colocar as crianças para dormir hoje?".',
+    ],
+  }
 }

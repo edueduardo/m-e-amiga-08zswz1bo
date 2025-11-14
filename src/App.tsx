@@ -20,6 +20,7 @@ import { GrowthGardenProvider } from './contexts/GrowthGardenContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { NotificationProvider } from './contexts/NotificationContext'
 import { LayoutProvider } from './contexts/LayoutContext'
+import { VirtualManProvider } from './contexts/VirtualManContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -56,6 +57,7 @@ import ProfilePage from './pages/app/Profile'
 import CoachingPage from './pages/app/Coaching'
 import SelfKnowledgePage from './pages/app/SelfKnowledge'
 import GrowthGardenPage from './pages/app/GrowthGarden'
+import VirtualManPage from './pages/app/VirtualMan'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -124,7 +126,9 @@ const App = () => {
                                               <PlannerProvider>
                                                 <CoachingProvider>
                                                   <SelfKnowledgeProvider>
-                                                    <AppLayout />
+                                                    <VirtualManProvider>
+                                                      <AppLayout />
+                                                    </VirtualManProvider>
                                                   </SelfKnowledgeProvider>
                                                 </CoachingProvider>
                                               </PlannerProvider>
@@ -147,6 +151,7 @@ const App = () => {
                       path="conversations"
                       element={<ConversationsPage />}
                     />
+                    <Route path="virtual-man" element={<VirtualManPage />} />
                     <Route path="coaching" element={<CoachingPage />} />
                     <Route
                       path="self-knowledge"
