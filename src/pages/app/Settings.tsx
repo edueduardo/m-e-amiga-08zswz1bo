@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -30,6 +29,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useConversations } from '@/contexts/ConversationsContext'
 import { GenerateReportDialog } from '@/components/GenerateReportDialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { User, Shield, CreditCard, Database } from 'lucide-react'
 
 const SettingsPage = () => {
   const { user, isSubscribed, updateUser, requestPhoneEmailVerification } =
@@ -111,173 +112,204 @@ const SettingsPage = () => {
 
   return (
     <>
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Perfil</CardTitle>
-            <CardDescription>
-              Gerencie as informações da sua conta.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleProfileUpdate} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="full_name">Nome Completo</Label>
-                <Input
-                  id="full_name"
-                  name="full_name"
-                  defaultValue={user?.full_name}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  defaultValue={user?.email}
-                  readOnly
-                  disabled
-                />
-              </div>
-              <Button type="submit">Salvar</Button>
-            </form>
-          </CardContent>
-        </Card>
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold">Configurações</h1>
+        <p className="text-muted-foreground">
+          Gerencie sua conta, segurança e dados.
+        </p>
+      </div>
+      <Tabs defaultValue="profile" className="w-full space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="profile">
+            <User className="mr-2 h-4 w-4" /> Perfil
+          </TabsTrigger>
+          <TabsTrigger value="security">
+            <Shield className="mr-2 h-4 w-4" /> Segurança
+          </TabsTrigger>
+          <TabsTrigger value="subscription">
+            <CreditCard className="mr-2 h-4 w-4" /> Assinatura
+          </TabsTrigger>
+          <TabsTrigger value="data">
+            <Database className="mr-2 h-4 w-4" /> Dados
+          </TabsTrigger>
+        </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Segurança</CardTitle>
-            <CardDescription>
-              Gerencie sua senha e segurança da conta.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="new_password">Nova Senha</Label>
-                <Input
-                  id="new_password"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <PasswordStrength password={newPassword} />
-              </div>
-              <Button>Alterar Senha</Button>
-            </form>
-            <form onSubmit={handlePhoneUpdate} className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="phone">Número de Telefone</Label>
-                  {user?.phone_number && getVerificationStatusBadge()}
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Perfil</CardTitle>
+              <CardDescription>
+                Gerencie as informações da sua conta.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="full_name">Nome Completo</Label>
+                  <Input
+                    id="full_name"
+                    name="full_name"
+                    defaultValue={user?.full_name}
+                  />
                 </div>
-                <PhoneNumberInput value={phone} onChange={setPhone} />
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    defaultValue={user?.email}
+                    readOnly
+                    disabled
+                  />
+                </div>
+                <Button type="submit">Salvar Alterações</Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security">
+          <Card>
+            <CardHeader>
+              <CardTitle>Segurança</CardTitle>
+              <CardDescription>
+                Gerencie sua senha e segurança da conta.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <form className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">Nova Senha</Label>
+                  <Input
+                    id="new_password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <PasswordStrength password={newPassword} />
+                </div>
+                <Button>Alterar Senha</Button>
+              </form>
+              <form onSubmit={handlePhoneUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="phone">Número de Telefone</Label>
+                    {user?.phone_number && getVerificationStatusBadge()}
+                  </div>
+                  <PhoneNumberInput value={phone} onChange={setPhone} />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit">Salvar Telefone</Button>
+                  {user?.phone_verification_status !== 'verified' &&
+                    user?.phone_number && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleRequestVerification}
+                      >
+                        Verificar por E-mail
+                      </Button>
+                    )}
+                </div>
+              </form>
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div>
+                  <h3 className="font-semibold">
+                    Autenticação de Dois Fatores
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Adicione uma camada extra de segurança à sua conta.
+                  </p>
+                </div>
+                <Switch
+                  checked={user?.is_two_factor_enabled}
+                  onCheckedChange={(checked) =>
+                    updateUser({ is_two_factor_enabled: checked })
+                  }
+                  disabled={user?.phone_verification_status !== 'verified'}
+                />
               </div>
-              <div className="flex gap-2">
-                <Button type="submit">Salvar Telefone</Button>
-                {user?.phone_verification_status !== 'verified' &&
-                  user?.phone_number && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleRequestVerification}
-                    >
-                      Verificar por E-mail
-                    </Button>
-                  )}
-              </div>
-            </form>
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="subscription">
+          <Card>
+            <CardHeader>
+              <CardTitle>Assinatura</CardTitle>
+              <CardDescription>Gerencie sua assinatura.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div>
-                <h3 className="font-semibold">Autenticação de Dois Fatores</h3>
-                <p className="text-sm text-muted-foreground">
-                  Adicione uma camada extra de segurança à sua conta.
+                <h3 className="font-semibold">Status da Assinatura</h3>
+                <p className={isSubscribed ? 'text-green-600' : 'text-red-600'}>
+                  {isSubscribed ? 'Assinatura Ativa' : 'Assinatura Inativa'}
                 </p>
               </div>
-              <Switch
-                checked={user?.is_two_factor_enabled}
-                onCheckedChange={(checked) =>
-                  updateUser({ is_two_factor_enabled: checked })
-                }
-                disabled={user?.phone_verification_status !== 'verified'}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Assinatura</CardTitle>
-            <CardDescription>Gerencie sua assinatura.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h3 className="font-semibold">Status da Assinatura</h3>
-              <p className={isSubscribed ? 'text-green-600' : 'text-red-600'}>
-                {isSubscribed ? 'Assinatura Ativa' : 'Assinatura Inativa'}
-              </p>
-            </div>
-            {isSubscribed ? (
-              <Button variant="outline" asChild>
-                <a href="#" target="_blank" rel="noopener noreferrer">
-                  Gerenciar Assinatura
-                </a>
-              </Button>
-            ) : (
-              <Button asChild>
-                <Link to="/pricing">Ativar Mãe Amiga por R$ 10</Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Gerenciamento de Dados</CardTitle>
-            <CardDescription>
-              Exporte ou exclua permanentemente seus dados do aplicativo.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col sm:flex-row gap-4">
-            <Button
-              variant="outline"
-              onClick={() => setIsReportDialogOpen(true)}
-            >
-              Gerar Relatório de Conversas
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">
-                  Excluir Todas as Conversas
+              {isSubscribed ? (
+                <Button variant="outline" asChild>
+                  <a href="#" target="_blank" rel="noopener noreferrer">
+                    Gerenciar Assinatura
+                  </a>
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Você tem certeza absoluta?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta ação não pode ser desfeita. Isso excluirá
-                    permanentemente todas as suas conversas, incluindo áudios e
-                    textos.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAllConversations}>
-                    Confirmar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </CardContent>
-          <CardFooter>
-            <p className="text-xs text-muted-foreground">
-              Ações de dados são irreversíveis.
-            </p>
-          </CardFooter>
-        </Card>
-      </div>
+              ) : (
+                <Button asChild>
+                  <Link to="/pricing">Ativar Mãe Amiga por R$ 10</Link>
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="data">
+          <Card>
+            <CardHeader>
+              <CardTitle>Gerenciamento de Dados</CardTitle>
+              <CardDescription>
+                Exporte ou exclua permanentemente seus dados do aplicativo.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col sm:flex-row gap-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsReportDialogOpen(true)}
+              >
+                Gerar Relatório de Conversas
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    Excluir Todas as Conversas
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Você tem certeza absoluta?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação não pode ser desfeita. Isso excluirá
+                      permanentemente todas as suas conversas, incluindo áudios
+                      e textos.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteAllConversations}>
+                      Confirmar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+            <CardFooter>
+              <p className="text-xs text-muted-foreground">
+                Ações de dados são irreversíveis.
+              </p>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+      </Tabs>
       <GenerateReportDialog
         open={isReportDialogOpen}
         onOpenChange={setIsReportDialogOpen}

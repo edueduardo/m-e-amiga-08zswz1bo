@@ -44,13 +44,11 @@ const SupportCirclePage = () => {
   const handleAddPost = () => {
     if (newPostTitle.trim() && newPostContent.trim()) {
       addPost(newPostTitle, newPostContent)
+      const newPost = posts[0]
+      setSelectedPostId(newPost.id)
       setNewPostTitle('')
       setNewPostContent('')
       setIsNewPostDialogOpen(false)
-      // Select the new post after it's added
-      setTimeout(() => {
-        setSelectedPostId(posts[0]?.id || null)
-      }, 0)
     }
   }
 
@@ -62,10 +60,10 @@ const SupportCirclePage = () => {
   }
 
   return (
-    <div className="grid md:grid-cols-[300px_1fr] gap-6 h-[calc(100vh-8rem)]">
+    <div className="grid md:grid-cols-[350px_1fr] gap-6 h-[calc(100vh-8rem)]">
       <Card className="flex flex-col">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Tópicos</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+          <CardTitle className="text-lg">Círculo de Apoio</CardTitle>
           <Dialog
             open={isNewPostDialogOpen}
             onOpenChange={setIsNewPostDialogOpen}
@@ -108,15 +106,18 @@ const SupportCirclePage = () => {
                 <button
                   key={post.id}
                   className={cn(
-                    'w-full text-left p-3 rounded-lg hover:bg-secondary',
+                    'w-full text-left p-3 rounded-lg hover:bg-secondary transition-colors',
                     selectedPostId === post.id && 'bg-secondary',
                   )}
                   onClick={() => setSelectedPostId(post.id)}
                 >
                   <p className="font-semibold truncate">{post.title}</p>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground">
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
                     <span>por {post.authorAlias}</span>
-                    <Badge variant="outline">{post.replies.length}</Badge>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" />
+                      {post.replies.length}
+                    </div>
                   </div>
                 </button>
               ))}
@@ -128,9 +129,9 @@ const SupportCirclePage = () => {
       <Card className="flex flex-col">
         {selectedPost ? (
           <>
-            <CardHeader>
-              <CardTitle>{selectedPost.title}</CardTitle>
-              <CardDescription className="flex items-center gap-2 text-sm">
+            <CardHeader className="p-4 border-b">
+              <CardTitle className="text-xl">{selectedPost.title}</CardTitle>
+              <CardDescription className="flex items-center gap-2 text-sm pt-1">
                 <span>por {selectedPost.authorAlias}</span>
                 <span>·</span>
                 <span>
@@ -141,10 +142,12 @@ const SupportCirclePage = () => {
                 </span>
               </CardDescription>
             </CardHeader>
-            <ScrollArea className="flex-grow px-6">
-              <p className="whitespace-pre-wrap mb-6">{selectedPost.content}</p>
+            <ScrollArea className="flex-grow p-6">
+              <p className="whitespace-pre-wrap mb-6 prose dark:prose-invert">
+                {selectedPost.content}
+              </p>
               <Separator />
-              <div className="py-4 space-y-4">
+              <div className="py-4 space-y-6">
                 {selectedPost.replies.map((reply) => (
                   <div key={reply.id} className="flex items-start gap-3">
                     <Avatar className="h-8 w-8">
@@ -152,7 +155,7 @@ const SupportCirclePage = () => {
                         {reply.authorAlias.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
+                    <div className="flex-1 bg-secondary p-3 rounded-lg">
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold">
                           {reply.authorAlias}
@@ -164,44 +167,36 @@ const SupportCirclePage = () => {
                           })}
                         </span>
                       </div>
-                      <p className="mt-1">{reply.content}</p>
+                      <p className="mt-1 text-sm">{reply.content}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </ScrollArea>
-            <CardFooter className="pt-4 border-t">
+            <CardFooter className="p-4 border-t bg-background">
               <div className="w-full flex items-center gap-2">
                 <Textarea
                   placeholder="Escreva uma resposta de apoio..."
                   value={newReplyContent}
                   onChange={(e) => setNewReplyContent(e.target.value)}
                   rows={1}
+                  className="resize-none"
                 />
                 <Button onClick={handleAddReply}>Responder</Button>
               </div>
             </CardFooter>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-            {posts.length > 0 ? (
-              <>
-                <MessageCircle className="h-12 w-12 mb-4" />
-                <h3 className="text-lg font-semibold">Selecione um tópico</h3>
-                <p>Escolha uma conversa na lista para ler e participar.</p>
-              </>
-            ) : (
-              <>
-                <Users className="h-12 w-12 mb-4" />
-                <h3 className="text-lg font-semibold">
-                  Bem-vinda ao Círculo de Apoio
-                </h3>
-                <p>
-                  Este é um espaço seguro para compartilhar. Crie o primeiro
-                  tópico!
-                </p>
-              </>
-            )}
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+            <Users className="h-16 w-16 mb-4 text-primary animate-float" />
+            <h3 className="text-xl font-semibold">
+              Bem-vinda ao Círculo de Apoio
+            </h3>
+            <p>
+              {posts.length > 0
+                ? 'Escolha uma conversa na lista para ler e participar.'
+                : 'Este é um espaço seguro para compartilhar. Crie o primeiro tópico!'}
+            </p>
           </div>
         )}
       </Card>

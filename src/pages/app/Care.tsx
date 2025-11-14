@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, HeartHandshake } from 'lucide-react'
+import { Loader2, HeartHandshake, Sparkles } from 'lucide-react'
 import {
   generateSelfCareQuiz,
   generateSelfCarePlan,
@@ -109,9 +109,9 @@ const CarePage = () => {
       case 'refiningPlan':
       case 'elaboratingPlan':
         return (
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-4 p-8">
             <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-lg">
               {state === 'loadingQuiz' && 'Preparando umas perguntas...'}
               {state === 'generatingPlan' &&
                 'Criando uma trilha com carinho...'}
@@ -144,8 +144,8 @@ const CarePage = () => {
         )
       case 'error':
         return (
-          <div className="text-center space-y-4">
-            <p className="text-destructive">
+          <div className="text-center space-y-4 p-8">
+            <p className="text-destructive text-lg">
               Ocorreu um erro ao gerar sua trilha.
             </p>
             <Button onClick={resetFlow}>Tentar Novamente</Button>
@@ -154,48 +154,79 @@ const CarePage = () => {
       case 'focusSelection':
       default:
         return (
-          <Card className="w-full max-w-2xl mx-auto text-center">
-            <CardHeader>
-              <HeartHandshake className="h-16 w-16 mx-auto text-primary" />
-              <CardTitle className="text-3xl font-bold">
-                Vamos cuidar de você hoje?
-              </CardTitle>
-              <CardDescription className="max-w-xl mx-auto">
-                Escolha um foco para a sua trilha de autocuidado. Com base na
-                sua escolha, farei algumas perguntas para criar algo especial
-                para você.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid sm:grid-cols-3 gap-4">
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => startQuiz('daily')}
-              >
-                Foco na Rotina Diária
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => startQuiz('weekly')}
-              >
-                Foco na Semana
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => startQuiz('monthly')}
-              >
-                Foco no Mês
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="w-full max-w-3xl mx-auto text-center p-4">
+            <HeartHandshake className="h-24 w-24 mx-auto text-primary animate-float" />
+            <h1 className="text-4xl font-bold mt-6">
+              Vamos cuidar de você hoje?
+            </h1>
+            <p className="max-w-xl mx-auto text-muted-foreground mt-4 text-lg">
+              Escolha um foco para a sua trilha de autocuidado. Com base na sua
+              escolha, farei algumas perguntas para criar algo especial, só para
+              você.
+            </p>
+            <div className="mt-10 grid sm:grid-cols-3 gap-6">
+              <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform">
+                <CardHeader>
+                  <CardTitle>Rotina Diária</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Pequenos rituais para o seu dia a dia.
+                  </p>
+                </CardContent>
+                <CardContent>
+                  <Button className="w-full" onClick={() => startQuiz('daily')}>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Começar
+                  </Button>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform">
+                <CardHeader>
+                  <CardTitle>Foco na Semana</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Intenções para uma semana mais leve.
+                  </p>
+                </CardContent>
+                <CardContent>
+                  <Button
+                    className="w-full"
+                    onClick={() => startQuiz('weekly')}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Começar
+                  </Button>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform">
+                <CardHeader>
+                  <CardTitle>Foco no Mês</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Um olhar mais amplo para o seu bem-estar.
+                  </p>
+                </CardContent>
+                <CardContent>
+                  <Button
+                    className="w-full"
+                    onClick={() => startQuiz('monthly')}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Começar
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         )
     }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1">
+    <div className="flex flex-col items-center justify-center flex-1 animate-fade-in">
       {renderContent()}
     </div>
   )

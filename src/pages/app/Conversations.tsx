@@ -31,14 +31,21 @@ import { FeedbackButtons } from '@/components/FeedbackButtons'
 import { useConversations } from '@/contexts/ConversationsContext'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
 
-const moodColors: { [key: string]: string } = {
-  triste: 'bg-blue-100 text-blue-800',
-  cansada: 'bg-purple-100 text-purple-800',
-  ansiosa: 'bg-yellow-100 text-yellow-800',
-  irritada: 'bg-red-100 text-red-800',
-  feliz: 'bg-green-100 text-green-800',
-  neutra: 'bg-gray-100 text-gray-800',
+const moodMap: { [key: string]: { color: string; border: string } } = {
+  triste: { color: 'bg-blue-100 text-blue-800', border: 'border-blue-200' },
+  cansada: {
+    color: 'bg-purple-100 text-purple-800',
+    border: 'border-purple-200',
+  },
+  ansiosa: {
+    color: 'bg-yellow-100 text-yellow-800',
+    border: 'border-yellow-200',
+  },
+  irritada: { color: 'bg-red-100 text-red-800', border: 'border-red-200' },
+  feliz: { color: 'bg-green-100 text-green-800', border: 'border-green-200' },
+  neutra: { color: 'bg-gray-100 text-gray-800', border: 'border-gray-200' },
 }
 
 const ConversationsPage = () => {
@@ -56,6 +63,7 @@ const ConversationsPage = () => {
   const audioChunksRef = useRef<Blob[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (audioURL) {
@@ -65,6 +73,15 @@ const ConversationsPage = () => {
       }
     }
   }, [audioURL])
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [entries])
 
   const handleStartRecording = async () => {
     try {
@@ -181,90 +198,22 @@ const ConversationsPage = () => {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-[1fr_2fr] h-[calc(100vh-8rem)]">
-      <Card className="flex flex-col">
-        <CardHeader>
-          <CardTitle>Novo Desabafo</CardTitle>
-          <CardDescription>
-            Grave um áudio ou escreva. Estou aqui para te ouvir.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex-grow flex flex-col space-y-4">
-          <form
-            onSubmit={handleSubmit}
-            className="flex-grow flex flex-col space-y-4"
-          >
-            <Textarea
-              value={newEntry}
-              onChange={(e) => setNewEntry(e.target.value)}
-              placeholder="Escreva aqui ou grave um áudio..."
-              className="flex-grow"
-              disabled={isLoading}
-            />
-            {audioURL && <AudioPlayer src={audioURL} />}
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant={isRecording ? 'destructive' : 'outline'}
-                onClick={
-                  isRecording ? handleStopRecording : handleStartRecording
-                }
-                disabled={isLoading}
-              >
-                {isRecording ? (
-                  <Square className="mr-2 h-4 w-4" />
-                ) : (
-                  <Mic className="mr-2 h-4 w-4" />
-                )}
-                {isRecording ? 'Parar' : 'Gravar'}
-              </Button>
-              <Input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                className="hidden"
-                accept="audio/*"
-                id="audio-upload"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isLoading}
-              >
-                <Upload className="mr-2 h-4 w-4" /> Carregar
-              </Button>
-            </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || (!newEntry && !audioFile)}
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="mr-2 h-4 w-4" />
-              )}
-              {isLoading ? status : 'Enviar para Mãe Amiga'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Suas Conversas</CardTitle>
-          <CardDescription>
-            Relembre sua jornada e veja suas conversas.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[calc(100vh-16rem)] pr-4">
+    <div className="flex flex-col h-[calc(100vh-8rem)]">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Diário de Voz</h1>
+        <p className="text-muted-foreground mt-1">
+          Um espaço seguro para você registrar seus sentimentos.
+        </p>
+      </div>
+      <Card className="flex-grow flex flex-col">
+        <CardContent className="p-0 flex-grow flex flex-col">
+          <ScrollArea className="flex-grow p-6" viewportRef={scrollAreaRef}>
             {entries.length > 0 ? (
               <div className="space-y-6">
                 {entries.map((entry) => (
-                  <div key={entry.id} className="space-y-4">
+                  <div key={entry.id} className="space-y-4 animate-fade-in-up">
                     <div className="flex items-start gap-3 justify-end">
-                      <div className="p-3 border rounded-lg bg-secondary max-w-xl">
+                      <div className="p-3 rounded-lg bg-secondary max-w-xl shadow-sm">
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-sm font-medium">Você</p>
                           <p className="text-xs text-muted-foreground">
@@ -288,10 +237,19 @@ const ConversationsPage = () => {
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>MA</AvatarFallback>
                       </Avatar>
-                      <div className="p-3 border rounded-lg bg-primary/10 border-primary max-w-xl">
+                      <div
+                        className={cn(
+                          'p-3 rounded-lg bg-primary/10 border max-w-xl shadow-sm',
+                          moodMap[entry.mood_label]?.border || 'border-primary',
+                        )}
+                      >
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-sm font-medium">Mãe Amiga</p>
-                          <Badge className={moodColors[entry.mood_label]}>
+                          <Badge
+                            className={
+                              moodMap[entry.mood_label]?.color || 'bg-gray-100'
+                            }
+                          >
                             {entry.mood_label}
                           </Badge>
                         </div>
@@ -319,14 +277,73 @@ const ConversationsPage = () => {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                <MessageSquareHeart className="h-12 w-12 mb-4" />
-                <h3 className="text-lg font-semibold">
-                  Nenhuma conversa ainda
+                <MessageSquareHeart className="h-16 w-16 mb-4 text-primary animate-float" />
+                <h3 className="text-xl font-semibold">
+                  Como você está se sentindo hoje, filha?
                 </h3>
-                <p>Use o campo ao lado para começar seu primeiro desabafo.</p>
+                <p>Use o campo abaixo para começar seu primeiro desabafo.</p>
               </div>
             )}
           </ScrollArea>
+          <div className="p-4 border-t bg-background">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <Textarea
+                value={newEntry}
+                onChange={(e) => setNewEntry(e.target.value)}
+                placeholder="Escreva aqui ou grave um áudio..."
+                className="flex-grow"
+                disabled={isLoading}
+                rows={3}
+              />
+              {audioURL && <AudioPlayer src={audioURL} />}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={isRecording ? 'destructive' : 'outline'}
+                    onClick={
+                      isRecording ? handleStopRecording : handleStartRecording
+                    }
+                    disabled={isLoading}
+                  >
+                    {isRecording ? (
+                      <Square className="mr-2 h-4 w-4" />
+                    ) : (
+                      <Mic className="mr-2 h-4 w-4" />
+                    )}
+                    {isRecording ? 'Parar' : 'Gravar'}
+                  </Button>
+                  <Input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept="audio/*"
+                    id="audio-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isLoading}
+                  >
+                    <Upload className="mr-2 h-4 w-4" /> Carregar
+                  </Button>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isLoading || (!newEntry && !audioFile)}
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="mr-2 h-4 w-4" />
+                  )}
+                  {isLoading ? status : 'Enviar'}
+                </Button>
+              </div>
+            </form>
+          </div>
         </CardContent>
       </Card>
     </div>
