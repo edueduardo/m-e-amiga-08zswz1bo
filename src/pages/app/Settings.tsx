@@ -17,10 +17,23 @@ import { PasswordStrength } from '@/components/PasswordStrength'
 import { Switch } from '@/components/ui/switch'
 import { PhoneNumberInput } from '@/components/PhoneNumberInput'
 import { Badge } from '@/components/ui/badge'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { useConversations } from '@/contexts/ConversationsContext'
 
 const SettingsPage = () => {
   const { user, isSubscribed, updateUser, requestPhoneEmailVerification } =
     useAuth()
+  const { deleteAllEntries } = useConversations()
   const { toast } = useToast()
   const [newPassword, setNewPassword] = useState('')
   const [phone, setPhone] = useState(user?.phone_number || '')
@@ -62,7 +75,6 @@ const SettingsPage = () => {
       description:
         'Enviamos um link para o seu e-mail para confirmar seu número de telefone.',
     })
-    // In a real app, you would use this token in the email link
     console.log(`Verification link: /verify-phone-by-email?token=${token}`)
   }
 
@@ -75,6 +87,23 @@ const SettingsPage = () => {
       case 'not_verified':
       default:
         return <Badge variant="outline">Não Verificado</Badge>
+    }
+  }
+
+  const handleDeleteAllConversations = () => {
+    try {
+      deleteAllEntries()
+      toast({
+        title: 'Conversas excluídas!',
+        description: 'Todas as suas conversas foram excluídas com sucesso.',
+      })
+    } catch (error) {
+      toast({
+        title: 'Erro ao excluir',
+        description:
+          'Não foi possível excluir suas conversas. Tente novamente.',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -197,6 +226,42 @@ const SettingsPage = () => {
             </Button>
           )}
         </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Gerenciamento de Dados</CardTitle>
+          <CardDescription>
+            Exclua permanentemente seus dados do aplicativo.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Excluir Todas as Conversas</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta ação não pode ser desfeita. Isso excluirá permanentemente
+                  todas as suas conversas, incluindo áudios e textos.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAllConversations}>
+                  Confirmar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
+        <CardFooter>
+          <p className="text-xs text-muted-foreground">
+            A exclusão de conversas é irreversível.
+          </p>
+        </CardFooter>
       </Card>
     </div>
   )

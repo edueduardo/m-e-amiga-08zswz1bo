@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider } from './contexts/AuthContext'
+import { ConversationsProvider } from './contexts/ConversationsContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -66,7 +67,9 @@ const App = () => {
                 path="/app"
                 element={
                   <ProtectedRoute>
-                    <AppLayout />
+                    <ConversationsProvider>
+                      <AppLayout />
+                    </ConversationsProvider>
                   </ProtectedRoute>
                 }
               >

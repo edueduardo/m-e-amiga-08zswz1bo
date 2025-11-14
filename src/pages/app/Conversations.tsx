@@ -8,8 +8,14 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { Mic, Send, Loader2, Square, Upload } from 'lucide-react'
-import { voiceEntries } from '@/lib/data'
+import {
+  Mic,
+  Send,
+  Loader2,
+  Square,
+  Upload,
+  MessageSquareHeart,
+} from 'lucide-react'
 import { VoiceEntry, Feedback } from '@/types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -21,6 +27,7 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FeedbackButtons } from '@/components/FeedbackButtons'
+import { useConversations } from '@/contexts/ConversationsContext'
 
 const moodColors: { [key: string]: string } = {
   triste: 'bg-blue-100 text-blue-800',
@@ -33,7 +40,7 @@ const moodColors: { [key: string]: string } = {
 
 const ConversationsPage = () => {
   const { abTestGroup } = useAuth()
-  const [entries, setEntries] = useState<VoiceEntry[]>(voiceEntries)
+  const { entries, addEntry, updateFeedback } = useConversations()
   const [newEntry, setNewEntry] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState('')
@@ -90,11 +97,7 @@ const ConversationsPage = () => {
   }
 
   const handleFeedbackSubmit = (entryId: string, feedback: Feedback) => {
-    setEntries((prevEntries) =>
-      prevEntries.map((entry) =>
-        entry.id === entryId ? { ...entry, feedback } : entry,
-      ),
-    )
+    updateFeedback(entryId, feedback)
     console.log('Feedback submitted:', { entryId, feedback })
   }
 
@@ -132,7 +135,7 @@ const ConversationsPage = () => {
       feedback: { rating: null },
     }
 
-    setEntries([entry, ...entries])
+    addEntry(entry)
     setNewEntry('')
     setAudioFile(null)
     setAudioURL(null)
@@ -219,54 +222,64 @@ const ConversationsPage = () => {
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[calc(100vh-16rem)] pr-4">
-            <div className="space-y-6">
-              {entries.map((entry) => (
-                <div key={entry.id} className="space-y-4">
-                  <div className="flex items-start gap-3 justify-end">
-                    <div className="p-3 border rounded-lg bg-secondary max-w-xl">
-                      <div className="flex justify-between items-center mb-2">
-                        <p className="text-sm font-medium">Você</p>
-                        <p className="text-xs text-muted-foreground">
-                          {format(
-                            new Date(entry.created_at),
-                            "dd/MM/yy 'às' HH:mm",
-                            { locale: ptBR },
-                          )}
+            {entries.length > 0 ? (
+              <div className="space-y-6">
+                {entries.map((entry) => (
+                  <div key={entry.id} className="space-y-4">
+                    <div className="flex items-start gap-3 justify-end">
+                      <div className="p-3 border rounded-lg bg-secondary max-w-xl">
+                        <div className="flex justify-between items-center mb-2">
+                          <p className="text-sm font-medium">Você</p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(
+                              new Date(entry.created_at),
+                              "dd/MM/yy 'às' HH:mm",
+                              { locale: ptBR },
+                            )}
+                          </p>
+                        </div>
+                        {entry.audio_url && (
+                          <AudioPlayer src={entry.audio_url} className="mb-2" />
+                        )}
+                        <p className="text-sm">{entry.transcript}</p>
+                      </div>
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>V</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>MA</AvatarFallback>
+                      </Avatar>
+                      <div className="p-3 border rounded-lg bg-primary/10 border-primary max-w-xl">
+                        <div className="flex justify-between items-center mb-2">
+                          <p className="text-sm font-medium">Mãe Amiga</p>
+                          <Badge className={moodColors[entry.mood_label]}>
+                            {entry.mood_label}
+                          </Badge>
+                        </div>
+                        <p className="text-sm whitespace-pre-wrap">
+                          {entry.mother_reply}
                         </p>
+                        <FeedbackButtons
+                          entryId={entry.id}
+                          initialFeedback={entry.feedback}
+                          onFeedbackSubmit={handleFeedbackSubmit}
+                        />
                       </div>
-                      {entry.audio_url && (
-                        <AudioPlayer src={entry.audio_url} className="mb-2" />
-                      )}
-                      <p className="text-sm">{entry.transcript}</p>
-                    </div>
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>V</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>MA</AvatarFallback>
-                    </Avatar>
-                    <div className="p-3 border rounded-lg bg-primary/10 border-primary max-w-xl">
-                      <div className="flex justify-between items-center mb-2">
-                        <p className="text-sm font-medium">Mãe Amiga</p>
-                        <Badge className={moodColors[entry.mood_label]}>
-                          {entry.mood_label}
-                        </Badge>
-                      </div>
-                      <p className="text-sm whitespace-pre-wrap">
-                        {entry.mother_reply}
-                      </p>
-                      <FeedbackButtons
-                        entryId={entry.id}
-                        initialFeedback={entry.feedback}
-                        onFeedbackSubmit={handleFeedbackSubmit}
-                      />
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <MessageSquareHeart className="h-12 w-12 mb-4" />
+                <h3 className="text-lg font-semibold">
+                  Nenhuma conversa ainda
+                </h3>
+                <p>Use o campo ao lado para começar seu primeiro desabafo.</p>
+              </div>
+            )}
           </ScrollArea>
         </CardContent>
       </Card>
