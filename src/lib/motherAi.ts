@@ -27,12 +27,12 @@ export interface MotherReplyPayload {
 /**
  * Transcribes an audio file using the OpenAI Whisper API.
  * @param audioFile The audio file to transcribe.
- * @returns The transcribed text as a string.
+ * @returns The transcribed text as a string, or an error message string.
  */
 export const transcribeAudio = async (audioFile: File): Promise<string> => {
   if (!API_KEY) {
     console.error('OpenAI API key is missing.')
-    return 'Erro: Chave da API não configurada.'
+    return 'ERRO: A chave da API não está configurada. Por favor, contate o suporte.'
   }
 
   const formData = new FormData()
@@ -50,13 +50,20 @@ export const transcribeAudio = async (audioFile: File): Promise<string> => {
 
     const data = await response.json()
     if (response.ok) {
-      return data.text
+      return (
+        data.text ||
+        'Não consegui ouvir nada no áudio, filha. Tente gravar novamente.'
+      )
     } else {
-      throw new Error(data.error?.message || 'Failed to transcribe audio.')
+      console.error('API Error:', data.error)
+      if (data.error?.code === 'invalid_request_error') {
+        return 'ERRO: O formato do áudio não é suportado. Tente gravar novamente ou carregar um arquivo MP3, WAV ou M4A.'
+      }
+      return `ERRO: Não consegui processar o áudio (${data.error?.message || 'Tente novamente mais tarde.'})`
     }
   } catch (error) {
     console.error('Error transcribing audio:', error)
-    return 'Desculpe, não consegui entender o áudio. Tente novamente.'
+    return 'ERRO: Ocorreu um problema de conexão. Verifique sua internet e tente novamente.'
   }
 }
 

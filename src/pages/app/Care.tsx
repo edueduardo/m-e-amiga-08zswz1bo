@@ -28,6 +28,7 @@ type InteractionState =
   | 'plan'
   | 'refiningPlan'
   | 'elaboratingPlan'
+  | 'error'
 
 const CarePage = () => {
   const [state, setState] = useState<InteractionState>('focusSelection')
@@ -49,9 +50,20 @@ const CarePage = () => {
     if (!focus) return
     setState('generatingPlan')
     setAnswers(submittedAnswers)
-    const generatedPlan = await generateSelfCarePlan(submittedAnswers, focus)
-    setPlan(generatedPlan)
-    setState('plan')
+    try {
+      const generatedPlan = await generateSelfCarePlan(submittedAnswers, focus)
+      setPlan(generatedPlan)
+      setState('plan')
+    } catch (error) {
+      console.error('Error generating plan:', error)
+      toast({
+        title: 'Ops, algo deu errado',
+        description:
+          'Não consegui gerar sua trilha agora. Por favor, tente novamente.',
+        variant: 'destructive',
+      })
+      setState('error')
+    }
   }
 
   const handleRefinePlan = async (feedback: string) => {
@@ -129,6 +141,15 @@ const CarePage = () => {
               onElaborate={handleElaboratePlan}
             />
           )
+        )
+      case 'error':
+        return (
+          <div className="text-center space-y-4">
+            <p className="text-destructive">
+              Ocorreu um erro ao gerar sua trilha.
+            </p>
+            <Button onClick={resetFlow}>Tentar Novamente</Button>
+          </div>
         )
       case 'focusSelection':
       default:

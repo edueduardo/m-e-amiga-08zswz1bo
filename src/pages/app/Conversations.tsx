@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -30,6 +30,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { FeedbackButtons } from '@/components/FeedbackButtons'
 import { useConversations } from '@/contexts/ConversationsContext'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useToast } from '@/components/ui/use-toast'
 
 const moodColors: { [key: string]: string } = {
   triste: 'bg-blue-100 text-blue-800',
@@ -43,15 +44,27 @@ const moodColors: { [key: string]: string } = {
 const ConversationsPage = () => {
   const { abTestGroup } = useAuth()
   const { entries, addEntry, updateFeedback } = useConversations()
+  const { toast } = useToast()
   const [newEntry, setNewEntry] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [audioURL, setAudioURL] = useState<string | null>(null)
   const [audioFile, setAudioFile] = useState<File | null>(null)
+  const [audioDuration, setAudioDuration] = useState(0)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    if (audioURL) {
+      audioRef.current = new Audio(audioURL)
+      audioRef.current.onloadedmetadata = () => {
+        setAudioDuration(audioRef.current?.duration || 0)
+      }
+    }
+  }, [audioURL])
 
   const handleStartRecording = async () => {
     try {
@@ -77,7 +90,13 @@ const ConversationsPage = () => {
       mediaRecorderRef.current.start()
     } catch (err) {
       console.error('Error accessing microphone:', err)
-      setStatus('Não consegui acessar seu microfone.')
+      toast({
+        title: 'Erro de Microfone',
+        description:
+          'Não consegui acessar seu microfone. Verifique as permissões do navegador.',
+        variant: 'destructive',
+      })
+      setStatus('')
     }
   }
 
@@ -100,26 +119,39 @@ const ConversationsPage = () => {
 
   const handleFeedbackSubmit = (entryId: string, feedback: Feedback) => {
     updateFeedback(entryId, feedback)
-    console.log('Feedback submitted:', { entryId, feedback })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newEntry && !audioFile) return
-    setIsLoading(true)
 
+    if (audioFile && audioDuration < 1) {
+      toast({
+        title: 'Áudio muito curto',
+        description: 'Por favor, grave um áudio com pelo menos 1 segundo.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setIsLoading(true)
     let transcript = newEntry
     if (audioFile && !newEntry) {
       setStatus('Transcrevendo seu áudio...')
       transcript = await transcribeAudio(audioFile)
-      setNewEntry(transcript)
     }
 
-    if (!transcript) {
-      setStatus('Não foi possível obter a transcrição.')
+    if (transcript.startsWith('ERRO:')) {
+      toast({
+        title: 'Falha na Transcrição',
+        description: transcript,
+        variant: 'destructive',
+      })
+      setStatus('')
       setIsLoading(false)
       return
     }
+    setNewEntry(transcript)
 
     setStatus('Preparando uma resposta com carinho...')
     const {
@@ -143,6 +175,7 @@ const ConversationsPage = () => {
     setNewEntry('')
     setAudioFile(null)
     setAudioURL(null)
+    setAudioDuration(0)
     setStatus('')
     setIsLoading(false)
   }
