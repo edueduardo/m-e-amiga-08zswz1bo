@@ -8,9 +8,10 @@ import { AppSidebar } from './AppSidebar'
 import { SOSDialog } from './SOSDialog'
 import { ThemeToggle } from './ThemeToggle'
 import { SiteSearch } from './SiteSearch'
+import { NotificationCenter } from './NotificationCenter'
 
 export const AuthenticatedHeader = () => {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
 
   return (
@@ -34,6 +35,7 @@ export const AuthenticatedHeader = () => {
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
+          <NotificationCenter />
           <Button
             variant="destructive"
             size="icon"

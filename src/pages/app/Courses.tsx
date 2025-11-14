@@ -9,17 +9,32 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, BookOpenCheck, Sparkles } from 'lucide-react'
-import { getDynamicMicroCourses } from '@/lib/data'
-import { MicroCourse } from '@/types'
+import { ArrowRight, BookOpenCheck, Loader2 } from 'lucide-react'
+import { Course } from '@/types'
 import { Badge } from '@/components/ui/badge'
+import { getCourses } from '@/services/courses'
 
 const CoursesPage = () => {
-  const [courses, setCourses] = useState<MicroCourse[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    setCourses(getDynamicMicroCourses())
+    const fetchCourses = async () => {
+      setIsLoading(true)
+      const data = await getCourses()
+      setCourses(data)
+      setIsLoading(false)
+    }
+    fetchCourses()
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -29,8 +44,8 @@ const CoursesPage = () => {
           Aprenda habilidades práticas para o seu dia a dia
         </h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Minicursos gerados por IA e adaptados para você, com lições curtas e
-          diretas, pensadas com carinho.
+          Minicursos com lições curtas e diretas, pensadas com carinho para
+          você.
         </p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -41,29 +56,16 @@ const CoursesPage = () => {
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <CardHeader>
-              {course.isAiGenerated && (
-                <Badge variant="secondary" className="absolute top-3 right-3">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  IA
-                </Badge>
-              )}
-              <CardTitle className="text-xl">{course.title}</CardTitle>
-              <CardDescription>{course.summary}</CardDescription>
+              <Badge variant="secondary" className="w-fit">
+                {course.category}
+              </Badge>
+              <CardTitle className="text-xl pt-2">{course.title}</CardTitle>
+              <CardDescription>{course.description}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
-              <div className="text-sm text-muted-foreground">
-                {course.lessons.length > 0
-                  ? `${course.lessons.length} lições`
-                  : 'Em breve'}
-              </div>
-            </CardContent>
+            <CardContent className="flex-grow" />
             <CardFooter>
-              <Button
-                asChild
-                className="w-full"
-                disabled={course.lessons.length === 0}
-              >
-                <Link to={`/app/courses/${course.slug}`}>
+              <Button asChild className="w-full">
+                <Link to={course.content_url}>
                   Começar curso <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

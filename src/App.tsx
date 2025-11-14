@@ -18,6 +18,8 @@ import { CoachingProvider } from './contexts/CoachingContext'
 import { SelfKnowledgeProvider } from './contexts/SelfKnowledgeContext'
 import { GrowthGardenProvider } from './contexts/GrowthGardenContext'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { NotificationProvider } from './contexts/NotificationContext'
+import { LayoutProvider } from './contexts/LayoutContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -108,31 +110,35 @@ const App = () => {
                     path="/app"
                     element={
                       <ProtectedRoute>
-                        <GamificationProvider>
-                          <ConversationsProvider>
-                            <GrowthGardenProvider>
-                              <SupportCircleProvider>
-                                <SelfCareProvider>
-                                  <AiResponseProvider>
-                                    <PlaylistProvider>
-                                      <JournalProvider>
-                                        <ChallengesProvider>
-                                          <PlannerProvider>
-                                            <CoachingProvider>
-                                              <SelfKnowledgeProvider>
-                                                <AppLayout />
-                                              </SelfKnowledgeProvider>
-                                            </CoachingProvider>
-                                          </PlannerProvider>
-                                        </ChallengesProvider>
-                                      </JournalProvider>
-                                    </PlaylistProvider>
-                                  </AiResponseProvider>
-                                </SelfCareProvider>
-                              </SupportCircleProvider>
-                            </GrowthGardenProvider>
-                          </ConversationsProvider>
-                        </GamificationProvider>
+                        <NotificationProvider>
+                          <LayoutProvider>
+                            <GamificationProvider>
+                              <ConversationsProvider>
+                                <GrowthGardenProvider>
+                                  <SupportCircleProvider>
+                                    <SelfCareProvider>
+                                      <AiResponseProvider>
+                                        <PlaylistProvider>
+                                          <JournalProvider>
+                                            <ChallengesProvider>
+                                              <PlannerProvider>
+                                                <CoachingProvider>
+                                                  <SelfKnowledgeProvider>
+                                                    <AppLayout />
+                                                  </SelfKnowledgeProvider>
+                                                </CoachingProvider>
+                                              </PlannerProvider>
+                                            </ChallengesProvider>
+                                          </JournalProvider>
+                                        </PlaylistProvider>
+                                      </AiResponseProvider>
+                                    </SelfCareProvider>
+                                  </SupportCircleProvider>
+                                </GrowthGardenProvider>
+                              </ConversationsProvider>
+                            </GamificationProvider>
+                          </LayoutProvider>
+                        </NotificationProvider>
                       </ProtectedRoute>
                     }
                   >

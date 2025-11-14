@@ -1,0 +1,52 @@
+-- Create courses table
+CREATE TABLE public.courses (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    title text NOT NULL,
+    description text,
+    content_url text,
+    category text,
+    created_at timestamp with time zone DEFAULT now()
+);
+
+-- Create challenges table
+CREATE TABLE public.challenges (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    title text NOT NULL,
+    description text,
+    duration_days integer,
+    start_date date,
+    end_date date,
+    category text,
+    community_challenge boolean DEFAULT false,
+    created_at timestamp with time zone DEFAULT now()
+);
+
+-- Update user_preferences table
+ALTER TABLE public.user_preferences
+ADD COLUMN home_page_layout jsonb;
+
+-- Update scheduled_notifications table
+ALTER TABLE public.scheduled_notifications
+ADD COLUMN is_read boolean DEFAULT false;
+
+ALTER TABLE public.scheduled_notifications
+ADD COLUMN message text;
+
+-- Seed data for courses
+INSERT INTO public.courses (title, description, content_url, category) VALUES
+('Mindfulness para Mães Ocupadas', 'Aprenda técnicas de mindfulness para encontrar calma em meio ao caos da maternidade.', '/app/courses/mindfulness-para-maes', 'mindfulness'),
+('Comunicação Não-Violenta no Casamento', 'Transforme a comunicação com seu parceiro e fortaleça o relacionamento.', '/app/courses/comunicacao-nao-violenta', 'relationships'),
+('Jornada do Autocuidado', 'Descubra como priorizar seu bem-estar sem culpa.', '/app/courses/jornada-do-autocuidado', 'self-care');
+
+-- Seed data for challenges
+INSERT INTO public.challenges (title, description, duration_days, start_date, end_date, category, community_challenge) VALUES
+('Semana da Gratidão', 'Anote três coisas pelas quais você é grata todos os dias.', 7, CURRENT_DATE, CURRENT_DATE + 7, 'wellness', false),
+('Desafio do Detox Digital', 'Reduza o tempo de tela em 30 minutos por dia e reconecte-se consigo mesma.', 5, CURRENT_DATE, CURRENT_DATE + 5, 'mindset', false),
+('Maratona de Cuidado Coletivo', 'Vamos juntas completar 100 atos de autocuidado esta semana!', 7, CURRENT_DATE, CURRENT_DATE + 7, 'wellness', true);
+
+-- Seed data for notifications
+INSERT INTO public.scheduled_notifications (user_id, notification_type, message, scheduled_at, is_read) VALUES
+('00000000-0000-0000-0000-000000000000', 'new_challenge', 'Novo desafio disponível: Semana da Gratidão', NOW() - interval '1 day', false),
+('00000000-0000-0000-0000-000000000000', 'circle_message', 'Nova mensagem no círculo de apoio "Mães de Bebês"', NOW() - interval '2 day', true),
+('00000000-0000-0000-0000-000000000000', 'app_update', 'Atualizamos o app com novas funcionalidades para você!', NOW() - interval '3 day', true);
+

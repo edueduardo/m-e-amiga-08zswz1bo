@@ -152,16 +152,15 @@ export interface Challenge {
   id: string
   title: string
   description: string
-  theme:
-    | 'communication'
-    | 'gratitude'
-    | 'organization'
-    | 'self-care'
-    | 'hooponopono'
-    | 'self-love'
-    | 'relationships'
-  steps: ChallengeStep[]
-  personalized_tip: string
+  duration_days?: number
+  start_date?: string
+  end_date?: string
+  category: string
+  community_challenge: boolean
+  created_at: string
+  // Frontend-specific properties
+  steps?: ChallengeStep[]
+  personalized_tip?: string
 }
 
 export type LibraryResourceType = 'article' | 'video' | 'book'
@@ -216,9 +215,15 @@ export interface UserGamificationProfile {
   unlockedBadges: string[]
 }
 
+export interface HomePageLayoutItem {
+  id: string
+  visible: boolean
+}
+
 export interface UserPreferences {
   sosPracticeId: string
   sosSoundId: string
+  home_page_layout?: HomePageLayoutItem[]
 }
 
 export interface HooponoponoJournalEntry {
@@ -245,8 +250,6 @@ export interface Playlist {
   trackIds: string[]
   created_at: string
 }
-
-// New Types for Advanced Features
 
 export type CoachingMessageSender = 'ai' | 'user'
 export type CoachingExerciseType = 'multiple-choice' | 'text-input' | 'rating'
@@ -310,4 +313,29 @@ export interface GardenElement {
   goalId: string
   status: GardenElementStatus
   position: { x: number; y: number }
+}
+
+// New types based on user story
+export interface Course {
+  id: string
+  title: string
+  description: string
+  content_url: string
+  category: string
+  created_at: string
+}
+
+export type NotificationType =
+  | 'new_challenge'
+  | 'circle_message'
+  | 'app_update'
+  | 'generic'
+
+export interface Notification {
+  id: string
+  user_id: string
+  notification_type: NotificationType
+  message: string
+  scheduled_at: string
+  is_read: boolean
 }

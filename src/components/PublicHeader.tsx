@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { SOSDialog } from './SOSDialog'
 import { HeartPulse, Menu } from 'lucide-react'
@@ -11,6 +11,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const navLinks = [
   { href: '/#how-it-works', label: 'Como Funciona' },
@@ -21,6 +22,9 @@ const navLinks = [
 
 export const PublicHeader = () => {
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
+  const isMobile = useIsMobile()
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -89,7 +93,7 @@ export const PublicHeader = () => {
 
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
-              <SiteSearch />
+              {!(isMobile && isHomePage) && <SiteSearch />}
             </div>
             <nav className="hidden md:flex items-center space-x-2">
               <ThemeToggle />

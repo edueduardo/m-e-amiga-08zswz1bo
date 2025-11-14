@@ -25,152 +25,228 @@ import {
   Library,
   Award,
   Cog,
+  Loader2,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { HooponoponoDisplay } from '@/components/HooponoponoDisplay'
+import { useLayout } from '@/contexts/LayoutContext'
 
-const DashboardPage = () => {
-  const { isSubscribed } = useAuth()
-
-  const features = [
+const featuresMap = new Map([
+  [
+    'care',
     {
       title: 'Cuidar de mim hoje',
-      description: 'Explore trilhas de autocuidado para o seu bem-estar.',
+      description:
+        'Explore trilhas de autocuidado personalizadas para o seu bem-estar e descubra novas formas de se nutrir.',
       link: '/app/care',
       icon: HeartHandshake,
       className:
         'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
       iconClassName: 'text-green-500',
     },
+  ],
+  [
+    'coaching',
     {
       title: 'Coaching com IA',
-      description: 'Sessões guiadas para seu desenvolvimento pessoal.',
+      description:
+        'Inicie uma sessão de coaching guiada para ganhar clareza, superar desafios e traçar novos caminhos.',
       link: '/app/coaching',
       icon: Bot,
       className:
         'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800',
       iconClassName: 'text-indigo-500',
     },
+  ],
+  [
+    'self-knowledge',
     {
       title: 'Autoconhecimento',
-      description: 'Entenda seus padrões emocionais e receba insights.',
+      description:
+        'Analise seus padrões emocionais, entenda seus gatilhos e receba insights valiosos para sua jornada.',
       link: '/app/self-knowledge',
       icon: BrainCircuit,
       className:
         'bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800',
       iconClassName: 'text-sky-500',
     },
+  ],
+  [
+    'journal',
     {
       title: 'Diário Hoʻoponopono',
-      description: 'Pratique a limpeza de memórias e cultive a paz.',
+      description:
+        'Pratique a limpeza de memórias, o perdão e a gratidão para cultivar uma paz interior profunda e duradoura.',
       link: '/app/journal',
       icon: BookMarked,
       className:
         'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800',
       iconClassName: 'text-rose-500',
     },
+  ],
+  [
+    'music',
     {
       title: 'Músicas e Meditações',
-      description: 'Playlists para relaxar e encontrar a calma.',
+      description:
+        'Crie suas playlists, ouça áudios guiados e encontre a trilha sonora perfeita para relaxar e se reconectar.',
       link: '/app/music',
       icon: Music,
       className:
         'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800',
       iconClassName: 'text-teal-500',
     },
+  ],
+  [
+    'support-circle',
     {
       title: 'Círculo de Apoio',
-      description: 'Conecte-se com outras mulheres de forma anônima.',
+      description:
+        'Conecte-se com outras mulheres em um ambiente seguro e anônimo. Compartilhe, ouça e encontre apoio.',
       link: '/app/support-circle',
       icon: Users,
       className:
         'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
       iconClassName: 'text-blue-500',
     },
+  ],
+  [
+    'courses',
     {
       title: 'Minicursos',
-      description: 'Aprenda habilidades práticas para o seu dia a dia.',
+      description:
+        'Aprenda habilidades práticas com lições curtas e diretas sobre comunicação, autoestima e muito mais.',
       link: '/app/courses',
       icon: BookHeart,
       className:
         'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
       iconClassName: 'text-purple-500',
     },
+  ],
+  [
+    'planner',
     {
       title: 'Meu Plano',
-      description: 'Organize suas tarefas de autocuidado e intenções.',
+      description:
+        'Organize suas tarefas de autocuidado, defina intenções e acompanhe seu progresso de forma visual.',
       link: '/app/planner',
       icon: ListTodo,
       className:
         'bg-lime-50 dark:bg-lime-900/20 border-lime-200 dark:border-lime-800',
       iconClassName: 'text-lime-500',
     },
+  ],
+  [
+    'challenges',
     {
       title: 'Desafios',
-      description: 'Pequenos desafios semanais para seu bem-estar.',
+      description:
+        'Participe de pequenos desafios semanais para cultivar hábitos positivos e fortalecer seu bem-estar.',
       link: '/app/challenges',
       icon: Trophy,
       className:
         'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800',
       iconClassName: 'text-amber-500',
     },
+  ],
+  [
+    'community-challenges',
     {
       title: 'Desafios da Comunidade',
-      description: 'Junte-se a outras mulheres em desafios coletivos.',
+      description:
+        'Una-se a outras mulheres em desafios coletivos e vejam o poder da colaboração para o bem-estar.',
       link: '/app/community-challenges',
       icon: Users2,
       className:
         'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800',
       iconClassName: 'text-cyan-500',
     },
+  ],
+  [
+    'growth-garden',
     {
       title: 'Jardim do Crescimento',
-      description: 'Veja seus objetivos e seu progresso florescerem.',
+      description:
+        'Defina seus objetivos de autocuidado e veja-os florescer literalmente em seu jardim digital personalizado.',
       link: '/app/growth-garden',
       icon: Flower2,
       className:
         'bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800',
       iconClassName: 'text-pink-500',
     },
+  ],
+  [
+    'library',
     {
       title: 'Biblioteca',
-      description: 'Recursos selecionados para seu crescimento.',
+      description:
+        'Explore uma curadoria de livros, vídeos e artigos selecionados para aprofundar seu conhecimento.',
       link: '/app/library',
       icon: Library,
       className:
         'bg-stone-50 dark:bg-stone-900/20 border-stone-200 dark:border-stone-800',
       iconClassName: 'text-stone-500',
     },
+  ],
+  [
+    'summary',
     {
       title: 'Como foi minha semana?',
-      description: 'Veja um resumo carinhoso da sua jornada emocional.',
+      description:
+        'Receba um resumo carinhoso da sua jornada emocional, celebrando seu progresso e autoconhecimento.',
       link: '/app/summary',
       icon: Calendar,
       className:
         'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800',
       iconClassName: 'text-orange-500',
     },
+  ],
+  [
+    'profile',
     {
       title: 'Minha Jornada',
-      description: 'Acompanhe seu progresso e suas conquistas.',
+      description:
+        'Acompanhe seu progresso, veja suas conquistas, suba de nível e colecione medalhas de autocuidado.',
       link: '/app/profile',
       icon: Award,
       className:
         'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
       iconClassName: 'text-yellow-500',
     },
+  ],
+  [
+    'settings',
     {
       title: 'Configurações',
-      description: 'Gerencie sua conta, segurança e dados.',
+      description:
+        'Gerencie sua conta, personalize sua experiência, ajuste a segurança e controle seus dados.',
       link: '/app/settings',
       icon: Cog,
       className:
         'bg-slate-50 dark:bg-slate-900/20 border-slate-200 dark:border-slate-800',
       iconClassName: 'text-slate-500',
     },
-  ]
+  ],
+])
+
+const DashboardPage = () => {
+  const { isSubscribed } = useAuth()
+  const { layout, isLoading } = useLayout()
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  const visibleCards = layout
+    .filter((item) => item.visible)
+    .map((item) => featuresMap.get(item.id))
+    .filter(Boolean)
 
   return (
     <div className="space-y-8">
@@ -223,32 +299,34 @@ const DashboardPage = () => {
       </Card>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature, index) => (
-          <Card
-            key={feature.link}
-            className={cn(
-              'flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl animate-fade-in-up',
-              feature.className,
-            )}
-            style={{ animationDelay: `${(index + 1) * 100}ms` }}
-          >
-            <CardHeader className="flex-grow">
-              <feature.icon
-                className={cn('h-10 w-10 mb-4', feature.iconClassName)}
-              />
-              <CardTitle>{feature.title}</CardTitle>
-              <CardDescription>{feature.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild variant="outline" className="w-full">
-                <Link to={feature.link}>
-                  Acessar
-                  <ArrowRight className="ml-auto h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+        {visibleCards.map((feature, index) => {
+          if (!feature) return null
+          const Icon = feature.icon
+          return (
+            <Card
+              key={feature.link}
+              className={cn(
+                'flex flex-col transition-transform transform hover:-translate-y-1 hover:shadow-xl animate-fade-in-up',
+                feature.className,
+              )}
+              style={{ animationDelay: `${(index + 1) * 100}ms` }}
+            >
+              <CardHeader className="flex-grow">
+                <Icon className={cn('h-10 w-10 mb-4', feature.iconClassName)} />
+                <CardTitle>{feature.title}</CardTitle>
+                <CardDescription>{feature.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to={feature.link}>
+                    Acessar
+                    <ArrowRight className="ml-auto h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     </div>
   )

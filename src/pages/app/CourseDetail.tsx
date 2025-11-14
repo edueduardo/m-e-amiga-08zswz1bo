@@ -1,29 +1,50 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { microCourses } from '@/lib/data'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
-import { Progress } from '@/components/ui/progress'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ChevronLeft, CheckCircle, Loader2 } from 'lucide-react'
 import { useGrowthGarden } from '@/contexts/GrowthGardenContext'
 import { useGamification } from '@/contexts/GamificationContext'
 import { SocialShareButtons } from '@/components/SocialShareButtons'
+import { getCourseBySlug } from '@/services/courses'
+import { Course } from '@/types'
 
 const CourseDetailPage = () => {
-  const { slug } = useParams()
+  const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const { updateProgress } = useGrowthGarden()
   const { addPoints } = useGamification()
-  const course = microCourses.find((c) => c.slug === slug)
-  const [currentLessonIndex, setCurrentLessonIndex] = useState(0)
-  const [completedLessons, setCompletedLessons] = useState<Set<number>>(
-    new Set(),
-  )
+  const [course, setCourse] = useState<Course | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    setCompletedLessons(new Set())
-    setCurrentLessonIndex(0)
+    const fetchCourse = async () => {
+      if (!slug) {
+        setIsLoading(false)
+        return
+      }
+      setIsLoading(true)
+      const data = await getCourseBySlug(slug)
+      setCourse(data)
+      setIsLoading(false)
+    }
+    fetchCourse()
   }, [slug])
+
+  const finishCourse = () => {
+    if (!course) return
+    addPoints(100, `Concluiu o curso: ${course.title}`)
+    updateProgress('course')
+    navigate('/app/courses')
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   if (!course) {
     return (
@@ -39,40 +60,6 @@ const CourseDetailPage = () => {
     )
   }
 
-  const lesson = course.lessons[currentLessonIndex]
-  const isFirstLesson = currentLessonIndex === 0
-  const isLastLesson = currentLessonIndex === course.lessons.length - 1
-  const progressValue =
-    ((completedLessons.size + (isLastLesson ? 1 : 0)) / course.lessons.length) *
-    100
-
-  const markLessonAsComplete = () => {
-    if (!completedLessons.has(currentLessonIndex)) {
-      setCompletedLessons((prev) => new Set(prev).add(currentLessonIndex))
-      addPoints(20, `Completou uma lição do curso: ${course.title}`)
-    }
-  }
-
-  const goToNextLesson = () => {
-    if (!isLastLesson) {
-      markLessonAsComplete()
-      setCurrentLessonIndex((prev) => prev + 1)
-    }
-  }
-
-  const goToPrevLesson = () => {
-    if (!isFirstLesson) {
-      setCurrentLessonIndex((prev) => prev - 1)
-    }
-  }
-
-  const finishCourse = () => {
-    markLessonAsComplete()
-    addPoints(100, `Concluiu o curso: ${course.title}`)
-    updateProgress('course')
-    navigate('/app/courses')
-  }
-
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <Button
@@ -83,40 +70,28 @@ const CourseDetailPage = () => {
         <ChevronLeft className="mr-2 h-4 w-4" /> Voltar para Cursos
       </Button>
       <Card className="overflow-hidden">
-        <div className="p-6 border-b">
-          <p className="text-sm text-muted-foreground mb-1">{course.title}</p>
-          <h1 className="text-3xl font-bold">{lesson.title}</h1>
-          <div className="flex items-center gap-4 mt-4">
-            <Progress value={progressValue} className="w-full" />
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
-              Lição {currentLessonIndex + 1} de {course.lessons.length}
-            </span>
-          </div>
-        </div>
+        <CardHeader className="p-6 border-b">
+          <p className="text-sm text-muted-foreground mb-1">
+            {course.category}
+          </p>
+          <h1 className="text-3xl font-bold">{course.title}</h1>
+        </CardHeader>
         <CardContent className="p-6">
-          <div
-            className="prose prose-lg max-w-none dark:prose-invert prose-blockquote:bg-primary/10 prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:p-4 prose-blockquote:rounded-r-md"
-            dangerouslySetInnerHTML={{
-              __html: lesson.content_markdown.replace(/\n/g, '<br />'),
-            }}
-          />
+          <div className="prose prose-lg max-w-none dark:prose-invert">
+            <p>{course.description}</p>
+            {/* Placeholder for actual course content */}
+            <p>
+              O conteúdo detalhado deste curso estará disponível em breve. Por
+              enquanto, você pode marcar como concluído para registrar seu
+              interesse e progresso.
+            </p>
+          </div>
         </CardContent>
       </Card>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex gap-2">
-          <Button onClick={goToPrevLesson} disabled={isFirstLesson}>
-            <ChevronLeft className="mr-2 h-4 w-4" /> Lição Anterior
-          </Button>
-          {isLastLesson ? (
-            <Button onClick={finishCourse}>
-              <CheckCircle className="mr-2 h-4 w-4" /> Concluir Curso
-            </Button>
-          ) : (
-            <Button onClick={goToNextLesson}>
-              Próxima Lição <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </div>
+        <Button onClick={finishCourse} size="lg">
+          <CheckCircle className="mr-2 h-4 w-4" /> Marcar como Concluído
+        </Button>
         <SocialShareButtons
           url={window.location.href}
           title={`Estou fazendo o curso "${course.title}" no Mãe Amiga!`}

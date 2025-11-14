@@ -31,10 +31,18 @@ import {
 import { useConversations } from '@/contexts/ConversationsContext'
 import { GenerateReportDialog } from '@/components/GenerateReportDialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { User, Shield, CreditCard, Database, Sparkles } from 'lucide-react'
+import {
+  User,
+  Shield,
+  CreditCard,
+  Database,
+  Sparkles,
+  LayoutDashboard,
+} from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useUserPreferences } from '@/contexts/UserPreferencesContext'
 import { hooponoponoPractices, soothingSounds } from '@/lib/data'
+import { HomePageCustomizer } from '@/components/HomePageCustomizer'
 
 const SettingsPage = () => {
   const { user, isSubscribed, updateUser, requestPhoneEmailVerification } =
@@ -46,6 +54,7 @@ const SettingsPage = () => {
   const [phone, setPhone] = useState(user?.phone_number || '')
   const [originalPhone, setOriginalPhone] = useState(user?.phone_number || '')
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false)
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false)
 
   const handleProfileUpdate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -269,7 +278,21 @@ const SettingsPage = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="personalization">
+        <TabsContent value="personalization" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personalizar Página Inicial</CardTitle>
+              <CardDescription>
+                Escolha quais cards exibir e em que ordem.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => setIsCustomizerOpen(true)}>
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Abrir Personalizador
+              </Button>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle>Personalização do SOS</CardTitle>
@@ -371,6 +394,10 @@ const SettingsPage = () => {
       <GenerateReportDialog
         open={isReportDialogOpen}
         onOpenChange={setIsReportDialogOpen}
+      />
+      <HomePageCustomizer
+        open={isCustomizerOpen}
+        onOpenChange={setIsCustomizerOpen}
       />
     </>
   )
