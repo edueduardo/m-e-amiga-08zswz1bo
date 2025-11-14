@@ -156,14 +156,14 @@ export const generateMotherReply = async (
   let userPrompt: string
 
   if (abTestGroup === 'B') {
-    systemPrompt = `Você é 'Mãe Amiga', uma IA coach para mulheres casadas. Seu tom é de uma mãe experiente, amorosa e melhor amiga, mas você é um pouco mais direta e focada em soluções práticas. Você oferece conselhos de vida práticos e carinhosos. Você NÃO PODE dar conselhos médicos ou diagnósticos. Seu objetivo é fazer a usuária se sentir ouvida e empoderada para agir. Sua língua é o português do Brasil.`
+    systemPrompt = `Você é 'Mãe Amiga', uma IA coach para mulheres. Seu tom é de uma mãe experiente, amorosa e melhor amiga, mas você é um pouco mais direta e focada em soluções práticas. Você oferece conselhos de vida práticos e carinhosos. Você NÃO PODE dar conselhos médicos ou diagnósticos. Seu objetivo é fazer a usuária se sentir ouvida e empoderada para agir. Sua língua é o português do Brasil.`
     userPrompt = `O desabafo da minha filha foi: "${transcript}". Minha análise interna (não mostre a ela) indica este perfil emocional: ${JSON.stringify(
       emotionalProfile,
     )}, e estas são algumas sugestões práticas: ${JSON.stringify(
       practicalAdvice.advice,
     )}. Agora, escreva uma resposta para ela. Comece validando os sentimentos dela de forma breve. Em seguida, integre as sugestões práticas de forma clara e direta. Termine com uma mensagem de encorajamento e força. Seja calorosa, mas concisa.`
   } else {
-    systemPrompt = `Você é 'Mãe Amiga', uma IA coach para mulheres casadas sobrecarregadas. Seu tom é de uma mãe experiente, amorosa e melhor amiga. Você oferece conselhos de vida práticos e carinhosos. Você NÃO PODE dar conselhos médicos ou diagnósticos. Seu objetivo é fazer a usuária se sentir ouvida, compreendida e apoiada. Sua língua é o português do Brasil.`
+    systemPrompt = `Você é 'Mãe Amiga', uma IA coach para mulheres sobrecarregadas. Seu tom é de uma mãe experiente, amorosa e melhor amiga. Você oferece conselhos de vida práticos e carinhosos. Você NÃO PODE dar conselhos médicos ou diagnósticos. Seu objetivo é fazer a usuária se sentir ouvida, compreendida e apoiada. Sua língua é o português do Brasil.`
     userPrompt = `O desabafo da minha filha foi: "${transcript}". Minha análise interna (não mostre a ela) indica este perfil emocional: ${JSON.stringify(
       emotionalProfile,
     )}, e estas são algumas sugestões práticas: ${JSON.stringify(
@@ -272,7 +272,7 @@ export const generateSelfCareQuiz = async (
   ]
   if (!API_KEY) return fallbackQuiz
 
-  const prompt = `Você é a 'Mãe Amiga', uma IA coach de bem-estar. Crie um quiz de 5 perguntas para entender as necessidades de uma mulher casada, com foco em seu cuidado ${focus}. As perguntas devem ser gentis e investigativas. Inclua uma pergunta de múltipla escolha e uma do tipo 'rorschach'. Para a pergunta 'rorschach', gere uma query de 1 a 3 palavras em inglês para uma imagem de mancha de tinta abstrata que seja tematicamente relevante para o foco de cuidado ('${focus}'). Responda APENAS com um objeto JSON com a chave "quiz" (um array de objetos), cada um com "id", "question", "type" ('multiple-choice', 'text', 'rorschach'), "options" (se aplicável), e "imageUrl" (para 'rorschach', use o formato 'https://img.usecurling.com/p/512/512?q=SUA_QUERY&color=black').`
+  const prompt = `Você é a 'Mãe Amiga', uma IA coach de bem-estar. Crie um quiz de 5 perguntas para entender as necessidades de uma mulher, com foco em seu cuidado ${focus}. As perguntas devem ser gentis, inclusivas e investigativas. Inclua uma pergunta de múltipla escolha e uma do tipo 'rorschach'. Para a pergunta 'rorschach', gere uma query de 1 a 3 palavras em inglês para uma imagem de mancha de tinta abstrata que seja tematicamente relevante para o foco de cuidado ('${focus}'). Responda APENAS com um objeto JSON com a chave "quiz" (um array de objetos), cada um com "id", "question", "type" ('multiple-choice', 'text', 'rorschach'), "options" (se aplicável), e "imageUrl" (para 'rorschach', use o formato 'https://img.usecurling.com/p/512/512?q=SUA_QUERY&color=black').`
 
   try {
     const response = await fetch(`${API_URL}/chat/completions`, {
@@ -324,7 +324,7 @@ export const generateSelfCarePlan = async (
   }
   if (!API_KEY) return fallbackPlan
 
-  const prompt = `Você é a 'Mãe Amiga'. Baseado nas respostas do quiz de uma mulher casada: ${JSON.stringify(
+  const prompt = `Você é a 'Mãe Amiga'. Baseado nas respostas do quiz de uma mulher: ${JSON.stringify(
     answers,
   )}, e com um foco de cuidado ${focus}, crie um plano de autocuidado. O plano deve ter um foco mensal, um semanal e um diário, mas dê ênfase especial ao foco escolhido (${focus}). Analise as respostas em busca de sinais de sofrimento persistente. Se identificar, inclua uma chave "professional_help_suggestion" com uma sugestão gentil para procurar ajuda profissional. Escolha um dos seguintes tons para sua resposta: 'amoras' (amoroso e gentil), 'reais duros' (direto e realista, mas com carinho), ou 'impactantes' (inspirador e motivacional). Responda APENAS com um objeto JSON com a estrutura: { "tone": "...", "monthlyFocus": { "title": "...", "description": "..." }, "weeklyFocus": { "title": "...", "description": "..." }, "dailyFocus": { "title": "...", "description": "..." }, "professional_help_suggestion"?: "string" }.`
 

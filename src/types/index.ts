@@ -220,10 +220,32 @@ export interface HomePageLayoutItem {
   visible: boolean
 }
 
+export type RelationshipStatus =
+  | 'casada'
+  | 'solteira'
+  | 'divorciada'
+  | 'em_um_relacionamento'
+  | 'prefiro_nao_dizer'
+
+export interface NotificationPreferences {
+  new_challenges: boolean
+  circle_messages: boolean
+  app_updates: boolean
+}
+
+export interface PreferredInteractionTimes {
+  morning: boolean
+  afternoon: boolean
+  evening: boolean
+}
+
 export interface UserPreferences {
   sosPracticeId: string
   sosSoundId: string
   home_page_layout?: HomePageLayoutItem[]
+  relationship_status?: RelationshipStatus
+  notification_preferences?: NotificationPreferences
+  preferred_interaction_times?: PreferredInteractionTimes
 }
 
 export interface HooponoponoJournalEntry {
@@ -315,7 +337,6 @@ export interface GardenElement {
   position: { x: number; y: number }
 }
 
-// New types based on user story
 export interface Course {
   id: string
   title: string
@@ -338,4 +359,21 @@ export interface Notification {
   message: string
   scheduled_at: string
   is_read: boolean
+}
+
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  qualifications: string
+  bio: string
+  photo_url: string
+}
+
+export interface CustomReminder {
+  id: string
+  user_id: string
+  message: string
+  cron_schedule: string
+  is_active: boolean
 }

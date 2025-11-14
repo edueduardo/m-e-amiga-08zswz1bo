@@ -38,11 +38,21 @@ import {
   Database,
   Sparkles,
   LayoutDashboard,
+  Bell,
 } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useUserPreferences } from '@/contexts/UserPreferencesContext'
 import { hooponoponoPractices, soothingSounds } from '@/lib/data'
 import { HomePageCustomizer } from '@/components/HomePageCustomizer'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { RelationshipStatus } from '@/types'
+import { CustomReminders } from '@/components/CustomReminders'
 
 const SettingsPage = () => {
   const { user, isSubscribed, updateUser, requestPhoneEmailVerification } =
@@ -133,7 +143,7 @@ const SettingsPage = () => {
         </p>
       </div>
       <Tabs defaultValue="profile" className="w-full space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6">
           <TabsTrigger value="profile">
             <User className="mr-2 h-4 w-4" /> Perfil
           </TabsTrigger>
@@ -145,6 +155,9 @@ const SettingsPage = () => {
           </TabsTrigger>
           <TabsTrigger value="personalization">
             <Sparkles className="mr-2 h-4 w-4" /> Personalização
+          </TabsTrigger>
+          <TabsTrigger value="notifications">
+            <Bell className="mr-2 h-4 w-4" /> Notificações
           </TabsTrigger>
           <TabsTrigger value="data">
             <Database className="mr-2 h-4 w-4" /> Dados
@@ -178,6 +191,36 @@ const SettingsPage = () => {
                     readOnly
                     disabled
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="relationship_status">
+                    Status de Relacionamento
+                  </Label>
+                  <Select
+                    value={
+                      preferences.relationship_status || 'prefiro_nao_dizer'
+                    }
+                    onValueChange={(value) =>
+                      updatePreferences({
+                        relationship_status: value as RelationshipStatus,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma opção" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="casada">Casada</SelectItem>
+                      <SelectItem value="solteira">Solteira</SelectItem>
+                      <SelectItem value="divorciada">Divorciada</SelectItem>
+                      <SelectItem value="em_um_relacionamento">
+                        Em um relacionamento
+                      </SelectItem>
+                      <SelectItem value="prefiro_nao_dizer">
+                        Prefiro não dizer
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button type="submit">Salvar Alterações</Button>
               </form>
@@ -340,6 +383,126 @@ const SettingsPage = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Preferências de Notificação</CardTitle>
+              <CardDescription>
+                Escolha quais notificações você deseja receber.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notif-challenges">Novos desafios</Label>
+                <Switch
+                  id="notif-challenges"
+                  checked={preferences.notification_preferences?.new_challenges}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      notification_preferences: {
+                        ...preferences.notification_preferences,
+                        new_challenges: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notif-circle">
+                  Novas mensagens no Círculo de Apoio
+                </Label>
+                <Switch
+                  id="notif-circle"
+                  checked={
+                    preferences.notification_preferences?.circle_messages
+                  }
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      notification_preferences: {
+                        ...preferences.notification_preferences,
+                        circle_messages: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notif-updates">
+                  Atualizações do aplicativo
+                </Label>
+                <Switch
+                  id="notif-updates"
+                  checked={preferences.notification_preferences?.app_updates}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      notification_preferences: {
+                        ...preferences.notification_preferences,
+                        app_updates: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Horários Preferidos</CardTitle>
+              <CardDescription>
+                Nos diga os melhores horários para interagirmos com você.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="time-morning">Manhã (8h - 12h)</Label>
+                <Switch
+                  id="time-morning"
+                  checked={preferences.preferred_interaction_times?.morning}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      preferred_interaction_times: {
+                        ...preferences.preferred_interaction_times,
+                        morning: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="time-afternoon">Tarde (12h - 18h)</Label>
+                <Switch
+                  id="time-afternoon"
+                  checked={preferences.preferred_interaction_times?.afternoon}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      preferred_interaction_times: {
+                        ...preferences.preferred_interaction_times,
+                        afternoon: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="time-evening">Noite (18h - 22h)</Label>
+                <Switch
+                  id="time-evening"
+                  checked={preferences.preferred_interaction_times?.evening}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({
+                      preferred_interaction_times: {
+                        ...preferences.preferred_interaction_times,
+                        evening: checked,
+                      },
+                    })
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <CustomReminders />
         </TabsContent>
 
         <TabsContent value="data">

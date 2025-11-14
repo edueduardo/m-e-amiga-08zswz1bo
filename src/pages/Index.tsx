@@ -11,6 +11,10 @@ import { PricingSection } from '@/components/landing/PricingSection'
 import { EthicalNoticeSection } from '@/components/landing/EthicalNoticeSection'
 import { HooponoponoDesireSection } from '@/components/landing/HooponoponoDesireSection'
 import { FAQsSection } from '@/components/landing/FAQsSection'
+import { VideoTestimonialsSection } from '@/components/landing/VideoTestimonialsSection'
+import { CaseStudiesSection } from '@/components/landing/CaseStudiesSection'
+import { UserReviewsSection } from '@/components/landing/UserReviewsSection'
+import { InteractiveDemo } from '@/components/landing/InteractiveDemo'
 
 const Index = () => {
   return (
@@ -22,8 +26,12 @@ const Index = () => {
       <HowItWorksSection />
       <WhyUsSection />
       <CoreFeaturesSection />
+      <InteractiveDemo />
       <HooponoponoDesireSection />
       <TestimonialsSection />
+      <VideoTestimonialsSection />
+      <CaseStudiesSection />
+      <UserReviewsSection />
       <CtaSection />
       <PricingSection />
       <FAQsSection />

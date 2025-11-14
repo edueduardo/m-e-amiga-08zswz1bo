@@ -36,6 +36,7 @@ import VerifyPhoneNumberByEmailPage from './pages/VerifyPhoneNumberByEmail'
 import CookiePolicyPage from './pages/CookiePolicy'
 import TermsOfUsePage from './pages/TermsOfUse'
 import ContactPage from './pages/Contact'
+import AboutPage from './pages/About'
 import DashboardPage from './pages/app/Dashboard'
 import ConversationsPage from './pages/app/Conversations'
 import CarePage from './pages/app/Care'
@@ -103,6 +104,7 @@ const App = () => {
                   <Route path="/cookie-policy" element={<CookiePolicyPage />} />
                   <Route path="/terms-of-use" element={<TermsOfUsePage />} />
                   <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/about" element={<AboutPage />} />
 
                   <Route
                     path="/app"

@@ -28,6 +28,8 @@ import {
   Baby,
   HeartCrack,
   Briefcase,
+  User,
+  Heart,
 } from 'lucide-react'
 
 // Helper for daily deterministic randomness
@@ -103,7 +105,7 @@ const allMicroCourses: MicroCourse[] = [
   {
     id: '1',
     slug: 'comunicacao-gentil-no-casamento',
-    title: 'Comunicação Gentil no Casamento',
+    title: 'Comunicação Gentil nos Relacionamentos',
     summary: 'Aprenda a expressar suas necessidades e sentimentos sem brigas.',
     isAiGenerated: true,
     lessons: [
@@ -175,21 +177,33 @@ export const anonymousAliases = [
 export const thematicRooms: ThematicRoom[] = [
   {
     id: 'room1',
-    name: 'Mães de Bebês',
-    description: 'Para os desafios e alegrias da maternidade recente.',
+    name: 'Maternidade',
+    description: 'Para os desafios e alegrias da jornada de ser mãe.',
     icon: Baby,
   },
   {
     id: 'room2',
-    name: 'Desafios no Relacionamento',
-    description: 'Um espaço para falar sobre a vida a dois.',
+    name: 'Relacionamentos',
+    description: 'Um espaço para falar sobre a vida a dois, ou a sós.',
     icon: HeartCrack,
   },
   {
     id: 'room3',
-    name: 'Carreira e Maternidade',
-    description: 'Equilibrando pratinhos: vida profissional e família.',
+    name: 'Carreira e Propósito',
+    description: 'Equilibrando pratinhos: vida profissional e pessoal.',
     icon: Briefcase,
+  },
+  {
+    id: 'room4',
+    name: 'Autoconhecimento',
+    description: 'Jornadas de redescoberta e crescimento pessoal.',
+    icon: User,
+  },
+  {
+    id: 'room5',
+    name: 'Autocuidado e Bem-estar',
+    description: 'Dicas, práticas e apoio para cuidar de si mesma.',
+    icon: Heart,
   },
 ]
 
@@ -200,7 +214,7 @@ export const supportPosts: SupportPost[] = [
     authorAlias: 'Girassol Sereno',
     title: 'Me sentindo culpada por querer um tempo só para mim',
     content:
-      'Meninas, mais alguém se sente assim? Eu amo minha família mais que tudo, mas às vezes eu só queria sumir por umas duas horas, sem ter que dar satisfação. Só de pensar nisso já me sinto a pior mãe e esposa do mundo. Como vocês lidam com isso?',
+      'Meninas, mais alguém se sente assim? Eu amo minha família mais que tudo, mas às vezes eu só queria sumir por umas duas horas, sem ter que dar satisfação. Só de pensar nisso já me sinto a pior mãe do mundo. Como vocês lidam com isso?',
     created_at: subDays(today, 1).toISOString(),
     replies: [
       {
@@ -212,6 +226,16 @@ export const supportPosts: SupportPost[] = [
         created_at: subDays(today, 1).toISOString(),
       },
     ],
+  },
+  {
+    id: 'post-2',
+    roomId: 'room2',
+    authorAlias: 'Lua Crescente',
+    title: 'Como lidar com o silêncio após o divórcio?',
+    content:
+      'Me separei há 3 meses e a casa parece tão vazia e silenciosa à noite. Durante o dia eu me ocupo, mas à noite a solidão bate forte. Alguma dica?',
+    created_at: subDays(today, 2).toISOString(),
+    replies: [],
   },
 ]
 
@@ -280,7 +304,7 @@ export const weeklyChallenges: Challenge[] = [
     id: 'chal1',
     title: 'Semana da Gratidão',
     description: 'Anote três coisas pelas quais você é grata todos os dias.',
-    theme: 'gratitude',
+    category: 'gratitude',
     steps: [
       { id: 's1', description: 'Dia 1', is_completed: true },
       { id: 's2', description: 'Dia 2', is_completed: false },
@@ -293,7 +317,7 @@ export const weeklyChallenges: Challenge[] = [
     id: 'chal3',
     title: 'Jornada Hoʻoponopono',
     description: 'Dedique 5 minutos do seu dia para a prática do Hoʻoponopono.',
-    theme: 'hooponopono',
+    category: 'hooponopono',
     steps: [
       { id: 'h1', description: 'Dia 1: Limpeza Geral', is_completed: false },
       { id: 'h2', description: 'Dia 2: Foco no Perdão', is_completed: false },
@@ -307,7 +331,7 @@ export const weeklyChallenges: Challenge[] = [
     title: 'Comunicação Consciente',
     description:
       'Pratique a escuta ativa em uma conversa importante esta semana.',
-    theme: 'communication',
+    category: 'communication',
     steps: [
       {
         id: 'c1',
@@ -333,7 +357,7 @@ export const weeklyChallenges: Challenge[] = [
     title: 'Hoʻoponopono para o Amor Próprio',
     description:
       'Direcione a prática do Hoʻoponopono para si mesma, cultivando a autoaceitação.',
-    theme: 'self-love',
+    category: 'self-love',
     steps: [
       {
         id: 'sl1',
@@ -359,7 +383,7 @@ export const weeklyChallenges: Challenge[] = [
     title: 'Hoʻoponopono para Relacionamentos',
     description:
       'Use o Hoʻoponopono para limpar memórias dolorosas em um relacionamento importante.',
-    theme: 'relationships',
+    category: 'relationships',
     steps: [
       {
         id: 'r1',

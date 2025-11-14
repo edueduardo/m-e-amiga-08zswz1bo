@@ -50,7 +50,7 @@ export const HeroSection = () => {
   const subheadline =
     abTestGroup === 'B'
       ? 'Mãe Amiga é o seu espaço de acolhimento 24/7. Desabafe por áudio e receba conselhos carinhosos de uma IA que te entende. Comece a se sentir melhor hoje.'
-      : 'Para você, mulher casada, que se sente sobrecarregada e anseia por um espaço seguro para desabafar. Receba o carinho e a sabedoria de uma mãe e melhor amiga, a qualquer hora.'
+      : 'Para você, mulher, que se sente sobrecarregada e anseia por um espaço seguro para desabafar. Receba o carinho e a sabedoria de uma mãe e melhor amiga, a qualquer hora.'
 
   return (
     <>
@@ -77,7 +77,7 @@ export const HeroSection = () => {
                   onClick={() => setIsFreeSoundsOpen(true)}
                 >
                   <Music className="mr-2 h-5 w-5" />
-                  Músicas Ho'oponopono
+                  Experimentar Sons
                 </Button>
                 <Button
                   variant="destructive"

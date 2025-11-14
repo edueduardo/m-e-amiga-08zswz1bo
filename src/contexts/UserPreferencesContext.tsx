@@ -14,6 +14,17 @@ const PREFERENCES_KEY = 'mae-amiga-user-preferences'
 const defaultPreferences: UserPreferences = {
   sosPracticeId: 'hoop1',
   sosSoundId: 'sound1',
+  relationship_status: 'prefiro_nao_dizer',
+  notification_preferences: {
+    new_challenges: true,
+    circle_messages: true,
+    app_updates: true,
+  },
+  preferred_interaction_times: {
+    morning: true,
+    afternoon: true,
+    evening: true,
+  },
 }
 
 interface UserPreferencesContextType {
@@ -29,7 +40,12 @@ export function UserPreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
     try {
       const stored = localStorage.getItem(PREFERENCES_KEY)
-      return stored ? JSON.parse(stored) : defaultPreferences
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        // Merge with defaults to ensure new preferences are not missing
+        return { ...defaultPreferences, ...parsed }
+      }
+      return defaultPreferences
     } catch (error) {
       console.error('Failed to parse user preferences from localStorage', error)
       return defaultPreferences

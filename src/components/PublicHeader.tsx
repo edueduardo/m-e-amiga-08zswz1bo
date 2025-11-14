@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/#how-it-works', label: 'Como Funciona' },
   { href: '/#solutions', label: 'Soluções' },
   { href: '/pricing', label: 'Preço' },
+  { href: '/about', label: 'Sobre Nós' },
   { href: '/#faqs', label: 'Dúvidas' },
 ]
 

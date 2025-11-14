@@ -9,7 +9,7 @@ const faqs = [
   {
     question: 'O que é a Mãe Amiga?',
     answer:
-      'Mãe Amiga é um SaaS (Software como Serviço) que oferece apoio emocional e conselhos de vida para mulheres casadas. Usamos uma inteligência artificial com o tom de uma mãe e melhor amiga para fornecer respostas carinhosas e acolhedoras, disponíveis 24/7.',
+      'Mãe Amiga é um SaaS (Software como Serviço) que oferece apoio emocional e conselhos de vida para mulheres. Usamos uma inteligência artificial com o tom de uma mãe e melhor amiga para fornecer respostas carinhosas e acolhedoras, disponíveis 24/7.',
   },
   {
     question: 'A Mãe Amiga substitui a terapia?',
@@ -32,9 +32,9 @@ const faqs = [
       'Sim! Você pode cancelar sua assinatura a qualquer momento, sem burocracia. O acesso permanecerá ativo até o final do período já pago.',
   },
   {
-    question: 'Como são criadas as trilhas de autocuidado?',
+    question: 'Para quem é a Mãe Amiga?',
     answer:
-      'As trilhas de autocuidado são geradas por nossa IA com base em um pequeno quiz que você responde. Elas são personalizadas para suas necessidades do momento, oferecendo focos diários, semanais e mensais para te ajudar a se sentir melhor.',
+      'A Mãe Amiga foi criada para todas as mulheres que se sentem sobrecarregadas e buscam um espaço de acolhimento. Embora tenha nascido com um foco em mulheres casadas, a plataforma é um porto seguro para mulheres solteiras, divorciadas, em relacionamentos diversos ou que simplesmente precisam de um ombro amigo.',
   },
 ]
 

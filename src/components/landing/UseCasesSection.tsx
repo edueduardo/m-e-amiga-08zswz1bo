@@ -4,21 +4,21 @@ import { Moon, HeartCrack, UserSearch } from 'lucide-react'
 const useCases = [
   {
     icon: Moon,
-    title: 'Para a mãe exausta',
+    title: 'Para a mulher exausta',
     description:
       'Quando a carga mental pesa e você precisa de um espaço para desabafar sem interrupções, no seu próprio tempo, especialmente nas madrugadas silenciosas.',
   },
   {
     icon: HeartCrack,
-    title: 'Para a esposa que se sente desconectada',
+    title: 'Para quem se sente desconectada',
     description:
-      'Quando a comunicação no casamento parece um campo minado e você precisa de clareza para entender seus próprios sentimentos antes de conversar com seu parceiro.',
+      'Quando a comunicação nos relacionamentos parece um campo minado e você precisa de clareza para entender seus próprios sentimentos antes de conversar.',
   },
   {
     icon: UserSearch,
     title: 'Para a mulher em busca de si mesma',
     description:
-      'Quando você se olha no espelho e não reconhece mais a mulher por trás dos papéis de mãe e esposa, e precisa de um guia para se redescobrir.',
+      'Quando você se olha no espelho e não reconhece mais a mulher por trás dos papéis que desempenha, e precisa de um guia para se redescobrir.',
   },
 ]
 
