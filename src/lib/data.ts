@@ -14,6 +14,7 @@ import {
   SoothingSound,
   GamificationBadge,
   CommunityChallenge,
+  ThematicRoom,
 } from '@/types'
 import { format, subDays, addDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -24,6 +25,9 @@ import {
   Star,
   Trophy,
   Users2,
+  Baby,
+  HeartCrack,
+  Briefcase,
 } from 'lucide-react'
 
 // Helper for daily deterministic randomness
@@ -168,9 +172,31 @@ export const anonymousAliases = [
   'Borboleta Azul',
 ]
 
+export const thematicRooms: ThematicRoom[] = [
+  {
+    id: 'room1',
+    name: 'Mães de Bebês',
+    description: 'Para os desafios e alegrias da maternidade recente.',
+    icon: Baby,
+  },
+  {
+    id: 'room2',
+    name: 'Desafios no Relacionamento',
+    description: 'Um espaço para falar sobre a vida a dois.',
+    icon: HeartCrack,
+  },
+  {
+    id: 'room3',
+    name: 'Carreira e Maternidade',
+    description: 'Equilibrando pratinhos: vida profissional e família.',
+    icon: Briefcase,
+  },
+]
+
 export const supportPosts: SupportPost[] = [
   {
     id: 'post-1',
+    roomId: 'room1',
     authorAlias: 'Girassol Sereno',
     title: 'Me sentindo culpada por querer um tempo só para mim',
     content:

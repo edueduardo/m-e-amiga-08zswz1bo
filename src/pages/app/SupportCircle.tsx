@@ -22,7 +22,6 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -30,31 +29,29 @@ import { MessageCircle, PlusCircle, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const SupportCirclePage = () => {
-  const { posts, addPost, addReply } = useSupportCircle()
-  const [selectedPostId, setSelectedPostId] = useState<string | null>(
-    posts[0]?.id || null,
-  )
+  const { rooms, posts, addPost, addReply } = useSupportCircle()
+  const [selectedRoomId, setSelectedRoomId] = useState<string>(rooms[0]?.id)
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
   const [newPostTitle, setNewPostTitle] = useState('')
   const [newPostContent, setNewPostContent] = useState('')
   const [newReplyContent, setNewReplyContent] = useState('')
   const [isNewPostDialogOpen, setIsNewPostDialogOpen] = useState(false)
 
+  const roomPosts = posts.filter((p) => p.roomId === selectedRoomId)
   const selectedPost = posts.find((p) => p.id === selectedPostId)
 
-  const handleAddPost = () => {
+  const handleAddPost = async () => {
     if (newPostTitle.trim() && newPostContent.trim()) {
-      addPost(newPostTitle, newPostContent)
-      const newPost = posts[0]
-      setSelectedPostId(newPost.id)
+      await addPost(selectedRoomId, newPostTitle, newPostContent)
       setNewPostTitle('')
       setNewPostContent('')
       setIsNewPostDialogOpen(false)
     }
   }
 
-  const handleAddReply = () => {
+  const handleAddReply = async () => {
     if (newReplyContent.trim() && selectedPostId) {
-      addReply(selectedPostId, newReplyContent)
+      await addReply(selectedPostId, newReplyContent)
       setNewReplyContent('')
     }
   }
@@ -62,15 +59,37 @@ const SupportCirclePage = () => {
   return (
     <div className="grid md:grid-cols-[350px_1fr] gap-6 h-[calc(100vh-8rem)]">
       <Card className="flex flex-col">
-        <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-          <CardTitle className="text-lg">Círculo de Apoio</CardTitle>
+        <CardHeader className="p-4 border-b">
+          <CardTitle className="text-lg">Salas Temáticas</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <ScrollArea className="h-[calc(100vh-20rem)]">
+            {rooms.map((room) => (
+              <button
+                key={room.id}
+                onClick={() => {
+                  setSelectedRoomId(room.id)
+                  setSelectedPostId(null)
+                }}
+                className={cn(
+                  'w-full text-left p-4 hover:bg-secondary flex items-center gap-3',
+                  selectedRoomId === room.id && 'bg-secondary',
+                )}
+              >
+                <room.icon className="h-5 w-5 text-primary" />
+                <span>{room.name}</span>
+              </button>
+            ))}
+          </ScrollArea>
+        </CardContent>
+        <CardFooter className="p-4 border-t">
           <Dialog
             open={isNewPostDialogOpen}
             onOpenChange={setIsNewPostDialogOpen}
           >
             <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <PlusCircle className="h-5 w-5" />
+              <Button className="w-full">
+                <PlusCircle className="mr-2 h-4 w-4" /> Nova Publicação
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -98,15 +117,23 @@ const SupportCirclePage = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </CardHeader>
-        <CardContent className="p-0 flex-grow">
-          <ScrollArea className="h-[calc(100vh-14rem)]">
-            <div className="p-2 space-y-1">
-              {posts.map((post) => (
+        </CardFooter>
+      </Card>
+
+      <div className="grid grid-rows-[auto_1fr] gap-6 h-full">
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              Publicações em "{rooms.find((r) => r.id === selectedRoomId)?.name}"
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="h-[200px]">
+              {roomPosts.map((post) => (
                 <button
                   key={post.id}
                   className={cn(
-                    'w-full text-left p-3 rounded-lg hover:bg-secondary transition-colors',
+                    'w-full text-left p-3 border-b hover:bg-secondary',
                     selectedPostId === post.id && 'bg-secondary',
                   )}
                   onClick={() => setSelectedPostId(post.id)}
@@ -121,87 +148,89 @@ const SupportCirclePage = () => {
                   </div>
                 </button>
               ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-
-      <Card className="flex flex-col">
-        {selectedPost ? (
-          <>
-            <CardHeader className="p-4 border-b">
-              <CardTitle className="text-xl">{selectedPost.title}</CardTitle>
-              <CardDescription className="flex items-center gap-2 text-sm pt-1">
-                <span>por {selectedPost.authorAlias}</span>
-                <span>·</span>
-                <span>
-                  {formatDistanceToNow(new Date(selectedPost.created_at), {
-                    addSuffix: true,
-                    locale: ptBR,
-                  })}
-                </span>
-              </CardDescription>
-            </CardHeader>
-            <ScrollArea className="flex-grow p-6">
-              <p className="whitespace-pre-wrap mb-6 prose dark:prose-invert">
-                {selectedPost.content}
-              </p>
-              <Separator />
-              <div className="py-4 space-y-6">
-                {selectedPost.replies.map((reply) => (
-                  <div key={reply.id} className="flex items-start gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>
-                        {reply.authorAlias.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 bg-secondary p-3 rounded-lg">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-semibold">
-                          {reply.authorAlias}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {formatDistanceToNow(new Date(reply.created_at), {
-                            addSuffix: true,
-                            locale: ptBR,
-                          })}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-sm">{reply.content}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </ScrollArea>
-            <CardFooter className="p-4 border-t bg-background">
-              <div className="w-full flex items-center gap-2">
-                <Textarea
-                  placeholder="Escreva uma resposta de apoio..."
-                  value={newReplyContent}
-                  onChange={(e) => setNewReplyContent(e.target.value)}
-                  rows={1}
-                  className="resize-none"
-                />
-                <Button onClick={handleAddReply}>Responder</Button>
-              </div>
-            </CardFooter>
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-            <Users className="h-16 w-16 mb-4 text-primary animate-float" />
-            <h3 className="text-xl font-semibold">
-              Bem-vinda ao Círculo de Apoio
-            </h3>
-            <p>
-              {posts.length > 0
-                ? 'Escolha uma conversa na lista para ler e participar.'
-                : 'Este é um espaço seguro para compartilhar. Crie o primeiro tópico!'}
-            </p>
-          </div>
-        )}
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card className="flex flex-col">
+          {selectedPost ? (
+            <>
+              <CardHeader className="p-4 border-b">
+                <CardTitle className="text-xl">{selectedPost.title}</CardTitle>
+                <CardDescription className="flex items-center gap-2 text-sm pt-1">
+                  <span>por {selectedPost.authorAlias}</span>
+                  <span>·</span>
+                  <span>
+                    {formatDistanceToNow(new Date(selectedPost.created_at), {
+                      addSuffix: true,
+                      locale: ptBR,
+                    })}
+                  </span>
+                </CardDescription>
+              </CardHeader>
+              <ScrollArea className="flex-grow p-6">
+                <p className="whitespace-pre-wrap mb-6 prose dark:prose-invert">
+                  {selectedPost.content}
+                </p>
+                <Separator />
+                <div className="py-4 space-y-6">
+                  {selectedPost.replies.map((reply) => (
+                    <div key={reply.id} className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>
+                          {reply.authorAlias.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 bg-secondary p-3 rounded-lg">
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-semibold">
+                            {reply.authorAlias}
+                          </span>
+                          <span className="text-muted-foreground">
+                            {formatDistanceToNow(new Date(reply.created_at), {
+                              addSuffix: true,
+                              locale: ptBR,
+                            })}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm">{reply.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+              <CardFooter className="p-4 border-t bg-background">
+                <div className="w-full flex items-center gap-2">
+                  <Textarea
+                    placeholder="Escreva uma resposta de apoio..."
+                    value={newReplyContent}
+                    onChange={(e) => setNewReplyContent(e.target.value)}
+                    rows={1}
+                    className="resize-none"
+                  />
+                  <Button onClick={handleAddReply}>Responder</Button>
+                </div>
+              </>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
+              <Users className="h-16 w-16 mb-4 text-primary" />
+              <h3 className="text-xl font-semibold">
+                Bem-vinda ao Círculo de Apoio
+              </h3>
+              <p>
+                {roomPosts.length > 0
+                  ? 'Escolha uma conversa na lista para ler e participar.'
+                  : 'Seja a primeira a compartilhar algo nesta sala!'}
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   )
 }
 
 export default SupportCirclePage
+
+

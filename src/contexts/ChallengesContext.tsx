@@ -10,6 +10,7 @@ import {
 import { Challenge } from '@/types'
 import { weeklyChallenges } from '@/lib/data'
 import { useGamification } from './GamificationContext'
+import { useGrowthGarden } from './GrowthGardenContext'
 
 const CHALLENGES_KEY = 'mae-amiga-challenges'
 
@@ -24,6 +25,7 @@ export const ChallengesContext = createContext<
 
 export function ChallengesProvider({ children }: { children: ReactNode }) {
   const { addPoints } = useGamification()
+  const { updateProgress } = useGrowthGarden()
   const [challenges, setChallenges] = useState<Challenge[]>(() => {
     try {
       const stored = localStorage.getItem(CHALLENGES_KEY)
@@ -66,6 +68,7 @@ export function ChallengesProvider({ children }: { children: ReactNode }) {
             }
             if (isNowCompleted && !wasAlreadyCompleted) {
               addPoints(50, `Completou o desafio: ${challenge.title}`)
+              updateProgress('challenge')
             }
 
             return { ...challenge, steps: updatedSteps }
@@ -75,7 +78,7 @@ export function ChallengesProvider({ children }: { children: ReactNode }) {
         return newChallenges
       })
     },
-    [addPoints],
+    [addPoints, updateProgress],
   )
 
   const value = useMemo(

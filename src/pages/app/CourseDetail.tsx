@@ -1,16 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { microCourses } from '@/lib/data'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
+import { useGrowthGarden } from '@/contexts/GrowthGardenContext'
+import { useGamification } from '@/contexts/GamificationContext'
 
 const CourseDetailPage = () => {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const { updateProgress } = useGrowthGarden()
+  const { addPoints } = useGamification()
   const course = microCourses.find((c) => c.slug === slug)
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0)
+  const [completedLessons, setCompletedLessons] = useState<Set<number>>(
+    new Set(),
+  )
+
+  useEffect(() => {
+    setCompletedLessons(new Set())
+    setCurrentLessonIndex(0)
+  }, [slug])
 
   if (!course) {
     return (
@@ -29,10 +41,20 @@ const CourseDetailPage = () => {
   const lesson = course.lessons[currentLessonIndex]
   const isFirstLesson = currentLessonIndex === 0
   const isLastLesson = currentLessonIndex === course.lessons.length - 1
-  const progressValue = ((currentLessonIndex + 1) / course.lessons.length) * 100
+  const progressValue =
+    ((completedLessons.size + (isLastLesson ? 1 : 0)) / course.lessons.length) *
+    100
+
+  const markLessonAsComplete = () => {
+    if (!completedLessons.has(currentLessonIndex)) {
+      setCompletedLessons((prev) => new Set(prev).add(currentLessonIndex))
+      addPoints(20, `Completou uma lição do curso: ${course.title}`)
+    }
+  }
 
   const goToNextLesson = () => {
     if (!isLastLesson) {
+      markLessonAsComplete()
       setCurrentLessonIndex((prev) => prev + 1)
     }
   }
@@ -44,6 +66,9 @@ const CourseDetailPage = () => {
   }
 
   const finishCourse = () => {
+    markLessonAsComplete()
+    addPoints(100, `Concluiu o curso: ${course.title}`)
+    updateProgress('course')
     navigate('/app/courses')
   }
 

@@ -111,6 +111,7 @@ export interface SupportReply {
 
 export interface SupportPost {
   id: string
+  roomId: string
   authorAlias: string
   title: string
   content: string
@@ -243,4 +244,70 @@ export interface Playlist {
   name: string
   trackIds: string[]
   created_at: string
+}
+
+// New Types for Advanced Features
+
+export type CoachingMessageSender = 'ai' | 'user'
+export type CoachingExerciseType = 'multiple-choice' | 'text-input' | 'rating'
+export type CoachingSessionStatus = 'active' | 'completed' | 'paused'
+
+export interface CoachingExercise {
+  id: string
+  type: CoachingExerciseType
+  prompt: string
+  options?: string[]
+  response?: string | number
+}
+
+export interface CoachingMessage {
+  id: string
+  sender: CoachingMessageSender
+  text: string
+  timestamp: string
+  exercise?: CoachingExercise
+}
+
+export interface CoachingSession {
+  id: string
+  title: string
+  status: CoachingSessionStatus
+  startedAt: string
+  messages: CoachingMessage[]
+}
+
+export interface EmotionalPattern {
+  id: string
+  title: string
+  description: string
+  recommendation: string
+  data: {
+    labels: string[]
+    values: number[]
+  }
+  chartType: 'line' | 'pie'
+}
+
+export interface ThematicRoom {
+  id: string
+  name: string
+  description: string
+  icon: LucideIcon
+}
+
+export type GardenElementStatus = 'seed' | 'seedling' | 'flower'
+
+export interface GardenGoal {
+  id: string
+  title: string
+  relatedFeature: 'journal' | 'challenge' | 'course'
+  targetCount: number
+  currentCount: number
+}
+
+export interface GardenElement {
+  id: string
+  goalId: string
+  status: GardenElementStatus
+  position: { x: number; y: number }
 }

@@ -7,18 +7,21 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import { SupportPost, SupportReply } from '@/types'
+import { SupportPost, SupportReply, ThematicRoom } from '@/types'
 import {
   supportPosts as initialSupportPosts,
   anonymousAliases,
+  thematicRooms,
 } from '@/lib/data'
+import { moderateSupportPost } from '@/lib/motherAi'
 
 const SUPPORT_CIRCLE_KEY = 'mae-amiga-support-circle'
 
 interface SupportCircleContextType {
+  rooms: ThematicRoom[]
   posts: SupportPost[]
-  addPost: (title: string, content: string) => void
-  addReply: (postId: string, content: string) => void
+  addPost: (roomId: string, title: string, content: string) => Promise<void>
+  addReply: (postId: string, content: string) => Promise<void>
 }
 
 export const SupportCircleContext = createContext<
@@ -34,32 +37,41 @@ export function SupportCircleProvider({ children }: { children: ReactNode }) {
       const stored = localStorage.getItem(SUPPORT_CIRCLE_KEY)
       return stored ? JSON.parse(stored) : initialSupportPosts
     } catch (error) {
-      console.error('Failed to parse support posts', error)
       return initialSupportPosts
     }
   })
 
   useEffect(() => {
-    try {
-      localStorage.setItem(SUPPORT_CIRCLE_KEY, JSON.stringify(posts))
-    } catch (error) {
-      console.error('Failed to save support posts', error)
-    }
+    localStorage.setItem(SUPPORT_CIRCLE_KEY, JSON.stringify(posts))
   }, [posts])
 
-  const addPost = useCallback((title: string, content: string) => {
-    const newPost: SupportPost = {
-      id: `post-${Date.now()}`,
-      authorAlias: getRandomAlias(),
-      title,
-      content,
-      created_at: new Date().toISOString(),
-      replies: [],
-    }
-    setPosts((prevPosts) => [newPost, ...prevPosts])
-  }, [])
+  const addPost = useCallback(
+    async (roomId: string, title: string, content: string) => {
+      const moderationResult = await moderateSupportPost(content)
+      if (!moderationResult.isSafe) {
+        alert(`Conteúdo inadequado: ${moderationResult.reason}`)
+        return
+      }
+      const newPost: SupportPost = {
+        id: `post-${Date.now()}`,
+        roomId,
+        authorAlias: getRandomAlias(),
+        title,
+        content,
+        created_at: new Date().toISOString(),
+        replies: [],
+      }
+      setPosts((prev) => [newPost, ...prev])
+    },
+    [],
+  )
 
-  const addReply = useCallback((postId: string, content: string) => {
+  const addReply = useCallback(async (postId: string, content: string) => {
+    const moderationResult = await moderateSupportPost(content)
+    if (!moderationResult.isSafe) {
+      alert(`Conteúdo inadequado: ${moderationResult.reason}`)
+      return
+    }
     const newReply: SupportReply = {
       id: `reply-${Date.now()}`,
       postId,
@@ -67,17 +79,16 @@ export function SupportCircleProvider({ children }: { children: ReactNode }) {
       content,
       created_at: new Date().toISOString(),
     }
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === postId
-          ? { ...post, replies: [...post.replies, newReply] }
-          : post,
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId ? { ...p, replies: [...p.replies, newReply] } : p,
       ),
     )
   }, [])
 
   const value = useMemo(
     () => ({
+      rooms: thematicRooms,
       posts,
       addPost,
       addReply,

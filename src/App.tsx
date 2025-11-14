@@ -14,6 +14,9 @@ import { JournalProvider } from './contexts/JournalContext'
 import { ChallengesProvider } from './contexts/ChallengesContext'
 import { PlannerProvider } from './contexts/PlannerContext'
 import { SelfCareProvider } from './contexts/SelfCareContext'
+import { CoachingProvider } from './contexts/CoachingContext'
+import { SelfKnowledgeProvider } from './contexts/SelfKnowledgeContext'
+import { GrowthGardenProvider } from './contexts/GrowthGardenContext'
 
 import Layout from './components/Layout'
 import { AppLayout } from './components/AppLayout'
@@ -43,6 +46,9 @@ import CommunityChallengesPage from './pages/app/CommunityChallenges'
 import LibraryPage from './pages/app/Library'
 import HooponoponoJournalPage from './pages/app/HooponoponoJournal'
 import ProfilePage from './pages/app/Profile'
+import CoachingPage from './pages/app/Coaching'
+import SelfKnowledgePage from './pages/app/SelfKnowledge'
+import GrowthGardenPage from './pages/app/GrowthGarden'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -91,21 +97,27 @@ const App = () => {
                     <ProtectedRoute>
                       <GamificationProvider>
                         <ConversationsProvider>
-                          <SupportCircleProvider>
-                            <SelfCareProvider>
-                              <AiResponseProvider>
-                                <PlaylistProvider>
-                                  <JournalProvider>
-                                    <ChallengesProvider>
-                                      <PlannerProvider>
-                                        <AppLayout />
-                                      </PlannerProvider>
-                                    </ChallengesProvider>
-                                  </JournalProvider>
-                                </PlaylistProvider>
-                              </AiResponseProvider>
-                            </SelfCareProvider>
-                          </SupportCircleProvider>
+                          <GrowthGardenProvider>
+                            <SupportCircleProvider>
+                              <SelfCareProvider>
+                                <AiResponseProvider>
+                                  <PlaylistProvider>
+                                    <JournalProvider>
+                                      <ChallengesProvider>
+                                        <PlannerProvider>
+                                          <CoachingProvider>
+                                            <SelfKnowledgeProvider>
+                                              <AppLayout />
+                                            </SelfKnowledgeProvider>
+                                          </CoachingProvider>
+                                        </PlannerProvider>
+                                      </ChallengesProvider>
+                                    </JournalProvider>
+                                  </PlaylistProvider>
+                                </AiResponseProvider>
+                              </SelfCareProvider>
+                            </SupportCircleProvider>
+                          </GrowthGardenProvider>
                         </ConversationsProvider>
                       </GamificationProvider>
                     </ProtectedRoute>
@@ -113,6 +125,11 @@ const App = () => {
                 >
                   <Route index element={<DashboardPage />} />
                   <Route path="conversations" element={<ConversationsPage />} />
+                  <Route path="coaching" element={<CoachingPage />} />
+                  <Route
+                    path="self-knowledge"
+                    element={<SelfKnowledgePage />}
+                  />
                   <Route path="care" element={<CarePage />} />
                   <Route path="response" element={<ResponsePage />} />
                   <Route path="journal" element={<HooponoponoJournalPage />} />
@@ -129,6 +146,7 @@ const App = () => {
                     path="community-challenges"
                     element={<CommunityChallengesPage />}
                   />
+                  <Route path="growth-garden" element={<GrowthGardenPage />} />
                   <Route path="library" element={<LibraryPage />} />
                   <Route path="summary" element={<SummaryPage />} />
                   <Route path="profile" element={<ProfilePage />} />

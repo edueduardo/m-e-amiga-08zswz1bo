@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { HooponoponoJournalEntry } from '@/types'
 import { useGamification } from './GamificationContext'
+import { useGrowthGarden } from './GrowthGardenContext'
 
 const JOURNAL_KEY = 'mae-amiga-journal-entries'
 
@@ -23,6 +24,7 @@ export const JournalContext = createContext<JournalContextType | undefined>(
 
 export function JournalProvider({ children }: { children: ReactNode }) {
   const { addPoints } = useGamification()
+  const { updateProgress } = useGrowthGarden()
   const [entries, setEntries] = useState<HooponoponoJournalEntry[]>(() => {
     try {
       const stored = localStorage.getItem(JOURNAL_KEY)
@@ -52,9 +54,10 @@ export function JournalProvider({ children }: { children: ReactNode }) {
         }
         setEntries((prev) => [newEntry, ...prev])
         addPoints(25, "Escreveu no Diário Ho'oponopono")
+        updateProgress('journal')
       }
     },
-    [addPoints],
+    [addPoints, updateProgress],
   )
 
   const value = useMemo(
