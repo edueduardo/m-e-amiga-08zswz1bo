@@ -440,11 +440,8 @@ export const hooponoponoPractices: HooponoponoPractice[] = [
 ]
 
 export const getDailyHooponopono = (): HooponoponoPractice => {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-      86400000,
-  )
-  return hooponoponoPractices[dayOfYear % hooponoponoPractices.length]
+  // Returns the first practice consistently as per the requirement to remove time-based updates.
+  return hooponoponoPractices[0]
 }
 
 export const getRandomHooponopono = (): HooponoponoPractice => {

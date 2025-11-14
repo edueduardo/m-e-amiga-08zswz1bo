@@ -79,7 +79,6 @@ const LibraryPage = () => {
   }>({ resources: [], topics: [] })
 
   useEffect(() => {
-    // Simulates content refreshing every 12 hours by refreshing on component mount
     setDynamicContent(getDynamicLibraryResources())
   }, [])
 
@@ -97,8 +96,7 @@ const LibraryPage = () => {
       <div className="text-center">
         <h1 className="text-3xl font-bold">Biblioteca de Recursos</h1>
         <p className="text-muted-foreground mt-1">
-          Artigos, vídeos e livros selecionados com carinho para você. Os temas
-          são atualizados a cada 12 horas.
+          Artigos, vídeos e livros selecionados com carinho para você.
         </p>
       </div>
       <div className="flex flex-col sm:flex-row gap-4">

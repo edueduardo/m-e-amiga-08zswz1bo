@@ -53,7 +53,7 @@ export const FreeSoundsDialog = ({
             Seu Momento de Paz Gratuito
           </DialogTitle>
           <DialogDescription>
-            Uma prática e sons para te acalmar, atualizados diariamente.
+            Uma prática e sons para te acalmar e trazer um momento de paz.
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 space-y-6">

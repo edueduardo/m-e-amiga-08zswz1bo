@@ -15,7 +15,6 @@ export const DailyInspiration = () => {
 
   useEffect(() => {
     fetchInspiration()
-    // Simulates content refreshing every 12 hours by refreshing on component mount
   }, [])
 
   if (!inspiration) {
@@ -27,7 +26,7 @@ export const DailyInspiration = () => {
       <CardContent className="p-6 flex flex-col items-center text-center gap-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
           <Sparkles className="h-4 w-4" />
-          <span>Sua inspiração de hoje</span>
+          <span>Sua inspiração do momento</span>
           {inspiration.type === 'hooponopono' && (
             <Badge variant="outline">Ho'oponopono</Badge>
           )}

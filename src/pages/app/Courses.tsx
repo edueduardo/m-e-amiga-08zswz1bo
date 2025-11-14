@@ -18,7 +18,6 @@ const CoursesPage = () => {
   const [courses, setCourses] = useState<MicroCourse[]>([])
 
   useEffect(() => {
-    // Simulates content refreshing daily by refreshing on component mount
     setCourses(getDynamicMicroCourses())
   }, [])
 
@@ -31,7 +30,7 @@ const CoursesPage = () => {
         </h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
           Minicursos gerados por IA e adaptados para você, com lições curtas e
-          diretas, pensadas com carinho. O conteúdo é atualizado diariamente.
+          diretas, pensadas com carinho.
         </p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
