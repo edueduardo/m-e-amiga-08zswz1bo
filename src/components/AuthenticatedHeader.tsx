@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { AppSidebar } from './AppSidebar'
 import { SOSDialog } from './SOSDialog'
 import { ThemeToggle } from './ThemeToggle'
-import { SiteSearch } from './SiteSearch'
 import { NotificationCenter } from './NotificationCenter'
 
 export const AuthenticatedHeader = () => {
@@ -30,10 +29,7 @@ export const AuthenticatedHeader = () => {
             </SheetContent>
           </Sheet>
         </div>
-        <div className="flex-1">
-          <SiteSearch />
-        </div>
-        <div className="flex items-center gap-4">
+        <div className="flex w-full items-center justify-end gap-4">
           <ThemeToggle />
           <NotificationCenter />
           <Button
