@@ -221,6 +221,7 @@ export const generateWeeklyMotherSummary = async (
 export const generateSelfCareQuiz = async (
   focus: SelfCareFocus,
 ): Promise<QuizQuestion[]> => {
+  const randomImageQuery = `abstract%20inkblot%20${Math.floor(Math.random() * 20) + 1}`
   const fallbackQuiz: QuizQuestion[] = [
     {
       id: 'q1_feeling',
@@ -239,28 +240,16 @@ export const generateSelfCareQuiz = async (
       ],
     },
     {
-      id: 'q3_priority',
-      question: `Pensando no seu cuidado ${focus === 'daily' ? 'diário' : focus === 'weekly' ? 'semanal' : 'mensal'}, o que parece mais importante para você neste momento?`,
-      type: 'text',
-    },
-    {
       id: 'q4_rorschach',
       question:
         'Olhe para esta imagem. O que você vê ou sente ao observá-la? Não há resposta certa ou errada, apenas o que vem à sua mente.',
       type: 'rorschach',
-      imageUrl:
-        'https://img.usecurling.com/p/512/512?q=abstract%20inkblot%201&color=black',
-    },
-    {
-      id: 'q5_final_thought',
-      question:
-        'Há mais alguma coisa que você gostaria de me contar antes de criarmos sua trilha?',
-      type: 'text',
+      imageUrl: `https://img.usecurling.com/p/512/512?q=${randomImageQuery}&color=black`,
     },
   ]
-  if (!API_KEY) return fallbackQuiz.slice(0, 3)
+  if (!API_KEY) return fallbackQuiz
 
-  const prompt = `Você é a 'Mãe Amiga', uma IA coach de bem-estar. Crie um quiz de 5 a 7 perguntas para entender as necessidades de uma mulher casada, com foco em seu cuidado ${focus}. As perguntas devem ser gentis e investigativas. Inclua pelo menos uma pergunta de múltipla escolha. Se as respostas iniciais sugerirem estresse profundo ou confusão, inclua uma pergunta do tipo 'rorschach'. Responda APENAS com um objeto JSON contendo uma chave "quiz" que é um array de objetos, cada um com "id", "question", "type" ('multiple-choice', 'text', ou 'rorschach'), "options" (array de strings, se aplicável), e "imageUrl" (string, se for 'rorschach').`
+  const prompt = `Você é a 'Mãe Amiga', uma IA coach de bem-estar. Crie um quiz de 5 perguntas para entender as necessidades de uma mulher casada, com foco em seu cuidado ${focus}. As perguntas devem ser gentis e investigativas. Inclua uma pergunta de múltipla escolha e uma do tipo 'rorschach'. Para a pergunta 'rorschach', gere uma query de 1 a 3 palavras em inglês para uma imagem de mancha de tinta abstrata que seja tematicamente relevante para o foco de cuidado ('${focus}'). Responda APENAS com um objeto JSON com a chave "quiz" (um array de objetos), cada um com "id", "question", "type" ('multiple-choice', 'text', 'rorschach'), "options" (se aplicável), e "imageUrl" (para 'rorschach', use o formato 'https://img.usecurling.com/p/512/512?q=SUA_QUERY&color=black').`
 
   try {
     const response = await fetch(`${API_URL}/chat/completions`, {
@@ -367,6 +356,42 @@ export const refineSelfCarePlan = async (
     return JSON.parse(data.choices[0]?.message?.content)
   } catch (error) {
     console.error('Error refining self-care plan:', error)
+    return previousPlan
+  }
+}
+
+export const elaborateOnSelfCarePlan = async (
+  previousPlan: SelfCarePlan,
+  elaboration: string,
+  answers: Record<string, string>,
+  focus: SelfCareFocus,
+): Promise<SelfCarePlan> => {
+  if (!API_KEY) return previousPlan
+
+  const prompt = `Você é a 'Mãe Amiga'. Eu te dei um plano de autocuidado baseado nas respostas: ${JSON.stringify(
+    answers,
+  )} e com foco ${focus}. O plano foi: ${JSON.stringify(
+    previousPlan,
+  )}. Minha filha refletiu sobre o plano e adicionou o seguinte desabafo: "${elaboration}". Agora, incorpore esse novo sentimento e refine o plano para ser ainda mais útil para ela. Mantenha a mesma estrutura JSON e o mesmo tom do plano anterior. Responda APENAS com o objeto JSON refinado.`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.8,
+        response_format: { type: 'json_object' },
+      }),
+    })
+    const data = await response.json()
+    return JSON.parse(data.choices[0]?.message?.content)
+  } catch (error) {
+    console.error('Error elaborating on self-care plan:', error)
     return previousPlan
   }
 }

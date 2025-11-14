@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, HeartHandshake, CheckCircle } from 'lucide-react'
+import { Loader2, HeartHandshake } from 'lucide-react'
 import {
   generateSelfCareQuiz,
   generateSelfCarePlan,
   refineSelfCarePlan,
+  elaborateOnSelfCarePlan,
   SelfCareFocus,
 } from '@/lib/motherAi'
 import { QuizQuestion, SelfCarePlan as SelfCarePlanType } from '@/types'
@@ -17,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useToast } from '@/components/ui/use-toast'
 
 type InteractionState =
   | 'focusSelection'
@@ -25,7 +27,7 @@ type InteractionState =
   | 'generatingPlan'
   | 'plan'
   | 'refiningPlan'
-  | 'accepted'
+  | 'elaboratingPlan'
 
 const CarePage = () => {
   const [state, setState] = useState<InteractionState>('focusSelection')
@@ -33,6 +35,7 @@ const CarePage = () => {
   const [plan, setPlan] = useState<SelfCarePlanType | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [focus, setFocus] = useState<SelfCareFocus | null>(null)
+  const { toast } = useToast()
 
   const startQuiz = async (selectedFocus: SelfCareFocus) => {
     setState('loadingQuiz')
@@ -59,8 +62,24 @@ const CarePage = () => {
     setState('plan')
   }
 
+  const handleElaboratePlan = async (elaboration: string) => {
+    if (!plan || !focus) return
+    setState('elaboratingPlan')
+    const elaboratedPlan = await elaborateOnSelfCarePlan(
+      plan,
+      elaboration,
+      answers,
+      focus,
+    )
+    setPlan(elaboratedPlan)
+    setState('plan')
+  }
+
   const handleAcceptPlan = () => {
-    setState('accepted')
+    toast({
+      title: 'Que bom que gostou, filha!',
+      description: 'Lembre-se, você pode sempre me contar mais se algo mudar.',
+    })
   }
 
   const resetFlow = () => {
@@ -76,14 +95,16 @@ const CarePage = () => {
       case 'loadingQuiz':
       case 'generatingPlan':
       case 'refiningPlan':
+      case 'elaboratingPlan':
         return (
           <div className="text-center space-y-4">
             <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
             <p className="text-muted-foreground">
               {state === 'loadingQuiz' && 'Preparando umas perguntas...'}
               {state === 'generatingPlan' &&
-                'Criando uma trilha com carinho para você...'}
+                'Criando uma trilha com carinho...'}
               {state === 'refiningPlan' && 'Ajustando o caminho...'}
+              {state === 'elaboratingPlan' && 'Ouvindo com atenção...'}
             </p>
           </div>
         )
@@ -98,25 +119,16 @@ const CarePage = () => {
         )
       case 'plan':
         return (
-          plan && (
+          plan &&
+          focus && (
             <SelfCarePlan
               plan={plan}
+              focus={focus}
               onRefine={handleRefinePlan}
               onAccept={handleAcceptPlan}
+              onElaborate={handleElaboratePlan}
             />
           )
-        )
-      case 'accepted':
-        return (
-          <div className="text-center space-y-4 max-w-md mx-auto">
-            <CheckCircle className="h-16 w-16 mx-auto text-green-500" />
-            <h2 className="text-2xl font-bold">Ótima decisão, filha!</h2>
-            <p className="text-muted-foreground">
-              Sua trilha de autocuidado foi definida. Lembre-se de ser gentil
-              consigo mesma nessa jornada. Um passo de cada vez.
-            </p>
-            <Button onClick={resetFlow}>Começar uma nova trilha</Button>
-          </div>
         )
       case 'focusSelection':
       default:
