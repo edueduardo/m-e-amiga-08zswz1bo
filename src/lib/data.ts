@@ -83,7 +83,7 @@ export const careRoutines: CareRoutine[] = [
   },
 ]
 
-export const microCourses: MicroCourse[] = [
+const allMicroCourses: MicroCourse[] = [
   {
     id: '1',
     slug: 'comunicacao-gentil-no-casamento',
@@ -98,6 +98,14 @@ export const microCourses: MicroCourse[] = [
         title: 'O que você realmente sente?',
         content_markdown:
           'Muitas vezes, a irritação é só a ponta do iceberg. Por baixo, pode haver tristeza, cansaço ou medo. Antes de iniciar uma conversa difícil, pergunte-se: "O que eu estou sentindo de verdade?".',
+      },
+      {
+        id: '102',
+        course_slug: 'comunicacao-gentil-no-casamento',
+        lesson_number: 2,
+        title: 'A Fórmula "Eu Sinto"',
+        content_markdown:
+          'Em vez de dizer "Você nunca me ajuda", tente "Eu me sinto sobrecarregada com as tarefas da casa". Falar sobre seus sentimentos é menos acusatório e abre espaço para o diálogo.',
       },
     ],
   },
@@ -133,7 +141,16 @@ export const microCourses: MicroCourse[] = [
     title: 'Estabelecendo Limites Saudáveis',
     summary: 'Aprenda a dizer "não" sem culpa e a proteger sua energia.',
     isAiGenerated: true,
-    lessons: [],
+    lessons: [
+      {
+        id: '401',
+        course_slug: 'estabelecendo-limites-saudaveis',
+        lesson_number: 1,
+        title: 'O "Não" é um "Sim" para Você',
+        content_markdown:
+          'Cada vez que você diz "não" para algo que não quer ou não pode fazer, está dizendo "sim" para sua paz, seu tempo e sua saúde mental. Não é egoísmo, é autopreservação.',
+      },
+    ],
   },
   {
     id: '5',
@@ -184,7 +201,32 @@ export const microCourses: MicroCourse[] = [
     isAiGenerated: true,
     lessons: [],
   },
+  {
+    id: '11',
+    slug: 'o-poder-do-sono-reparador',
+    title: 'O Poder do Sono Reparador',
+    summary: 'Dicas para melhorar a qualidade do seu sono e ter mais energia.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '12',
+    slug: 'navegando-conversas-dificeis',
+    title: 'Navegando Conversas Difíceis',
+    summary: 'Estratégias para abordar temas sensíveis com mais confiança.',
+    isAiGenerated: true,
+    lessons: [],
+  },
 ]
+
+const shuffleAndTake = <T>(arr: T[], count: number): T[] => {
+  return [...arr].sort(() => 0.5 - Math.random()).slice(0, count)
+}
+
+export const getDynamicMicroCourses = (): MicroCourse[] =>
+  shuffleAndTake(allMicroCourses, 10)
+
+export const microCourses: MicroCourse[] = getDynamicMicroCourses()
 
 const today = new Date()
 export const voiceEntries: VoiceEntry[] = [
@@ -285,8 +327,6 @@ export const supportPosts: SupportPost[] = [
     replies: [],
   },
 ]
-
-// New Data for Well-being Features
 
 const allMeditations: MeditationAudio[] = [
   {
@@ -392,10 +432,6 @@ const allGuidedAudios: MeditationAudio[] = [
   },
 ]
 
-const shuffleAndTake = <T>(arr: T[], count: number): T[] => {
-  return [...arr].sort(() => 0.5 - Math.random()).slice(0, count)
-}
-
 export const getDynamicMeditations = () => shuffleAndTake(allMeditations, 5)
 export const getDynamicGuidedAudios = () => shuffleAndTake(allGuidedAudios, 5)
 
@@ -489,7 +525,7 @@ export const weeklyChallenges: Challenge[] = [
   },
 ]
 
-export const libraryResources: LibraryResource[] = [
+const allLibraryResources: LibraryResource[] = [
   {
     id: 'res1',
     title: 'A exaustão em mulheres na sociedade do cansaço',
@@ -534,4 +570,64 @@ export const libraryResources: LibraryResource[] = [
       'https://img.usecurling.com/p/400/300?q=journal%20and%20pen',
     topic: 'personal_development',
   },
+  {
+    id: 'res5',
+    title: 'Entendendo a Ansiedade: O que Acontece no seu Cérebro',
+    description: 'Um vídeo animado que explica a ansiedade de forma simples.',
+    type: 'video',
+    url: '#',
+    cover_image_url: 'https://img.usecurling.com/p/400/300?q=animated%20brain',
+    topic: 'mental_health',
+  },
+  {
+    id: 'res6',
+    title: 'As 5 Linguagens do Amor',
+    description:
+      'Descubra a sua e a do seu parceiro para fortalecer a conexão. Recomendação de livro.',
+    type: 'book',
+    url: '#',
+    cover_image_url: 'https://img.usecurling.com/p/400/300?q=love%20languages',
+    topic: 'relationships',
+  },
+  {
+    id: 'res7',
+    title: 'Como Lidar com a Birra dos Filhos (sem perder a calma)',
+    description:
+      'Um artigo com estratégias práticas para momentos de crise com os pequenos.',
+    type: 'article',
+    url: '#',
+    cover_image_url: 'https://img.usecurling.com/p/400/300?q=toddler%20tantrum',
+    topic: 'motherhood',
+  },
+  {
+    id: 'res8',
+    title: 'Mindset: A Nova Psicologia do Sucesso',
+    description:
+      'Entenda como sua mentalidade afeta seu crescimento. Recomendação de livro.',
+    type: 'book',
+    url: '#',
+    cover_image_url: 'https://img.usecurling.com/p/400/300?q=growth%20mindset',
+    topic: 'personal_development',
+  },
 ]
+
+const allTopics = [
+  'mental_health',
+  'relationships',
+  'motherhood',
+  'personal_development',
+]
+
+export const getDynamicLibraryResources = (): {
+  resources: LibraryResource[]
+  topics: string[]
+} => {
+  const activeTopics = shuffleAndTake(allTopics, 3)
+  const resources = allLibraryResources.filter((res) =>
+    activeTopics.includes(res.topic),
+  )
+  return { resources, topics: activeTopics }
+}
+
+export const { resources: libraryResources, topics: libraryTopics } =
+  getDynamicLibraryResources()

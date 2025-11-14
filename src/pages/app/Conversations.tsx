@@ -16,6 +16,7 @@ import {
   Upload,
   MessageSquareHeart,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react'
 import { VoiceEntry, Feedback } from '@/types'
 import { format } from 'date-fns'
@@ -32,6 +33,17 @@ import { useConversations } from '@/contexts/ConversationsContext'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 const moodMap: { [key: string]: { color: string; border: string } } = {
   triste: { color: 'bg-blue-100 text-blue-800', border: 'border-blue-200' },
@@ -50,7 +62,7 @@ const moodMap: { [key: string]: { color: string; border: string } } = {
 
 const ConversationsPage = () => {
   const { abTestGroup } = useAuth()
-  const { entries, addEntry, updateFeedback } = useConversations()
+  const { entries, addEntry, deleteEntry, updateFeedback } = useConversations()
   const { toast } = useToast()
   const [newEntry, setNewEntry] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -138,6 +150,14 @@ const ConversationsPage = () => {
     updateFeedback(entryId, feedback)
   }
 
+  const handleDeleteEntry = (entryId: string) => {
+    deleteEntry(entryId)
+    toast({
+      title: 'Desabafo excluído',
+      description: 'Sua mensagem foi removida com sucesso.',
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newEntry && !audioFile) return
@@ -212,7 +232,7 @@ const ConversationsPage = () => {
               <div className="space-y-6">
                 {entries.map((entry) => (
                   <div key={entry.id} className="space-y-4 animate-fade-in-up">
-                    <div className="flex items-start gap-3 justify-end">
+                    <div className="flex items-start gap-3 justify-end group">
                       <div className="p-3 rounded-lg bg-secondary max-w-xl shadow-sm">
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-sm font-medium">Você</p>
@@ -229,9 +249,42 @@ const ConversationsPage = () => {
                         )}
                         <p className="text-sm">{entry.transcript}</p>
                       </div>
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>V</AvatarFallback>
-                      </Avatar>
+                      <div className="flex flex-col items-center">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>V</AvatarFallback>
+                        </Avatar>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Excluir este desabafo?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta ação não pode ser desfeita. Seu desabafo e
+                                a resposta da Mãe Amiga serão removidos
+                                permanentemente.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteEntry(entry.id)}
+                              >
+                                Excluir
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Avatar className="h-8 w-8">

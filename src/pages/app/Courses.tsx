@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Card,
@@ -9,10 +10,18 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, BookOpenCheck, Sparkles } from 'lucide-react'
-import { microCourses } from '@/lib/data'
+import { getDynamicMicroCourses } from '@/lib/data'
+import { MicroCourse } from '@/types'
 import { Badge } from '@/components/ui/badge'
 
 const CoursesPage = () => {
+  const [courses, setCourses] = useState<MicroCourse[]>([])
+
+  useEffect(() => {
+    // Simulates content refreshing daily by refreshing on component mount
+    setCourses(getDynamicMicroCourses())
+  }, [])
+
   return (
     <div className="space-y-8">
       <div className="text-center">
@@ -26,7 +35,7 @@ const CoursesPage = () => {
         </p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {microCourses.map((course, index) => (
+        {courses.map((course, index) => (
           <Card
             key={course.id}
             className="flex flex-col hover:shadow-xl hover:-translate-y-1 transition-transform animate-fade-in-up"

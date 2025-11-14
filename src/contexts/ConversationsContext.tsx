@@ -12,6 +12,7 @@ import { voiceEntries as initialVoiceEntries } from '@/lib/data'
 interface ConversationsContextType {
   entries: VoiceEntry[]
   addEntry: (entry: VoiceEntry) => void
+  deleteEntry: (entryId: string) => void
   deleteAllEntries: () => void
   updateFeedback: (entryId: string, feedback: Feedback) => void
 }
@@ -25,6 +26,12 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
 
   const addEntry = useCallback((entry: VoiceEntry) => {
     setEntries((prevEntries) => [entry, ...prevEntries])
+  }, [])
+
+  const deleteEntry = useCallback((entryId: string) => {
+    setEntries((prevEntries) =>
+      prevEntries.filter((entry) => entry.id !== entryId),
+    )
   }, [])
 
   const deleteAllEntries = useCallback(() => {
@@ -43,10 +50,11 @@ export function ConversationsProvider({ children }: { children: ReactNode }) {
     () => ({
       entries,
       addEntry,
+      deleteEntry,
       deleteAllEntries,
       updateFeedback,
     }),
-    [entries, addEntry, deleteAllEntries, updateFeedback],
+    [entries, addEntry, deleteEntry, deleteAllEntries, updateFeedback],
   )
 
   return (

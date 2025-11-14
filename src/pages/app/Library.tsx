@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Book, Clapperboard, Newspaper, Search } from 'lucide-react'
-import { libraryResources } from '@/lib/data'
+import { getDynamicLibraryResources } from '@/lib/data'
 import { LibraryResource, LibraryResourceType } from '@/types'
 
 const resourceTypeMap: Record<
@@ -73,8 +73,17 @@ const LibraryCard = ({ resource }: { resource: LibraryResource }) => {
 const LibraryPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTopic, setSelectedTopic] = useState('all')
+  const [dynamicContent, setDynamicContent] = useState<{
+    resources: LibraryResource[]
+    topics: string[]
+  }>({ resources: [], topics: [] })
 
-  const filteredResources = libraryResources.filter((resource) => {
+  useEffect(() => {
+    // Simulates content refreshing every 12 hours by refreshing on component mount
+    setDynamicContent(getDynamicLibraryResources())
+  }, [])
+
+  const filteredResources = dynamicContent.resources.filter((resource) => {
     const matchesSearch =
       resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       resource.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,7 +97,8 @@ const LibraryPage = () => {
       <div className="text-center">
         <h1 className="text-3xl font-bold">Biblioteca de Recursos</h1>
         <p className="text-muted-foreground mt-1">
-          Artigos, vídeos e livros selecionados com carinho para você.
+          Artigos, vídeos e livros selecionados com carinho para você. Os temas
+          são atualizados a cada 12 horas.
         </p>
       </div>
       <div className="flex flex-col sm:flex-row gap-4">
@@ -106,9 +116,10 @@ const LibraryPage = () => {
             <SelectValue placeholder="Filtrar por tópico" />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(topicMap).map(([key, value]) => (
-              <SelectItem key={key} value={key}>
-                {value}
+            <SelectItem value="all">{topicMap.all}</SelectItem>
+            {dynamicContent.topics.map((topicKey) => (
+              <SelectItem key={topicKey} value={topicKey}>
+                {topicMap[topicKey]}
               </SelectItem>
             ))}
           </SelectContent>

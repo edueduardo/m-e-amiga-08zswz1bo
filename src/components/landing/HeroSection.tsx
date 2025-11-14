@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { InstallAppDialog } from '@/components/InstallAppDialog'
-import { Download, HeartPulse } from 'lucide-react'
+import { HeartPulse } from 'lucide-react'
 import { SOSDialog } from '../SOSDialog'
 
 export const HeroSection = () => {
@@ -30,16 +30,17 @@ export const HeroSection = () => {
           <div className="flex flex-col items-center space-y-6 text-center">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-                Fale o que sente. Seja acolhida.
+                Sinta-se ouvida. Encontre seu equilíbrio.
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Um coach de voz com inteligência artificial que responde como
-                uma mãe experiente e sua melhor amiga.
+                O apoio emocional que você merece, no seu tempo. Grave seus
+                desabafos e receba o carinho e a sabedoria de uma mãe e melhor
+                amiga, com a ajuda da IA.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-4">
               <Button asChild size="lg">
-                <Link to={getCtaLink()}>Começar por R$ 10</Link>
+                <Link to={getCtaLink()}>Começar meu acolhimento</Link>
               </Button>
               <Button variant="outline" size="lg" onClick={handleScroll}>
                 Ver como funciona
@@ -50,7 +51,7 @@ export const HeroSection = () => {
                 onClick={() => setIsSOSDialogOpen(true)}
               >
                 <HeartPulse className="mr-2 h-5 w-5" />
-                Botão SOS
+                Preciso de ajuda agora
               </Button>
             </div>
           </div>
