@@ -42,7 +42,16 @@ export interface VoiceEntry {
   id: string
   created_at: string
   transcript: string
-  mood_label: 'triste' | 'cansada' | 'ansiosa' | 'irritada' | 'feliz' | 'neutra'
+  mood_label:
+    | 'triste'
+    | 'cansada'
+    | 'ansiosa'
+    | 'irritada'
+    | 'feliz'
+    | 'neutra'
+    | 'frustrada'
+    | 'culpada'
+    | 'sobrecarregada'
   mother_reply: string
   audio_url?: string
   feedback?: Feedback
@@ -378,7 +387,13 @@ export interface CustomReminder {
   is_active: boolean
 }
 
-export type VirtualManProfile = 'avô' | 'marido' | 'filho adolescente'
+export type VirtualManProfile =
+  | 'Avô'
+  | 'Marido'
+  | 'Filho Adolescente'
+  | 'Pai Apoiador'
+  | 'Amigo Sincero'
+  | 'Chefe Experiente'
 
 export interface VirtualManAiResponse {
   disclaimer: string
@@ -399,3 +414,5 @@ export interface VirtualManInteraction {
   feedback_comment?: string | null
   created_at: string
 }
+
+

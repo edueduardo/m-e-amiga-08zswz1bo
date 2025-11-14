@@ -8,6 +8,7 @@ import {
   VirtualManProfile,
   VirtualManAiResponse,
 } from '@/types'
+import { VirtualManProfileFromDB } from '@/services/virtualMan'
 
 const API_URL = 'https://api.openai.com/v1'
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY
@@ -80,7 +81,7 @@ export const transcribeAudio = async (audioFile: File): Promise<string> => {
 const performEmotionalAnalysis = async (
   transcript: string,
 ): Promise<EmotionalProfile | null> => {
-  const prompt = `Você é uma IA especialista em psicologia. Analise o texto a seguir e identifique o perfil emocional. Se houver sinais de sofrimento persistente, desesperança ou risco, classifique a intensidade como 'crítica'. Responda APENAS com um objeto JSON com a seguinte estrutura: { "primaryEmotion": "string", "secondaryEmotions": ["string"], "intensity": "baixa" | "média" | "alta" | "crítica", "underlyingNeeds": ["string"], "keyConcerns": ["string"] }. Emoções válidas: triste, cansada, ansiosa, irritada, feliz, neutra. Texto: "${transcript}"`
+  const prompt = `Você é uma IA especialista em psicologia. Analise o texto a seguir e identifique o perfil emocional com nuances. Se houver sinais de sofrimento persistente, desesperança ou risco, classifique a intensidade como 'crítica'. Responda APENAS com um objeto JSON com a seguinte estrutura: { "primaryEmotion": "string", "secondaryEmotions": ["string"], "intensity": "baixa" | "média" | "alta" | "crítica", "underlyingNeeds": ["string"], "keyConcerns": ["string"] }. Emoções válidas: triste, cansada, ansiosa, irritada, feliz, neutra, frustrada, culpada, sobrecarregada. Texto: "${transcript}"`
   try {
     const response = await fetch(`${API_URL}/chat/completions`, {
       method: 'POST',
@@ -531,41 +532,47 @@ export const moderateSupportPost = async (
 
 export const generateVirtualManReply = async (
   query: string,
-  profile: VirtualManProfile,
+  profile: VirtualManProfileFromDB,
 ): Promise<VirtualManAiResponse> => {
-  await delay(2000) // Simulate API call
-
-  const profileMap = {
-    avô: {
-      name: 'Avô',
-      perspective:
-        'baseada na experiência de vida, valores tradicionais e um olhar protetor.',
-    },
-    marido: {
-      name: 'Marido',
-      perspective:
-        'focada na parceria, nas responsabilidades compartilhadas e na dinâmica do relacionamento a dois.',
-    },
-    'filho adolescente': {
-      name: 'Filho Adolescente',
-      perspective:
-        'influenciada pela busca por identidade, pressões sociais da sua geração e a transição para a vida adulta.',
-    },
+  if (!API_KEY) {
+    throw new Error('OpenAI API key is missing.')
   }
 
-  const selected = profileMap[profile]
+  const systemPrompt = `Você é um consultor de IA que simula perspectivas masculinas para ajudar mulheres a entenderem melhor os homens em suas vidas. Você deve se basear em psicologia, sociologia e tendências comportamentais. Sua resposta DEVE ser um objeto JSON e NADA MAIS. A usuária selecionou o perfil "${profile.name}", descrito como "${profile.description}" com as seguintes características: ${JSON.stringify(profile.characteristics)}. A situação apresentada por ela é: "${query}".`
 
-  return {
-    disclaimer: `Esta é uma simulação da perspectiva de um ${selected.name}, ${selected.perspective}. Lembre-se que cada pessoa é única. Use estes insights como um ponto de partida para uma conversa aberta e empática, e não como uma verdade absoluta.`,
-    communication: `Do ponto de vista de um ${selected.name}, a forma como você aborda o assunto é crucial. Para a situação "${query}", uma abordagem direta pode ser interpretada como cobrança. Talvez ele prefira uma conversa mais calma, em um momento neutro, sem a pressão de ter que resolver algo imediatamente.`,
-    social_behaviors: `Socialmente, um ${selected.name} pode valorizar a independência e a resolução de problemas de forma autônoma. Pedir ajuda pode, para alguns, soar como um atestado de que ele não é capaz. Isso não é sobre você, mas sobre uma construção social que ele internalizou.`,
-    expectations_insecurities: `A expectativa de "ser forte" e "ser o provedor" ainda é muito presente. Sua preocupação, mesmo que vinda de um lugar de amor, pode acionar uma insegurança sobre sua capacidade de lidar com as coisas. Ele pode reagir com irritação como uma forma de defesa para não demonstrar vulnerabilidade.`,
-    family_situations: `No contexto familiar, um ${selected.name} muitas vezes se vê no papel de pilar. Situações que desafiam esse papel, como dificuldades financeiras ou problemas com os filhos, podem gerar um estresse que ele não sabe como expressar. A irritação pode ser um sintoma desse estresse não comunicado.`,
-    practical_tips: [
-      'Escolha um momento calmo e neutro para conversar, não durante ou logo após o problema acontecer.',
-      'Use frases que comecem com "Eu sinto..." em vez de "Você fez...". Ex: "Eu me sinto sobrecarregada" em vez de "Você não me ajuda".',
-      'Reconheça o esforço dele em outras áreas antes de apontar uma falha. Ex: "Eu sei que você trabalhou muito hoje, e eu agradeço. Eu também tive um dia cheio e estou precisando de um apoio com...".',
-      'Seja específica no seu pedido. Em vez de "Preciso de mais ajuda", tente "Você poderia, por favor, colocar as crianças para dormir hoje?".',
-    ],
+  const userPrompt = `Analise a situação e gere uma resposta estruturada. Forneça insights sobre comunicação, comportamentos sociais, expectativas/inseguranças e situações familiares, sempre sob a ótica do perfil selecionado. Finalize com dicas práticas. A resposta DEVE seguir estritamente o seguinte formato JSON:
+  {
+    "disclaimer": "string (Um aviso de que esta é uma simulação generalizada e não uma verdade absoluta)",
+    "communication": "string (Análise sobre o estilo de comunicação do perfil)",
+    "social_behaviors": "string (Análise sobre comportamentos sociais e influências externas)",
+    "expectations_insecurities": "string (Análise sobre possíveis expectativas e inseguranças do perfil)",
+    "family_situations": "string (Análise sobre como o perfil pode reagir em contextos familiares)",
+    "practical_tips": ["string", "string", "string"]
+  }`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.7,
+        response_format: { type: 'json_object' },
+      }),
+    })
+    const data = await response.json()
+    return JSON.parse(data.choices[0]?.message?.content)
+  } catch (error) {
+    console.error('Error generating virtual man reply:', error)
+    throw new Error('Failed to generate virtual man reply.')
   }
 }
+
+

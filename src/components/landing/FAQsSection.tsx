@@ -12,7 +12,7 @@ const faqs = [
       'Mãe Amiga é um SaaS (Software como Serviço) que oferece apoio emocional e conselhos de vida para mulheres. Usamos uma inteligência artificial com o tom de uma mãe e melhor amiga para fornecer respostas carinhosas e acolhedoras, disponíveis 24/7.',
   },
   {
-    question: 'Como funciona o "consultor masculino virtual"?',
+    question: 'Como funciona o "Cabeça de Homem"?',
     answer:
       'É uma ferramenta de IA treinada com base em pesquisas de psicologia e tendências comportamentais masculinas. Ele oferece uma perspectiva generalizada sobre como diferentes perfis (avô, marido, filho adolescente) poderiam reagir a certas situações. É importante lembrar que ele é um guia para te ajudar a se preparar para conversas, e não uma previsão exata ou um substituto para o diálogo real.',
   },

@@ -11,7 +11,7 @@ export const InterestSection = () => {
           </h2>
           <p className="text-muted-foreground md:text-xl">
             Antes de conversar com seu companheiro, pai ou filho, tire suas
-            dúvidas com nosso conselheiro virtual baseado em pesquisas de
+            dúvidas com nosso consultor virtual baseado em pesquisas de
             psicologia. Receba respostas empáticas e pautadas em evidências
             sobre comunicação, comportamentos sociais e expectativas masculinas.
           </p>

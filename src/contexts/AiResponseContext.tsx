@@ -67,7 +67,7 @@ export function AiResponseProvider({ children }: { children: ReactNode }) {
         error:
           'A resposta está demorando mais do que o esperado. Por favor, tente novamente.',
       }))
-    }, 15000) // 15 seconds timeout
+    }, 25000) // 25 seconds timeout for AI generation
   }
 
   const handleAiInteraction = useCallback(

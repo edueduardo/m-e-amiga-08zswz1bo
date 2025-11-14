@@ -38,7 +38,7 @@ const ResponsePage = () => {
         title: 'Que bom que gostou, filha!',
         description: 'Sua trilha de cuidado está salva.',
       })
-      navigate('/app/care')
+      reset()
     }
   }
 

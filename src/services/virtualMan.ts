@@ -4,6 +4,25 @@ import {
   VirtualManAiResponse,
   VirtualManProfile,
 } from '@/types'
+import { Database } from '@/lib/supabase/types'
+
+export type VirtualManProfileFromDB =
+  Database['public']['Tables']['virtual_man_profiles']['Row']
+
+export const getVirtualManProfiles = async (): Promise<
+  VirtualManProfileFromDB[]
+> => {
+  const { data, error } = await supabase
+    .from('virtual_man_profiles')
+    .select('*')
+    .order('created_at', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching virtual man profiles:', error)
+    return []
+  }
+  return data
+}
 
 export const getVirtualManInteractions = async (
   userId: string,
@@ -66,3 +85,4 @@ export const updateVirtualManInteractionFeedback = async (
   }
   return data as VirtualManInteraction
 }
+

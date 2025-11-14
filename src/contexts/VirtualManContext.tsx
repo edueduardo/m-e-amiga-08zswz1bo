@@ -7,16 +7,14 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import {
-  VirtualManInteraction,
-  VirtualManProfile,
-  VirtualManAiResponse,
-} from '@/types'
+import { VirtualManInteraction, VirtualManProfile } from '@/types'
 import { useAuth } from './AuthContext'
 import {
   getVirtualManInteractions,
   addVirtualManInteraction,
   updateVirtualManInteractionFeedback,
+  getVirtualManProfiles,
+  VirtualManProfileFromDB,
 } from '@/services/virtualMan'
 import { generateVirtualManReply } from '@/lib/motherAi'
 
@@ -24,9 +22,13 @@ type VmStatus = 'idle' | 'loading' | 'success' | 'error'
 
 interface VirtualManContextType {
   interactions: VirtualManInteraction[]
+  profiles: VirtualManProfileFromDB[]
   status: VmStatus
   error: string | null
-  getInteraction: (query: string, profile: VirtualManProfile) => Promise<void>
+  getInteraction: (
+    query: string,
+    profile: VirtualManProfileFromDB,
+  ) => Promise<void>
   updateFeedback: (
     interactionId: string,
     rating: 'helpful' | 'not_helpful',
@@ -41,23 +43,28 @@ export const VirtualManContext = createContext<
 export function VirtualManProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
   const [interactions, setInteractions] = useState<VirtualManInteraction[]>([])
+  const [profiles, setProfiles] = useState<VirtualManProfileFromDB[]>([])
   const [status, setStatus] = useState<VmStatus>('idle')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (user) {
-      const fetchInteractions = async () => {
+      const fetchInitialData = async () => {
         setStatus('loading')
-        const data = await getVirtualManInteractions(user.id)
-        setInteractions(data)
+        const [interactionsData, profilesData] = await Promise.all([
+          getVirtualManInteractions(user.id),
+          getVirtualManProfiles(),
+        ])
+        setInteractions(interactionsData)
+        setProfiles(profilesData)
         setStatus('idle')
       }
-      fetchInteractions()
+      fetchInitialData()
     }
   }, [user])
 
   const getInteraction = useCallback(
-    async (query: string, profile: VirtualManProfile) => {
+    async (query: string, profile: VirtualManProfileFromDB) => {
       if (!user) return
       setStatus('loading')
       setError(null)
@@ -65,8 +72,8 @@ export function VirtualManProvider({ children }: { children: ReactNode }) {
         const response = await generateVirtualManReply(query, profile)
         const newInteraction = await addVirtualManInteraction({
           userId: user.id,
+          profile: profile.name as VirtualManProfile,
           query,
-          profile,
           response,
         })
         if (newInteraction) {
@@ -103,12 +110,13 @@ export function VirtualManProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       interactions,
+      profiles,
       status,
       error,
       getInteraction,
       updateFeedback,
     }),
-    [interactions, status, error, getInteraction, updateFeedback],
+    [interactions, profiles, status, error, getInteraction, updateFeedback],
   )
 
   return (
@@ -125,3 +133,5 @@ export const useVirtualMan = () => {
   }
   return context
 }
+
+

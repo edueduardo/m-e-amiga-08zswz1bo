@@ -67,7 +67,7 @@ const AdminPage = () => {
     toast({
       title: 'Iniciando análise...',
       description:
-        'Analisando o feedback do Homem Virtual. Isso pode levar um momento.',
+        'Analisando o feedback do Cabeça de Homem. Isso pode levar um momento.',
     })
 
     const { success, error } = await runFeedbackAnalysis()
@@ -101,7 +101,7 @@ const AdminPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Métricas do Homem Virtual</CardTitle>
+          <CardTitle>Métricas do Cabeça de Homem</CardTitle>
           <CardDescription>
             Acompanhe o desempenho e o feedback da funcionalidade.
           </CardDescription>
@@ -168,7 +168,7 @@ const AdminPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Análise de Feedback do Homem Virtual</CardTitle>
+          <CardTitle>Análise de Feedback do Cabeça de Homem</CardTitle>
           <CardDescription>
             Execute manualmente uma análise em todo o feedback fornecido pelos
             usuários. Isso também é executado automaticamente todo domingo.
