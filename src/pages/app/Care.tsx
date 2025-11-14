@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Loader2, HeartHandshake, Sparkles } from 'lucide-react'
+import { HeartHandshake, Sparkles, AlertTriangle } from 'lucide-react'
 import {
   generateSelfCareQuiz,
   generateSelfCarePlan,
@@ -19,15 +19,14 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
+import { AiProcessingLoader } from '@/components/AiProcessingLoader'
 
 type InteractionState =
   | 'focusSelection'
   | 'loadingQuiz'
   | 'quizFlow'
-  | 'generatingPlan'
+  | 'processingPlan'
   | 'plan'
-  | 'refiningPlan'
-  | 'elaboratingPlan'
   | 'error'
 
 const CarePage = () => {
@@ -36,7 +35,44 @@ const CarePage = () => {
   const [plan, setPlan] = useState<SelfCarePlanType | null>(null)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [focus, setFocus] = useState<SelfCareFocus | null>(null)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [maxTime, setMaxTime] = useState(60)
   const { toast } = useToast()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleAiInteraction = async (
+    aiFunction: () => Promise<SelfCarePlanType>,
+  ) => {
+    setState('processingPlan')
+
+    const complexity = JSON.stringify(answers).length
+    const estimatedTime = Math.max(
+      10,
+      Math.min(60, Math.round(complexity / 20)),
+    )
+    setMaxTime(estimatedTime)
+
+    timeoutRef.current = setTimeout(() => {
+      setErrorMessage(
+        'A Mãe Amiga está demorando um pouco mais que o normal para responder. Por favor, tente novamente em alguns instantes.',
+      )
+      setState('error')
+    }, 15000)
+
+    try {
+      const result = await aiFunction()
+      clearTimeout(timeoutRef.current!)
+      setPlan(result)
+      setState('plan')
+    } catch (error) {
+      clearTimeout(timeoutRef.current!)
+      console.error('AI Interaction Error:', error)
+      setErrorMessage(
+        'Ops, parece que houve uma falha no sistema. Não consegui gerar sua trilha agora. Por favor, tente novamente.',
+      )
+      setState('error')
+    }
+  }
 
   const startQuiz = async (selectedFocus: SelfCareFocus) => {
     setState('loadingQuiz')
@@ -48,43 +84,24 @@ const CarePage = () => {
 
   const handleQuizSubmit = async (submittedAnswers: Record<string, string>) => {
     if (!focus) return
-    setState('generatingPlan')
     setAnswers(submittedAnswers)
-    try {
-      const generatedPlan = await generateSelfCarePlan(submittedAnswers, focus)
-      setPlan(generatedPlan)
-      setState('plan')
-    } catch (error) {
-      console.error('Error generating plan:', error)
-      toast({
-        title: 'Ops, algo deu errado',
-        description:
-          'Não consegui gerar sua trilha agora. Por favor, tente novamente.',
-        variant: 'destructive',
-      })
-      setState('error')
-    }
+    await handleAiInteraction(() =>
+      generateSelfCarePlan(submittedAnswers, focus),
+    )
   }
 
   const handleRefinePlan = async (feedback: string) => {
     if (!plan || !focus) return
-    setState('refiningPlan')
-    const refinedPlan = await refineSelfCarePlan(plan, feedback, answers, focus)
-    setPlan(refinedPlan)
-    setState('plan')
+    await handleAiInteraction(() =>
+      refineSelfCarePlan(plan, feedback, answers, focus),
+    )
   }
 
   const handleElaboratePlan = async (elaboration: string) => {
     if (!plan || !focus) return
-    setState('elaboratingPlan')
-    const elaboratedPlan = await elaborateOnSelfCarePlan(
-      plan,
-      elaboration,
-      answers,
-      focus,
+    await handleAiInteraction(() =>
+      elaborateOnSelfCarePlan(plan, elaboration, answers, focus),
     )
-    setPlan(elaboratedPlan)
-    setState('plan')
   }
 
   const handleAcceptPlan = () => {
@@ -100,26 +117,16 @@ const CarePage = () => {
     setPlan(null)
     setAnswers({})
     setFocus(null)
+    setErrorMessage('')
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
   }
 
   const renderContent = () => {
     switch (state) {
       case 'loadingQuiz':
-      case 'generatingPlan':
-      case 'refiningPlan':
-      case 'elaboratingPlan':
-        return (
-          <div className="text-center space-y-4 p-8">
-            <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
-            <p className="text-muted-foreground text-lg">
-              {state === 'loadingQuiz' && 'Preparando umas perguntas...'}
-              {state === 'generatingPlan' &&
-                'Criando uma trilha com carinho...'}
-              {state === 'refiningPlan' && 'Ajustando o caminho...'}
-              {state === 'elaboratingPlan' && 'Ouvindo com atenção...'}
-            </p>
-          </div>
-        )
+        return <AiProcessingLoader maxTime={5} />
+      case 'processingPlan':
+        return <AiProcessingLoader maxTime={maxTime} />
       case 'quizFlow':
         return (
           <SelfCareQuizFlow
@@ -144,10 +151,10 @@ const CarePage = () => {
         )
       case 'error':
         return (
-          <div className="text-center space-y-4 p-8">
-            <p className="text-destructive text-lg">
-              Ocorreu um erro ao gerar sua trilha.
-            </p>
+          <div className="text-center space-y-6 p-8 max-w-lg mx-auto">
+            <AlertTriangle className="h-16 w-16 mx-auto text-destructive" />
+            <h2 className="text-2xl font-bold">Ocorreu um problema</h2>
+            <p className="text-muted-foreground">{errorMessage}</p>
             <Button onClick={resetFlow}>Tentar Novamente</Button>
           </div>
         )

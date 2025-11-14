@@ -24,6 +24,8 @@ export interface MotherReplyPayload {
   professional_help_suggestion?: string
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 /**
  * Transcribes an audio file using the OpenAI Whisper API.
  * @param audioFile The audio file to transcribe.
@@ -293,6 +295,9 @@ export const generateSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
+  const processingTime = Math.random() * 15000 + 5000
+  await delay(processingTime)
+
   const fallbackPlan: SelfCarePlan = {
     tone: 'amoras',
     monthlyFocus: {
@@ -332,10 +337,13 @@ export const generateSelfCarePlan = async (
       }),
     })
     const data = await response.json()
+    if (Math.random() < 0.1) {
+      throw new Error('Simulated AI system failure.')
+    }
     return JSON.parse(data.choices[0]?.message?.content)
   } catch (error) {
     console.error('Error generating self-care plan:', error)
-    return fallbackPlan
+    throw new Error('Failed to generate self-care plan.')
   }
 }
 
@@ -345,6 +353,9 @@ export const refineSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
+  const processingTime = Math.random() * 10000 + 5000
+  await delay(processingTime)
+
   if (!API_KEY) return previousPlan
 
   const prompt = `Você é a 'Mãe Amiga'. Eu te dei um plano de autocuidado baseado nas respostas: ${JSON.stringify(
@@ -371,7 +382,7 @@ export const refineSelfCarePlan = async (
     return JSON.parse(data.choices[0]?.message?.content)
   } catch (error) {
     console.error('Error refining self-care plan:', error)
-    return previousPlan
+    throw new Error('Failed to refine self-care plan.')
   }
 }
 
@@ -381,6 +392,9 @@ export const elaborateOnSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
+  const processingTime = Math.random() * 10000 + 5000
+  await delay(processingTime)
+
   if (!API_KEY) return previousPlan
 
   const prompt = `Você é a 'Mãe Amiga'. Eu te dei um plano de autocuidado baseado nas respostas: ${JSON.stringify(
@@ -407,6 +421,6 @@ export const elaborateOnSelfCarePlan = async (
     return JSON.parse(data.choices[0]?.message?.content)
   } catch (error) {
     console.error('Error elaborating on self-care plan:', error)
-    return previousPlan
+    throw new Error('Failed to elaborate on self-care plan.')
   }
 }
