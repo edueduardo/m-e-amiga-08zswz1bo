@@ -1,15 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Playlist, SoothingSound } from '@/types'
 import { soothingSounds } from '@/lib/data'
 import { Button } from '@/components/ui/button'
-import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  ListMusic,
-  Volume2,
-} from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, ListMusic } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
@@ -30,6 +23,11 @@ export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const currentTrack = tracks[currentTrackIndex]
+
+  const playNext = useCallback(() => {
+    if (tracks.length === 0) return
+    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length)
+  }, [tracks.length])
 
   useEffect(() => {
     if (audioRef.current && currentTrack) {
@@ -57,7 +55,7 @@ export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
       audio.removeEventListener('loadedmetadata', setAudioData)
       audio.removeEventListener('ended', handleEnded)
     }
-  }, [])
+  }, [playNext])
 
   const togglePlayPause = () => {
     if (isPlaying) {
@@ -68,11 +66,8 @@ export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
     setIsPlaying(!isPlaying)
   }
 
-  const playNext = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length)
-  }
-
   const playPrev = () => {
+    if (tracks.length === 0) return
     setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length)
   }
 
