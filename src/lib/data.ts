@@ -132,6 +132,7 @@ export const voiceEntries: VoiceEntry[] = [
     mother_reply:
       'Minha querida, imagino o quanto você deve estar exausta. Você se doa tanto para todos. Lembre-se que para cuidar dos outros, você precisa primeiro cuidar de si mesma. Será que hoje você não consegue delegar uma pequena tarefa ou tirar 15 minutinhos só para você, sem culpa? Você merece esse descanso.',
     audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    feedback: { rating: null },
   },
   {
     id: '2',
@@ -141,6 +142,7 @@ export const voiceEntries: VoiceEntry[] = [
     mood_label: 'ansiosa',
     mother_reply:
       'Filha, respira fundo. Sinto sua angústia daqui. Tente focar no agora. O que você pode controlar neste exato momento? Talvez uma caminhada curta ou ouvir uma música que te acalme possa ajudar a clarear a mente. Um passo de cada vez, querida.',
+    feedback: { rating: 'helpful', comment: 'Gostei do conselho prático.' },
   },
   {
     id: '3',
@@ -150,6 +152,7 @@ export const voiceEntries: VoiceEntry[] = [
     mood_label: 'feliz',
     mother_reply:
       'Que alegria ler isso, filha! Fico com o coração quentinho em saber que você está feliz. Aproveite cada segundo desse sentimento. Guarde essa sensação boa no coração para os dias que não forem tão fáceis. Celebre suas conquistas, por menores que pareçam!',
+    feedback: { rating: null },
   },
 ]
 

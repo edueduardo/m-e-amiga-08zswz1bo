@@ -13,6 +13,10 @@ import Index from './pages/Index'
 import LoginPage from './pages/Login'
 import SignupPage from './pages/Signup'
 import PricingPage from './pages/Pricing'
+import ForgotPasswordPage from './pages/ForgotPassword'
+import ResetPasswordPage from './pages/ResetPassword'
+import VerifyEmailPage from './pages/VerifyEmail'
+import VerifyPhonePage from './pages/VerifyPhone'
 import DashboardPage from './pages/app/Dashboard'
 import ConversationsPage from './pages/app/Conversations'
 import CarePage from './pages/app/Care'
@@ -50,6 +54,10 @@ const App = () => {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/verify-email" element={<VerifyEmailPage />} />
+              <Route path="/verify-phone" element={<VerifyPhonePage />} />
 
               <Route
                 path="/app"

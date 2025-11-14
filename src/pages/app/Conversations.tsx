@@ -10,7 +10,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Mic, Send, Loader2, Square, Upload } from 'lucide-react'
 import { voiceEntries } from '@/lib/data'
-import { VoiceEntry } from '@/types'
+import { VoiceEntry, Feedback } from '@/types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { generateMotherReply, transcribeAudio } from '@/lib/motherAi'
@@ -20,6 +20,7 @@ import { AudioPlayer } from '@/components/AudioPlayer'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { FeedbackButtons } from '@/components/FeedbackButtons'
 
 const moodColors: { [key: string]: string } = {
   triste: 'bg-blue-100 text-blue-800',
@@ -88,6 +89,15 @@ const ConversationsPage = () => {
     }
   }
 
+  const handleFeedbackSubmit = (entryId: string, feedback: Feedback) => {
+    setEntries((prevEntries) =>
+      prevEntries.map((entry) =>
+        entry.id === entryId ? { ...entry, feedback } : entry,
+      ),
+    )
+    console.log('Feedback submitted:', { entryId, feedback })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newEntry && !audioFile) return
@@ -119,6 +129,7 @@ const ConversationsPage = () => {
       mood_label: mood_label as VoiceEntry['mood_label'],
       mother_reply: motherReply,
       audio_url: audioURL || undefined,
+      feedback: { rating: null },
     }
 
     setEntries([entry, ...entries])
@@ -246,6 +257,11 @@ const ConversationsPage = () => {
                       <p className="text-sm whitespace-pre-wrap">
                         {entry.mother_reply}
                       </p>
+                      <FeedbackButtons
+                        entryId={entry.id}
+                        initialFeedback={entry.feedback}
+                        onFeedbackSubmit={handleFeedbackSubmit}
+                      />
                     </div>
                   </div>
                 </div>

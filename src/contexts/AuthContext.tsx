@@ -20,6 +20,10 @@ const mockUser: UserProfile = {
   id: '123',
   full_name: 'Maria',
   email: 'maria@example.com',
+  is_email_verified: true,
+  is_phone_verified: false,
+  phone_number: '11999998888',
+  is_two_factor_enabled: false,
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -40,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const updateUser = useCallback((data: Partial<UserProfile>) => {
-    setUser((prevUser) => (prevUser ? { ...prevUser, ...data } : prevUser))
+    setUser((prevUser) => (prevUser ? { ...prevUser, ...data } : null))
   }, [])
 
   const subscribe = useCallback(() => {
@@ -50,7 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   // For development: auto-login with a mock user
-  // To test the public view, comment out the login() call inside this useMemo
   useMemo(() => {
     // login(mockUser, true); // auto-login with active subscription
     // login(mockUser, false); // auto-login with inactive subscription

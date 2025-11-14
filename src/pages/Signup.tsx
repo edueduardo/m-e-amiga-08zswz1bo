@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,21 +11,28 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
+import { PasswordStrength } from '@/components/PasswordStrength'
 
 const SignupPage = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const [password, setPassword] = useState('')
 
-  const handleSignup = (event: React.FormEvent) => {
+  const handleSignup = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const fullName = formData.get('full-name') as string
+    const email = formData.get('email') as string
+
     // Mock signup logic
     const mockUser = {
-      id: '123',
-      full_name: 'Maria',
-      email: 'maria@example.com',
+      id: new Date().toISOString(),
+      full_name: fullName,
+      email: email,
+      is_email_verified: false, // Email is not verified on signup
     }
     login(mockUser, false) // New user is not subscribed
-    navigate('/pricing')
+    navigate('/verify-email')
   }
 
   return (
@@ -40,12 +48,18 @@ const SignupPage = () => {
           <form onSubmit={handleSignup} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="full-name">Nome completo</Label>
-              <Input id="full-name" placeholder="Maria da Silva" required />
+              <Input
+                id="full-name"
+                name="full-name"
+                placeholder="Maria da Silva"
+                required
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
@@ -53,7 +67,15 @@ const SignupPage = () => {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <PasswordStrength password={password} />
             </div>
             <Button type="submit" className="w-full">
               Criar conta

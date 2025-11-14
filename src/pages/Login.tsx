@@ -22,6 +22,8 @@ const LoginPage = () => {
       id: '123',
       full_name: 'Maria',
       email: 'maria@example.com',
+      is_email_verified: true,
+      is_phone_verified: false,
     }
     login(mockUser, true) // Assume user is subscribed for demo
     navigate('/app')
@@ -50,7 +52,10 @@ const LoginPage = () => {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Senha</Label>
-                <Link to="#" className="ml-auto inline-block text-sm underline">
+                <Link
+                  to="/forgot-password"
+                  className="ml-auto inline-block text-sm underline"
+                >
                   Esqueceu sua senha?
                 </Link>
               </div>

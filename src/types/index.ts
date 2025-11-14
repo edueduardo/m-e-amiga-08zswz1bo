@@ -28,6 +28,13 @@ export interface MicroCourse {
   lessons: MicroLesson[]
 }
 
+export type FeedbackRating = 'helpful' | 'not_helpful' | null
+
+export interface Feedback {
+  rating: FeedbackRating
+  comment?: string
+}
+
 export interface VoiceEntry {
   id: string
   created_at: string
@@ -35,6 +42,7 @@ export interface VoiceEntry {
   mood_label: 'triste' | 'cansada' | 'ansiosa' | 'irritada' | 'feliz' | 'neutra'
   mother_reply: string
   audio_url?: string
+  feedback?: Feedback
 }
 
 export interface WeeklySummary {
@@ -49,4 +57,8 @@ export interface UserProfile {
   id: string
   full_name: string
   email: string
+  phone_number?: string
+  is_email_verified?: boolean
+  is_phone_verified?: boolean
+  is_two_factor_enabled?: boolean
 }
