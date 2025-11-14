@@ -21,20 +21,41 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 async function createNotificationForAllUsers(message: string, type: string) {
-  // In a real-world scenario, you might want to select specific users
-  // For now, we'll create a placeholder notification for a generic user ID
-  // This is because we don't have a `users` table to query from within the function easily
-  const { error } = await supabaseAdmin.from('scheduled_notifications').insert({
-    user_id: '00000000-0000-0000-0000-000000000000', // Placeholder user ID
+  // 1. Fetch all user IDs from auth.users
+  const { data: users, error: usersError } =
+    await supabaseAdmin.auth.admin.listUsers()
+
+  if (usersError) {
+    console.error('Error fetching users:', usersError.message)
+    return
+  }
+
+  if (!users || users.users.length === 0) {
+    console.log('No users found to send notifications to.')
+    return
+  }
+
+  // 2. Prepare notifications for all users
+  const notificationsToInsert = users.users.map((user) => ({
+    user_id: user.id,
     notification_type: type,
     message: message,
     scheduled_at: new Date().toISOString(),
-  })
+  }))
 
-  if (error) {
+  // 3. Bulk insert notifications
+  const { error: insertError } = await supabaseAdmin
+    .from('scheduled_notifications')
+    .insert(notificationsToInsert)
+
+  if (insertError) {
     console.error(
-      `Error creating notification for type ${type}:`,
-      error.message,
+      `Error creating notifications for type ${type}:`,
+      insertError.message,
+    )
+  } else {
+    console.log(
+      `Successfully created ${notificationsToInsert.length} notifications of type ${type}.`,
     )
   }
 }
@@ -62,12 +83,6 @@ Deno.serve(async (req) => {
       // This would require more complex logic to target specific users
       await createNotificationForAllUsers(message, 'circle_message')
     }
-
-    // You can add more triggers here, e.g., for app updates
-    // if (payload.type === 'APP_UPDATE_TRIGGER') {
-    //   const message = "Atualizamos o app com novas funcionalidades para você!";
-    //   await createNotificationForAllUsers(message, 'app_update');
-    // }
 
     return new Response(
       JSON.stringify({ message: 'Notifications processed' }),

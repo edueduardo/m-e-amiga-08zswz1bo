@@ -44,9 +44,3 @@ INSERT INTO public.challenges (title, description, duration_days, start_date, en
 ('Desafio do Detox Digital', 'Reduza o tempo de tela em 30 minutos por dia e reconecte-se consigo mesma.', 5, CURRENT_DATE, CURRENT_DATE + 5, 'mindset', false),
 ('Maratona de Cuidado Coletivo', 'Vamos juntas completar 100 atos de autocuidado esta semana!', 7, CURRENT_DATE, CURRENT_DATE + 7, 'wellness', true);
 
--- Seed data for notifications
-INSERT INTO public.scheduled_notifications (user_id, notification_type, message, scheduled_at, is_read) VALUES
-('00000000-0000-0000-0000-000000000000', 'new_challenge', 'Novo desafio disponível: Semana da Gratidão', NOW() - interval '1 day', false),
-('00000000-0000-0000-0000-000000000000', 'circle_message', 'Nova mensagem no círculo de apoio "Mães de Bebês"', NOW() - interval '2 day', true),
-('00000000-0000-0000-0000-000000000000', 'app_update', 'Atualizamos o app com novas funcionalidades para você!', NOW() - interval '3 day', true);
-
