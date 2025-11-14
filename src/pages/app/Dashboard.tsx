@@ -18,6 +18,7 @@ import {
 import { useAuth } from '@/hooks/useAuth'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
+import { DailyAffirmation } from '@/components/DailyAffirmation'
 
 const DashboardPage = () => {
   const { isSubscribed } = useAuth()
@@ -80,12 +81,14 @@ const DashboardPage = () => {
 
       <div className="text-center md:text-left">
         <h1 className="text-3xl font-bold tracking-tight">
-          Oi, filha. Vamos conversar hoje?
+          Oi, filha. Como você está se sentindo?
         </h1>
         <p className="text-muted-foreground mt-2">
-          Escolha uma das opções abaixo para começar. Estou aqui para você.
+          Lembre-se de ser gentil consigo mesma hoje.
         </p>
       </div>
+
+      <DailyAffirmation />
 
       <Card className="bg-primary/10 border-primary shadow-lg animate-fade-in-up">
         <CardHeader className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">

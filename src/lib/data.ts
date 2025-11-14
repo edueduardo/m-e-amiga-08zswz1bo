@@ -5,6 +5,11 @@ import {
   VoiceEntry,
   WeeklySummary,
   SupportPost,
+  MeditationAudio,
+  Affirmation,
+  PlannerTask,
+  Challenge,
+  LibraryResource,
 } from '@/types'
 import { format, subDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -84,22 +89,15 @@ export const microCourses: MicroCourse[] = [
     slug: 'comunicacao-gentil-no-casamento',
     title: 'Comunicação Gentil no Casamento',
     summary: 'Aprenda a expressar suas necessidades e sentimentos sem brigas.',
+    isAiGenerated: true,
     lessons: [
       {
         id: '101',
         course_slug: 'comunicacao-gentil-no-casamento',
         lesson_number: 1,
-        title: 'Lição 1: O que você realmente sente?',
+        title: 'O que você realmente sente?',
         content_markdown:
-          '### Antes de falar, entenda.\nMuitas vezes, a irritação é só a ponta do iceberg. Por baixo, pode haver tristeza, cansaço ou medo. Antes de iniciar uma conversa difícil, pergunte-se: "O que eu estou sentindo de verdade?".\n\n> **Fala pronta:** "Amor, podemos conversar? Eu não estou brava, estou me sentindo um pouco sobrecarregada e queria compartilhar com você."',
-      },
-      {
-        id: '102',
-        course_slug: 'comunicacao-gentil-no-casamento',
-        lesson_number: 2,
-        title: 'Lição 2: Trocando "Você" por "Eu"',
-        content_markdown:
-          '### Fale sobre você, não sobre o outro.\nAcusar com "Você nunca me ajuda" fecha qualquer diálogo. Tente falar sobre como as ações do outro te afetam. Use a primeira pessoa.\n\n> **Fala pronta:** "Eu me sinto muito cansada quando vejo a louça na pia depois de um dia longo. Significaria muito para mim se pudéssemos dividir essa tarefa."',
+          'Muitas vezes, a irritação é só a ponta do iceberg. Por baixo, pode haver tristeza, cansaço ou medo. Antes de iniciar uma conversa difícil, pergunte-se: "O que eu estou sentindo de verdade?".',
       },
     ],
   },
@@ -109,16 +107,82 @@ export const microCourses: MicroCourse[] = [
     title: 'Resgatando o Autocuidado',
     summary:
       'Pequenos passos para voltar a se colocar como prioridade na sua vida.',
+    isAiGenerated: true,
     lessons: [
       {
         id: '201',
         course_slug: 'resgatando-o-autocuidado',
         lesson_number: 1,
-        title: 'Lição 1: 5 minutos que salvam',
+        title: '5 minutos que salvam',
         content_markdown:
-          '### Você não precisa de uma hora.\nAutocuidado não é um dia no spa. Comece com 5 minutos. Apenas 5 minutos por dia que sejam SÓ SEUS. Pode ser para tomar um café em silêncio, ouvir uma música, ou simplesmente não fazer nada.\n\n> **Fala pronta (para si mesma):** "Eu mereço estes 5 minutos. O mundo não vai acabar se eu parar um pouquinho para respirar."',
+          'Autocuidado não é um dia no spa. Comece com 5 minutos. Apenas 5 minutos por dia que sejam SÓ SEUS. Pode ser para tomar um café em silêncio, ouvir uma música, ou simplesmente não fazer nada.',
       },
     ],
+  },
+  {
+    id: '3',
+    slug: 'lidando-com-a-culpa-materna',
+    title: 'Lidando com a Culpa Materna',
+    summary: 'Entenda e acolha a culpa para viver uma maternidade mais leve.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '4',
+    slug: 'estabelecendo-limites-saudaveis',
+    title: 'Estabelecendo Limites Saudáveis',
+    summary: 'Aprenda a dizer "não" sem culpa e a proteger sua energia.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '5',
+    slug: 'reconectando-se-com-seu-parceiro',
+    title: 'Reconectando-se com seu Parceiro',
+    summary:
+      'Dicas para reacender a intimidade e a parceria no relacionamento.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '6',
+    slug: 'gerenciamento-do-estresse-diario',
+    title: 'Gerenciamento do Estresse Diário',
+    summary: 'Técnicas simples para encontrar calma no meio do caos.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '7',
+    slug: 'organizando-a-rotina-da-casa',
+    title: 'Organizando a Rotina da Casa',
+    summary: 'Como criar um sistema que funcione para você e sua família.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '8',
+    slug: 'cultivando-a-autoestima',
+    title: 'Cultivando a Autoestima',
+    summary: 'Práticas para se enxergar com mais amor e gentileza.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '9',
+    slug: 'financas-para-mulheres',
+    title: 'Finanças para Mulheres',
+    summary: 'Assuma o controle da sua vida financeira com confiança.',
+    isAiGenerated: true,
+    lessons: [],
+  },
+  {
+    id: '10',
+    slug: 'encontrando-prazer-nas-pequenas-coisas',
+    title: 'Encontrando Prazer nas Pequenas Coisas',
+    summary: 'Um convite para redescobrir a alegria nos detalhes do dia a dia.',
+    isAiGenerated: true,
+    lessons: [],
   },
 ]
 
@@ -219,5 +283,255 @@ export const supportPosts: SupportPost[] = [
       'Eu trabalho fora, cuido da casa, das crianças... e meu marido parece que não enxerga. Ele ajuda quando eu peço, mas eu queria que ele tivesse mais iniciativa. Já tentei conversar, mas vira briga. Alguma dica de como abordar isso sem parecer que estou reclamando?',
     created_at: subDays(today, 2).toISOString(),
     replies: [],
+  },
+]
+
+// New Data for Well-being Features
+
+const allMeditations: MeditationAudio[] = [
+  {
+    id: 'med1',
+    title: 'Respiração para Acalmar a Ansiedade',
+    theme: 'relaxation',
+    duration_seconds: 300,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+  },
+  {
+    id: 'med2',
+    title: 'Foco Pleno para o Trabalho',
+    theme: 'focus',
+    duration_seconds: 180,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+  },
+  {
+    id: 'med3',
+    title: 'Relaxamento Profundo para Dormir',
+    theme: 'sleep',
+    duration_seconds: 600,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+  },
+  {
+    id: 'med4',
+    title: 'Meditação da Gratidão',
+    theme: 'gratitude',
+    duration_seconds: 240,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+  },
+  {
+    id: 'med5',
+    title: 'Fortalecendo a Autoestima',
+    theme: 'self-esteem',
+    duration_seconds: 360,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+  },
+  {
+    id: 'med6',
+    title: 'Pausa de 5 Minutos',
+    theme: 'relaxation',
+    duration_seconds: 300,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+  },
+  {
+    id: 'med7',
+    title: 'Concentração para Tarefas',
+    theme: 'focus',
+    duration_seconds: 420,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+  },
+]
+
+const allGuidedAudios: MeditationAudio[] = [
+  {
+    id: 'ga1',
+    title: 'Visualização para uma Noite de Sono',
+    theme: 'sleep',
+    duration_seconds: 720,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+  },
+  {
+    id: 'ga2',
+    title: 'Jornada do Amor Próprio',
+    theme: 'self-esteem',
+    duration_seconds: 900,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+  },
+  {
+    id: 'ga3',
+    title: 'Lidando com a Sobrecarga',
+    theme: 'relaxation',
+    duration_seconds: 600,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3',
+  },
+  {
+    id: 'ga4',
+    title: 'Encontrando a Calma Interior',
+    theme: 'relaxation',
+    duration_seconds: 540,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3',
+  },
+  {
+    id: 'ga5',
+    title: 'O Poder da Gratidão',
+    theme: 'gratitude',
+    duration_seconds: 480,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3',
+  },
+  {
+    id: 'ga6',
+    title: 'Preparação para um Dia Produtivo',
+    theme: 'focus',
+    duration_seconds: 400,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3',
+  },
+  {
+    id: 'ga7',
+    title: 'Desconectando para Dormir',
+    theme: 'sleep',
+    duration_seconds: 800,
+    audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3',
+  },
+]
+
+const shuffleAndTake = <T>(arr: T[], count: number): T[] => {
+  return [...arr].sort(() => 0.5 - Math.random()).slice(0, count)
+}
+
+export const getDynamicMeditations = () => shuffleAndTake(allMeditations, 5)
+export const getDynamicGuidedAudios = () => shuffleAndTake(allGuidedAudios, 5)
+
+const allAffirmations: Affirmation[] = [
+  {
+    id: 'aff1',
+    text: 'Eu sou capaz de lidar com todos os desafios que surgirem hoje.',
+    mood_target: 'confidence',
+  },
+  {
+    id: 'aff2',
+    text: 'Eu permito que a calma preencha minha mente e meu corpo.',
+    mood_target: 'anxiety',
+  },
+  {
+    id: 'aff3',
+    text: 'Está tudo bem não ser perfeita. Eu sou suficiente como sou.',
+    mood_target: 'stress',
+  },
+  {
+    id: 'aff4',
+    text: 'Eu escolho focar no que posso controlar e liberar o resto.',
+    mood_target: 'general',
+  },
+  {
+    id: 'aff5',
+    text: 'Meu valor não é medido pela minha produtividade.',
+    mood_target: 'stress',
+  },
+  {
+    id: 'aff6',
+    text: 'Eu sou digna de amor, descanso e felicidade.',
+    mood_target: 'sadness',
+  },
+]
+
+export const getDailyAffirmation = (): Affirmation => {
+  return allAffirmations[Math.floor(Math.random() * allAffirmations.length)]
+}
+
+export const plannerTasks: PlannerTask[] = [
+  {
+    id: 'task1',
+    content: 'Tirar 10 minutos para ler um livro',
+    status: 'todo',
+  },
+  {
+    id: 'task2',
+    content: 'Agendar consulta médica',
+    status: 'in-progress',
+  },
+  {
+    id: 'task3',
+    content: 'Fazer uma caminhada de 20 minutos',
+    status: 'done',
+  },
+]
+
+export const weeklyChallenges: Challenge[] = [
+  {
+    id: 'chal1',
+    title: 'Semana da Gratidão',
+    description: 'Anote três coisas pelas quais você é grata todos os dias.',
+    theme: 'gratitude',
+    steps: [
+      { id: 's1', description: 'Dia 1', is_completed: true },
+      { id: 's2', description: 'Dia 2', is_completed: true },
+      { id: 's3', description: 'Dia 3', is_completed: false },
+      { id: 's4', description: 'Dia 4', is_completed: false },
+      { id: 's5', description: 'Dia 5', is_completed: false },
+      { id: 's6', description: 'Dia 6', is_completed: false },
+      { id: 's7', description: 'Dia 7', is_completed: false },
+    ],
+    personalized_tip:
+      'Tente pensar em coisas pequenas e específicas, como o cheiro do café ou um abraço apertado.',
+  },
+  {
+    id: 'chal2',
+    title: 'Comunicação Positiva',
+    description: 'Faça um elogio sincero ao seu parceiro todos os dias.',
+    theme: 'communication',
+    steps: [
+      { id: 's1', description: 'Dia 1', is_completed: false },
+      { id: 's2', description: 'Dia 2', is_completed: false },
+      { id: 's3', description: 'Dia 3', is_completed: false },
+      { id: 's4', description: 'Dia 4', is_completed: false },
+      { id: 's5', description: 'Dia 5', is_completed: false },
+    ],
+    personalized_tip:
+      'Observe algo que ele faz bem e que muitas vezes passa despercebido. O reconhecimento fortalece a conexão.',
+  },
+]
+
+export const libraryResources: LibraryResource[] = [
+  {
+    id: 'res1',
+    title: 'A exaustão em mulheres na sociedade do cansaço',
+    description:
+      'Um artigo profundo sobre a carga mental e a pressão por produtividade.',
+    type: 'article',
+    url: '#',
+    cover_image_url:
+      'https://img.usecurling.com/p/400/300?q=woman%20tired%20reading',
+    topic: 'mental_health',
+  },
+  {
+    id: 'res2',
+    title: 'Comunicação Não-Violenta na Prática',
+    description:
+      'Um vídeo curto com dicas práticas para melhorar o diálogo no relacionamento.',
+    type: 'video',
+    url: '#',
+    cover_image_url:
+      'https://img.usecurling.com/p/400/300?q=couple%20talking%20calmly',
+    topic: 'relationships',
+  },
+  {
+    id: 'res3',
+    title: 'A Maternidade e o Luto da Mulher que Fui',
+    description:
+      'Recomendação de livro que aborda as transformações da identidade após a chegada dos filhos.',
+    type: 'book',
+    url: '#',
+    cover_image_url:
+      'https://img.usecurling.com/p/400/300?q=thoughtful%20mother',
+    topic: 'motherhood',
+  },
+  {
+    id: 'res4',
+    title: 'O Poder do Hábito',
+    description:
+      'Como pequenas mudanças na rotina podem transformar sua vida. Recomendação de livro.',
+    type: 'book',
+    url: '#',
+    cover_image_url:
+      'https://img.usecurling.com/p/400/300?q=journal%20and%20pen',
+    topic: 'personal_development',
   },
 ]

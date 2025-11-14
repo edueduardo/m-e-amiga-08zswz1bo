@@ -26,6 +26,7 @@ export interface MicroCourse {
   title: string
   summary: string
   lessons: MicroLesson[]
+  isAiGenerated?: boolean
 }
 
 export type FeedbackRating = 'helpful' | 'not_helpful' | null
@@ -107,4 +108,59 @@ export interface SupportPost {
   content: string
   created_at: string
   replies: SupportReply[]
+}
+
+// New Types for Well-being Features
+export interface MeditationAudio {
+  id: string
+  title: string
+  theme: 'relaxation' | 'focus' | 'sleep' | 'gratitude' | 'self-esteem'
+  duration_seconds: number
+  audio_url: string
+}
+
+export interface Affirmation {
+  id: string
+  text: string
+  mood_target: 'general' | 'sadness' | 'anxiety' | 'stress' | 'confidence'
+}
+
+export type PlannerTaskStatus = 'todo' | 'in-progress' | 'done'
+
+export interface PlannerTask {
+  id: string
+  content: string
+  status: PlannerTaskStatus
+  due_date?: string
+}
+
+export interface ChallengeStep {
+  id: string
+  description: string
+  is_completed: boolean
+}
+
+export interface Challenge {
+  id: string
+  title: string
+  description: string
+  theme: 'communication' | 'gratitude' | 'organization' | 'self-care'
+  steps: ChallengeStep[]
+  personalized_tip: string
+}
+
+export type LibraryResourceType = 'article' | 'video' | 'book'
+
+export interface LibraryResource {
+  id: string
+  title: string
+  description: string
+  type: LibraryResourceType
+  url: string
+  cover_image_url: string
+  topic:
+    | 'mental_health'
+    | 'relationships'
+    | 'motherhood'
+    | 'personal_development'
 }

@@ -29,6 +29,10 @@ import CoursesPage from './pages/app/Courses'
 import CourseDetailPage from './pages/app/CourseDetail'
 import SummaryPage from './pages/app/Summary'
 import SettingsPage from './pages/app/Settings'
+import MeditationsPage from './pages/app/Meditations'
+import PlannerPage from './pages/app/Planner'
+import ChallengesPage from './pages/app/Challenges'
+import LibraryPage from './pages/app/Library'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -85,9 +89,13 @@ const App = () => {
                 <Route path="conversations" element={<ConversationsPage />} />
                 <Route path="care" element={<CarePage />} />
                 <Route path="response" element={<ResponsePage />} />
+                <Route path="meditations" element={<MeditationsPage />} />
                 <Route path="support-circle" element={<SupportCirclePage />} />
                 <Route path="courses" element={<CoursesPage />} />
                 <Route path="courses/:slug" element={<CourseDetailPage />} />
+                <Route path="planner" element={<PlannerPage />} />
+                <Route path="challenges" element={<ChallengesPage />} />
+                <Route path="library" element={<LibraryPage />} />
                 <Route path="summary" element={<SummaryPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
