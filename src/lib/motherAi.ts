@@ -1,5 +1,11 @@
 import { ABTestGroup } from './abTesting'
-import { QuizQuestion, SelfCarePlan, VoiceEntry } from '@/types'
+import {
+  QuizQuestion,
+  SelfCarePlan,
+  VoiceEntry,
+  CoachingMessage,
+  EmotionalPattern,
+} from '@/types'
 
 const API_URL = 'https://api.openai.com/v1'
 const API_KEY = import.meta.env.VITE_OPENAI_API_KEY
@@ -424,4 +430,99 @@ export const elaborateOnSelfCarePlan = async (
     console.error('Error elaborating on self-care plan:', error)
     throw new Error('Failed to elaborate on self-care plan.')
   }
+}
+
+// New AI Functions
+
+export const startCoachingSession = async (
+  topic: string,
+): Promise<CoachingMessage> => {
+  await delay(1000) // Simulate API call
+  return {
+    id: `msg-${Date.now()}`,
+    sender: 'ai',
+    text: `Olá, filha! Que bom que você veio conversar. Vamos falar sobre "${topic}". Como você está se sentindo em relação a isso agora?`,
+    timestamp: new Date().toISOString(),
+  }
+}
+
+export const generateCoachingReply = async (
+  history: CoachingMessage[],
+): Promise<CoachingMessage> => {
+  await delay(1500) // Simulate API call
+  const lastUserMessage = history[history.length - 1]?.text || ''
+  let text =
+    'Entendo. E como isso faz você se sentir? Lembre-se, estou aqui para ouvir.'
+  if (lastUserMessage.toLowerCase().includes('triste')) {
+    text =
+      'Sinto muito que você esteja se sentindo assim. Vamos explorar isso juntas. O que especificamente te deixou triste?'
+  }
+  return {
+    id: `msg-${Date.now()}`,
+    sender: 'ai',
+    text,
+    timestamp: new Date().toISOString(),
+  }
+}
+
+export const analyzeEmotionalPatterns = async (
+  entries: VoiceEntry[],
+): Promise<EmotionalPattern[]> => {
+  await delay(2500) // Simulate complex analysis
+  if (entries.length < 3) {
+    return [
+      {
+        id: 'p1',
+        title: 'Começando sua Jornada',
+        description:
+          'Ainda estamos nos conhecendo. Continue compartilhando seus sentimentos para que eu possa te ajudar a ver seus padrões emocionais.',
+        recommendation:
+          'Tente usar o diário de voz pelo menos 3 vezes esta semana. Isso me ajudará a entender melhor como você se sente no dia a dia.',
+        data: { labels: [], values: [] },
+        chartType: 'line',
+      },
+    ]
+  }
+  return [
+    {
+      id: 'p2',
+      title: 'Padrão de Cansaço no Final do Dia',
+      description:
+        'Notei que a sensação de "cansaço" aparece com mais frequência nas suas anotações no final da tarde e à noite.',
+      recommendation:
+        'Que tal tentar uma pausa de 5 minutos por volta das 16h? Uma respiração profunda ou uma música calma pode ajudar a recarregar as energias para o resto do dia.',
+      data: {
+        labels: ['Manhã', 'Tarde', 'Noite'],
+        values: [10, 45, 60],
+      },
+      chartType: 'line',
+    },
+    {
+      id: 'p3',
+      title: 'Distribuição Emocional',
+      description:
+        'Na última semana, suas emoções mais frequentes foram cansaço e ansiedade, mas também houve momentos de felicidade.',
+      recommendation:
+        'Vamos celebrar os momentos felizes! Tente anotar o que aconteceu nesses momentos. Isso pode nos dar pistas sobre o que te faz bem e como podemos trazer mais disso para sua vida.',
+      data: {
+        labels: ['Cansada', 'Ansiosa', 'Feliz', 'Neutra'],
+        values: [4, 3, 2, 1],
+      },
+      chartType: 'pie',
+    },
+  ]
+}
+
+export const moderateSupportPost = async (
+  content: string,
+): Promise<{ isSafe: boolean; reason?: string }> => {
+  await delay(500) // Simulate moderation
+  const forbiddenWords = ['ódio', 'violência', 'suicídio']
+  if (forbiddenWords.some((word) => content.toLowerCase().includes(word))) {
+    return {
+      isSafe: false,
+      reason: 'O conteúdo viola as diretrizes da comunidade.',
+    }
+  }
+  return { isSafe: true }
 }
