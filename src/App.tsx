@@ -58,6 +58,7 @@ import CoachingPage from './pages/app/Coaching'
 import SelfKnowledgePage from './pages/app/SelfKnowledge'
 import GrowthGardenPage from './pages/app/GrowthGarden'
 import VirtualManPage from './pages/app/VirtualMan'
+import AdminPage from './pages/app/Admin'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -186,6 +187,7 @@ const App = () => {
                     <Route path="library" element={<LibraryPage />} />
                     <Route path="summary" element={<SummaryPage />} />
                     <Route path="profile" element={<ProfilePage />} />
+                    <Route path="admin" element={<AdminPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
                 </Route>

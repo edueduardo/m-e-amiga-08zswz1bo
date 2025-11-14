@@ -20,6 +20,7 @@ import {
   BrainCircuit,
   Flower2,
   UserRound,
+  Shield,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -277,6 +278,12 @@ const navItems: NavItem[] = [
     label: 'Minha Jornada',
     icon: Award,
     description: 'Veja seu progresso e suas conquistas.',
+  },
+  {
+    href: '/app/admin',
+    label: 'Admin',
+    icon: Shield,
+    description: 'Painel de administração e análise de dados.',
   },
   {
     href: '/app/settings',
