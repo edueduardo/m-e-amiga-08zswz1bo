@@ -32,14 +32,13 @@ const carouselImages = [
 ]
 
 export const HeroSection = () => {
-  const { isAuthenticated, isSubscribed } = useAuth()
+  const { user } = useAuth()
   const [isInstallDialogOpen, setIsInstallDialogOpen] = useState(false)
   const [isSOSDialogOpen, setIsSOSDialogOpen] = useState(false)
   const [isFreeSoundsOpen, setIsFreeSoundsOpen] = useState(false)
 
   const getCtaLink = () => {
-    if (isAuthenticated && isSubscribed) return '/app'
-    if (isAuthenticated && !isSubscribed) return '/pricing'
+    if (user) return '/app'
     return '/signup'
   }
 
