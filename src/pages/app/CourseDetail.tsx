@@ -56,12 +56,16 @@ const CourseDetailPage = () => {
       const courseData = await getCourseBySlug(slug)
       setCourse(courseData)
 
-      if (courseData?.content_url) {
-        const contentData = await getCourseContent(courseData.content_url)
-        setCourseContent(contentData)
-        if (contentData?.modules[0]?.lessons[0]) {
-          setActiveLesson(contentData.modules[0].lessons[0])
-        }
+      let contentData: CourseContent | null = null
+      if (courseData?.content_data) {
+        contentData = courseData.content_data
+      } else if (courseData?.content_url) {
+        contentData = await getCourseContent(courseData.content_url)
+      }
+
+      setCourseContent(contentData)
+      if (contentData?.modules[0]?.lessons[0]) {
+        setActiveLesson(contentData.modules[0].lessons[0])
       }
       setIsLoading(false)
     }

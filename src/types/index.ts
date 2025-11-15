@@ -375,7 +375,8 @@ export interface Course {
   slug: string
   title: string
   description: string
-  content_url: string
+  content_url?: string | null
+  content_data?: CourseContent | null
   category: string
   created_at: string
 }
