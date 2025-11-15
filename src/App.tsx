@@ -67,23 +67,23 @@ import VirtualManPage from './pages/app/VirtualMan'
 
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="mae-amiga-ui-theme">
-    <AuthProvider>
-      <UserPreferencesProvider>
-        <NotificationProvider>
-          <ConversationsProvider>
-            <AiResponseProvider>
-              <SelfCareProvider>
-                <CoachingProvider>
-                  <SelfKnowledgeProvider>
-                    <SupportCircleProvider>
-                      <PlannerProvider>
-                        <ChallengesProvider>
-                          <GamificationProvider>
-                            <GrowthGardenProvider>
-                              <PlaylistProvider>
-                                <VirtualManProvider>
-                                  <LayoutProvider>
-                                    <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <UserPreferencesProvider>
+          <NotificationProvider>
+            <ConversationsProvider>
+              <AiResponseProvider>
+                <SelfCareProvider>
+                  <CoachingProvider>
+                    <SelfKnowledgeProvider>
+                      <SupportCircleProvider>
+                        <PlannerProvider>
+                          <ChallengesProvider>
+                            <GamificationProvider>
+                              <GrowthGardenProvider>
+                                <PlaylistProvider>
+                                  <VirtualManProvider>
+                                    <LayoutProvider>
                                       <TooltipProvider>
                                         <Toaster />
                                         <Sonner />
@@ -239,23 +239,23 @@ const App = () => (
                                           />
                                         </Routes>
                                       </TooltipProvider>
-                                    </BrowserRouter>
-                                  </LayoutProvider>
-                                </VirtualManProvider>
-                              </PlaylistProvider>
-                            </GrowthGardenProvider>
-                          </GamificationProvider>
-                        </ChallengesProvider>
-                      </PlannerProvider>
-                    </SupportCircleProvider>
-                  </SelfKnowledgeProvider>
-                </CoachingProvider>
-              </SelfCareProvider>
-            </AiResponseProvider>
-          </ConversationsProvider>
-        </NotificationProvider>
-      </UserPreferencesProvider>
-    </AuthProvider>
+                                    </LayoutProvider>
+                                  </VirtualManProvider>
+                                </PlaylistProvider>
+                              </GrowthGardenProvider>
+                            </GamificationProvider>
+                          </ChallengesProvider>
+                        </PlannerProvider>
+                      </SupportCircleProvider>
+                    </SelfKnowledgeProvider>
+                  </CoachingProvider>
+                </SelfCareProvider>
+              </AiResponseProvider>
+            </ConversationsProvider>
+          </NotificationProvider>
+        </UserPreferencesProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </ThemeProvider>
 )
 
