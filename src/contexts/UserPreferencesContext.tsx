@@ -8,8 +8,11 @@ import {
   useEffect,
 } from 'react'
 import { UserPreferences } from '@/types'
-
-const PREFERENCES_KEY = 'mae-amiga-user-preferences'
+import { useAuth } from './AuthContext'
+import {
+  getUserPreferences,
+  updateUserPreferences as updatePreferencesService,
+} from '@/services/userPreferences'
 
 const defaultPreferences: UserPreferences = {
   sosPracticeId: 'hoop1',
@@ -37,34 +40,31 @@ export const UserPreferencesContext = createContext<
 >(undefined)
 
 export function UserPreferencesProvider({ children }: { children: ReactNode }) {
-  const [preferences, setPreferences] = useState<UserPreferences>(() => {
-    try {
-      const stored = localStorage.getItem(PREFERENCES_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        // Merge with defaults to ensure new preferences are not missing
-        return { ...defaultPreferences, ...parsed }
-      }
-      return defaultPreferences
-    } catch (error) {
-      console.error('Failed to parse user preferences from localStorage', error)
-      return defaultPreferences
-    }
-  })
+  const { user } = useAuth()
+  const [preferences, setPreferences] =
+    useState<UserPreferences>(defaultPreferences)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences))
-    } catch (error) {
-      console.error('Failed to save user preferences to localStorage', error)
+    const fetchPreferences = async () => {
+      if (user) {
+        const fetchedPrefs = await getUserPreferences(user.id)
+        setPreferences((prev) => ({ ...prev, ...fetchedPrefs }))
+      }
     }
-  }, [preferences])
+    fetchPreferences()
+  }, [user])
 
   const updatePreferences = useCallback(
     (newPreferences: Partial<UserPreferences>) => {
-      setPreferences((prev) => ({ ...prev, ...newPreferences }))
+      if (user) {
+        setPreferences((prev) => {
+          const updated = { ...prev, ...newPreferences }
+          updatePreferencesService(user.id, updated)
+          return updated
+        })
+      }
     },
-    [],
+    [user],
   )
 
   const value = useMemo(

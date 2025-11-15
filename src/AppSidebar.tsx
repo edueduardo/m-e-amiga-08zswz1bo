@@ -28,12 +28,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { ReactNode } from 'react'
+import { useAuth } from './contexts/AuthContext'
 
 interface NavItem {
   href: string
   label: string
   icon: React.ElementType
   description: ReactNode
+  adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
@@ -282,6 +284,7 @@ const navItems: NavItem[] = [
     label: 'Admin',
     icon: Shield,
     description: 'Painel de administração e análise de dados.',
+    adminOnly: true,
   },
   {
     href: '/app/settings',
@@ -293,6 +296,12 @@ const navItems: NavItem[] = [
 
 export const AppSidebar = () => {
   const location = useLocation()
+  const { profile } = useAuth()
+  const isSuperuser = profile?.role === 'superuser'
+
+  const filteredNavItems = navItems.filter(
+    (item) => !item.adminOnly || isSuperuser,
+  )
 
   return (
     <div className="flex h-full max-h-screen flex-col gap-2">
@@ -303,7 +312,7 @@ export const AppSidebar = () => {
       </div>
       <div className="flex-1">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
                 <Button

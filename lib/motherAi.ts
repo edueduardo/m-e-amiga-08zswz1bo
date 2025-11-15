@@ -33,8 +33,6 @@ export interface MotherReplyPayload {
   professional_help_suggestion?: string
 }
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
 /**
  * Transcribes an audio file using the OpenAI Whisper API.
  * @param audioFile The audio file to transcribe.
@@ -304,9 +302,6 @@ export const generateSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
-  const processingTime = Math.random() * 20000 + 5000 // 5 to 25 seconds to test timeout
-  await delay(processingTime)
-
   const fallbackPlan: SelfCarePlan = {
     tone: 'amoras',
     monthlyFocus: {
@@ -346,10 +341,6 @@ export const generateSelfCarePlan = async (
       }),
     })
     const data = await response.json()
-    if (Math.random() < 0.3) {
-      // 30% chance of failure
-      throw new Error('Simulated AI system failure.')
-    }
     return JSON.parse(data.choices[0]?.message?.content)
   } catch (error) {
     console.error('Error generating self-care plan:', error)
@@ -363,9 +354,6 @@ export const refineSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
-  const processingTime = Math.random() * 10000 + 5000
-  await delay(processingTime)
-
   if (!API_KEY) return previousPlan
 
   const prompt = `Você é a 'Mãe Amiga'. Eu te dei um plano de autocuidado baseado nas respostas: ${JSON.stringify(
@@ -402,9 +390,6 @@ export const elaborateOnSelfCarePlan = async (
   answers: Record<string, string>,
   focus: SelfCareFocus,
 ): Promise<SelfCarePlan> => {
-  const processingTime = Math.random() * 10000 + 5000
-  await delay(processingTime)
-
   if (!API_KEY) return previousPlan
 
   const prompt = `Você é a 'Mãe Amiga'. Eu te dei um plano de autocuidado baseado nas respostas: ${JSON.stringify(
@@ -435,44 +420,94 @@ export const elaborateOnSelfCarePlan = async (
   }
 }
 
-// New AI Functions
-
 export const startCoachingSession = async (
   topic: string,
 ): Promise<CoachingMessage> => {
-  await delay(1000) // Simulate API call
-  return {
-    id: `msg-${Date.now()}`,
-    sender: 'ai',
-    text: `Olá, filha! Que bom que você veio conversar. Vamos falar sobre "${topic}". Como você está se sentindo em relação a isso agora?`,
-    timestamp: new Date().toISOString(),
+  if (!API_KEY) {
+    return {
+      id: `msg-${Date.now()}`,
+      sender: 'ai',
+      text: 'Olá! Tive um problema para iniciar nossa sessão. Poderia tentar novamente?',
+      timestamp: new Date().toISOString(),
+    }
+  }
+
+  const prompt = `Você é a 'Mãe Amiga', uma coach de IA. Inicie uma sessão de coaching sobre "${topic}". Faça uma pergunta aberta e acolhedora para começar. Responda APENAS com o texto da sua mensagem.`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7,
+        max_tokens: 100,
+      }),
+    })
+    const data = await response.json()
+    return {
+      id: `msg-${Date.now()}`,
+      sender: 'ai',
+      text: data.choices[0]?.message?.content,
+      timestamp: new Date().toISOString(),
+    }
+  } catch (error) {
+    console.error('Error starting coaching session:', error)
+    throw new Error('Failed to start coaching session.')
   }
 }
 
 export const generateCoachingReply = async (
   history: CoachingMessage[],
 ): Promise<CoachingMessage> => {
-  await delay(1500) // Simulate API call
-  const lastUserMessage = history[history.length - 1]?.text || ''
-  let text =
-    'Entendo. E como isso faz você se sentir? Lembre-se, estou aqui para ouvir.'
-  if (lastUserMessage.toLowerCase().includes('triste')) {
-    text =
-      'Sinto muito que você esteja se sentindo assim. Vamos explorar isso juntas. O que especificamente te deixou triste?'
+  if (!API_KEY) {
+    return {
+      id: `msg-${Date.now()}`,
+      sender: 'ai',
+      text: 'Desculpe, filha, não consegui processar sua resposta. Poderia repetir?',
+      timestamp: new Date().toISOString(),
+    }
   }
-  return {
-    id: `msg-${Date.now()}`,
-    sender: 'ai',
-    text,
-    timestamp: new Date().toISOString(),
+
+  const prompt = `Você é a 'Mãe Amiga', uma coach de IA. Continue a conversa de coaching abaixo. Sua resposta deve ser empática, fazer perguntas reflexivas e, ocasionalmente, propor um exercício prático simples. Responda APENAS com o texto da sua mensagem. Histórico da conversa: ${JSON.stringify(
+    history,
+  )}`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.7,
+        max_tokens: 250,
+      }),
+    })
+    const data = await response.json()
+    return {
+      id: `msg-${Date.now()}`,
+      sender: 'ai',
+      text: data.choices[0]?.message?.content,
+      timestamp: new Date().toISOString(),
+    }
+  } catch (error) {
+    console.error('Error generating coaching reply:', error)
+    throw new Error('Failed to generate coaching reply.')
   }
 }
 
 export const analyzeEmotionalPatterns = async (
   entries: VoiceEntry[],
 ): Promise<EmotionalPattern[]> => {
-  await delay(2500) // Simulate complex analysis
-  if (entries.length < 3) {
+  if (!API_KEY || entries.length < 3) {
     return [
       {
         id: 'p1',
@@ -486,48 +521,65 @@ export const analyzeEmotionalPatterns = async (
       },
     ]
   }
-  return [
-    {
-      id: 'p2',
-      title: 'Padrão de Cansaço no Final do Dia',
-      description:
-        'Notei que a sensação de "cansaço" aparece com mais frequência nas suas anotações no final da tarde e à noite.',
-      recommendation:
-        'Que tal tentar uma pausa de 5 minutos por volta das 16h? Uma respiração profunda ou uma música calma pode ajudar a recarregar as energias para o resto do dia.',
-      data: {
-        labels: ['Manhã', 'Tarde', 'Noite'],
-        values: [10, 45, 60],
+
+  const prompt = `Você é uma IA analista de psicologia. Analise os seguintes desabafos de uma usuária e identifique 2-3 padrões emocionais. Para cada padrão, crie um título, uma descrição, uma recomendação prática e dados para um gráfico ('line' ou 'pie'). Responda APENAS com um objeto JSON contendo uma chave "patterns" que é um array de objetos, cada um com a estrutura: { "id": "string", "title": "string", "description": "string", "recommendation": "string", "data": { "labels": ["string"], "values": [number] }, "chartType": "line" | "pie" }. Desabafos: ${JSON.stringify(
+    entries.map((e) => ({
+      date: e.created_at,
+      transcript: e.transcript,
+      mood: e.mood_label,
+    })),
+  )}`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
       },
-      chartType: 'line',
-    },
-    {
-      id: 'p3',
-      title: 'Distribuição Emocional',
-      description:
-        'Na última semana, suas emoções mais frequentes foram cansaço e ansiedade, mas também houve momentos de felicidade.',
-      recommendation:
-        'Vamos celebrar os momentos felizes! Tente anotar o que aconteceu nesses momentos. Isso pode nos dar pistas sobre o que te faz bem e como podemos trazer mais disso para sua vida.',
-      data: {
-        labels: ['Cansada', 'Ansiosa', 'Feliz', 'Neutra'],
-        values: [4, 3, 2, 1],
-      },
-      chartType: 'pie',
-    },
-  ]
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.5,
+        response_format: { type: 'json_object' },
+      }),
+    })
+    const data = await response.json()
+    const content = JSON.parse(data.choices[0]?.message?.content)
+    return content.patterns
+  } catch (error) {
+    console.error('Error analyzing emotional patterns:', error)
+    throw new Error('Failed to analyze emotional patterns.')
+  }
 }
 
 export const moderateSupportPost = async (
   content: string,
 ): Promise<{ isSafe: boolean; reason?: string }> => {
-  await delay(500) // Simulate moderation
-  const forbiddenWords = ['ódio', 'violência', 'suicídio']
-  if (forbiddenWords.some((word) => content.toLowerCase().includes(word))) {
-    return {
-      isSafe: false,
-      reason: 'O conteúdo viola as diretrizes da comunidade.',
-    }
+  if (!API_KEY) return { isSafe: true } // Fail open if API key is missing
+
+  const prompt = `Você é um moderador de conteúdo de IA. Analise o texto a seguir para identificar discurso de ódio, violência, auto-mutilação ou violações de segurança. Responda APENAS com um objeto JSON com a estrutura: { "isSafe": boolean, "reason"?: "string" }. Texto: "${content}"`
+
+  try {
+    const response = await fetch(`${API_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.1,
+        response_format: { type: 'json_object' },
+      }),
+    })
+    const data = await response.json()
+    return JSON.parse(data.choices[0]?.message?.content)
+  } catch (error) {
+    console.error('Error moderating content:', error)
+    return { isSafe: true } // Fail open on error
   }
-  return { isSafe: true }
 }
 
 export const generateVirtualManReply = async (
