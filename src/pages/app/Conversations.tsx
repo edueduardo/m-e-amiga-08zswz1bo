@@ -256,7 +256,7 @@ const ConversationsPage = () => {
                 {entries.map((entry) => (
                   <div key={entry.id} className="space-y-4 animate-fade-in-up">
                     <div className="flex items-start gap-3 justify-end group">
-                      <div className="p-3 rounded-lg bg-secondary max-w-xl shadow-sm">
+                      <div className="p-3 rounded-lg bg-background max-w-xl shadow-sm">
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-sm font-medium">Você</p>
                           <p className="text-xs text-muted-foreground">

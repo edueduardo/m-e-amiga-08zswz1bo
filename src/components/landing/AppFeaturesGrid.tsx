@@ -87,7 +87,7 @@ export const AppFeaturesGrid = () => {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="bg-secondary/50 border-transparent hover:border-primary transition-colors duration-300 animate-fade-in-up"
+              className="bg-secondary border-transparent hover:border-primary transition-colors duration-300 animate-fade-in-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -104,3 +104,4 @@ export const AppFeaturesGrid = () => {
     </section>
   )
 }
+

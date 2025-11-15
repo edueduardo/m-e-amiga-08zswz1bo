@@ -99,7 +99,7 @@ export const SelfCarePlan = ({
       </Card>
 
       {isRefining ? (
-        <Card className="bg-secondary/50">
+        <Card className="bg-secondary">
           <CardHeader>
             <CardTitle>O que podemos ajustar?</CardTitle>
             <CardDescription>
@@ -136,7 +136,7 @@ export const SelfCarePlan = ({
         </div>
       )}
 
-      <Card className="mt-6 bg-secondary/50">
+      <Card className="mt-6 bg-secondary">
         <CardHeader>
           <CardTitle>Tem mais alguma coisa?</CardTitle>
           <CardDescription>
@@ -162,3 +162,4 @@ export const SelfCarePlan = ({
     </div>
   )
 }
+

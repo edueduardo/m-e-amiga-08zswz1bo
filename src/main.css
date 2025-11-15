@@ -1,6 +1,5 @@
 /* Global styles - Theme, font, utilities, animations and global components */
 
-/* CHANGE THE FONT BELOW TO WHATEVER YOU WANT */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 @tailwind base;
@@ -282,3 +281,4 @@
     animation: spotlight 2s ease forwards;
   }
 }
+

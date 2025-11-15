@@ -41,7 +41,7 @@ const ChallengeCard = ({ challengeId }: { challengeId: string }) => {
           {challenge.steps?.map((step) => (
             <div
               key={step.id}
-              className="flex items-center space-x-3 p-3 bg-secondary/50 rounded-md"
+              className="flex items-center space-x-3 p-3 bg-secondary rounded-md"
             >
               <Checkbox
                 id={`${challenge.id}-${step.id}`}
@@ -107,3 +107,4 @@ const ChallengesPage = () => {
 }
 
 export default ChallengesPage
+

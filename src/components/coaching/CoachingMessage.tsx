@@ -25,7 +25,7 @@ export const CoachingMessage = ({ message }: CoachingMessageProps) => {
       <div
         className={cn(
           'p-3 rounded-lg max-w-lg shadow-sm',
-          isUser ? 'bg-secondary' : 'bg-primary/10',
+          isUser ? 'bg-background' : 'bg-primary/10',
         )}
       >
         <p className="text-sm whitespace-pre-wrap">{message.text}</p>
@@ -41,3 +41,4 @@ export const CoachingMessage = ({ message }: CoachingMessageProps) => {
     </div>
   )
 }
+

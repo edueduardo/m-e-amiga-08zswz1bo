@@ -69,7 +69,7 @@ export const PricingSection = () => {
   return (
     <section
       id="pricing"
-      className="relative w-full py-12 md:py-24 lg:py-32 bg-secondary/50"
+      className="relative w-full py-12 md:py-24 lg:py-32 bg-secondary"
     >
       <AidaIndicator principle="Action" />
       <div className="container px-4 md:px-6">
@@ -130,3 +130,4 @@ export const PricingSection = () => {
     </section>
   )
 }
+

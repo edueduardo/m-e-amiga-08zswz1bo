@@ -48,7 +48,7 @@ export const HeroSection = () => {
 
   return (
     <>
-      <section className="relative w-full py-20 md:py-32 lg:py-40 xl:py-48 bg-secondary/50">
+      <section className="relative w-full py-20 md:py-32 lg:py-40 xl:py-48 bg-secondary">
         <AidaIndicator principle="Attention" />
         <div className="container px-4 md:px-6">
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
@@ -67,7 +67,7 @@ export const HeroSection = () => {
                   <Link to={getCtaLink()}>Começar meu acolhimento</Link>
                 </Button>
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="lg"
                   onClick={() => setIsFreeSoundsOpen(true)}
                 >
@@ -120,3 +120,4 @@ export const HeroSection = () => {
     </>
   )
 }
+

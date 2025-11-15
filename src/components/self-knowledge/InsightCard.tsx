@@ -8,7 +8,7 @@ interface InsightCardProps {
 
 export const InsightCard = ({ pattern }: InsightCardProps) => {
   return (
-    <Card className="bg-secondary/50">
+    <Card className="bg-secondary">
       <CardHeader className="flex flex-row items-start gap-4">
         <Lightbulb className="h-6 w-6 text-primary mt-1" />
         <div>
@@ -27,3 +27,4 @@ export const InsightCard = ({ pattern }: InsightCardProps) => {
     </Card>
   )
 }
+

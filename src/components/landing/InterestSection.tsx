@@ -3,7 +3,7 @@ import { InteractiveChatSimulation } from './InteractiveChatSimulation'
 
 export const InterestSection = () => {
   return (
-    <section className="relative w-full py-12 md:py-24 lg:py-32 bg-secondary/50">
+    <section className="relative w-full py-12 md:py-24 lg:py-32 bg-secondary">
       <AidaIndicator principle="Interest" />
       <div className="container px-4 md:px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -39,3 +39,4 @@ export const InterestSection = () => {
     </section>
   )
 }
+

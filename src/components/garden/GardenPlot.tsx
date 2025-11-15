@@ -58,3 +58,4 @@ export const GardenPlot = ({ elements, goals }: GardenPlotProps) => {
     </div>
   )
 }
+

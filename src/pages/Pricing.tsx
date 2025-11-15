@@ -44,7 +44,7 @@ const PricingPage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-150px)] py-12 bg-secondary/50">
+    <div className="flex items-center justify-center min-h-[calc(100vh-150px)] py-12 bg-secondary">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl">Plano Mãe Amiga</CardTitle>
@@ -77,3 +77,4 @@ const PricingPage = () => {
 }
 
 export default PricingPage
+

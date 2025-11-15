@@ -22,7 +22,7 @@ export const DailyInspiration = () => {
   }
 
   return (
-    <Card className="bg-secondary/50 border-primary/20 animate-fade-in">
+    <Card className="bg-secondary border-primary/20 animate-fade-in">
       <CardContent className="p-6 flex flex-col items-center text-center gap-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
           <Sparkles className="h-4 w-4" />
@@ -42,3 +42,4 @@ export const DailyInspiration = () => {
     </Card>
   )
 }
+

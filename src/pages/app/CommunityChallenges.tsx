@@ -60,7 +60,7 @@ const CommunityChallengesPage = () => {
             <Card
               key={challenge.id}
               className={
-                isCompleted ? 'bg-green-50 border-green-200' : 'bg-secondary/50'
+                isCompleted ? 'bg-accent/10 border-accent' : 'bg-background'
               }
             >
               <CardHeader>
@@ -100,3 +100,4 @@ const CommunityChallengesPage = () => {
 }
 
 export default CommunityChallengesPage
+

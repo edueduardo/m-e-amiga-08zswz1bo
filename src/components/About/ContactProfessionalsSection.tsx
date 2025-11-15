@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export const ContactProfessionalsSection = () => {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/50">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary">
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-3xl text-center space-y-6">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -23,3 +23,4 @@ export const ContactProfessionalsSection = () => {
     </section>
   )
 }
+

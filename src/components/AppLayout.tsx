@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Loader2 } from 'lucide-react'
 
 export const AppLayout = () => {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { user, isLoading } = useAuth()
   const location = useLocation()
 
   if (isLoading) {
@@ -16,7 +16,7 @@ export const AppLayout = () => {
     )
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
@@ -27,10 +27,11 @@ export const AppLayout = () => {
       </div>
       <div className="flex flex-col">
         <AuthenticatedHeader />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-secondary/40">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-secondary">
           <Outlet />
         </main>
       </div>
     </div>
   )
 }
+

@@ -319,7 +319,7 @@ export const AppSidebar = () => {
                   variant={
                     location.pathname.startsWith(item.href) &&
                     (item.href !== '/app' || location.pathname === '/app')
-                      ? 'default'
+                      ? 'secondary'
                       : 'ghost'
                   }
                   className="justify-start gap-3"
@@ -344,3 +344,4 @@ export const AppSidebar = () => {
     </div>
   )
 }
+

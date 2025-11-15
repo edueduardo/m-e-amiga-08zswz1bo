@@ -21,13 +21,13 @@ const statusMap: Record<
   PlannerTaskStatus,
   { title: string; bg: string; border: string }
 > = {
-  todo: { title: 'Para Fazer', bg: 'bg-red-50', border: 'border-red-200' },
+  todo: { title: 'Para Fazer', bg: 'bg-red-50 dark:bg-red-900/20', border: 'border-red-200 dark:border-red-800' },
   'in-progress': {
     title: 'Fazendo',
-    bg: 'bg-yellow-50',
-    border: 'border-yellow-200',
+    bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+    border: 'border-yellow-200 dark:border-yellow-800',
   },
-  done: { title: 'Feito!', bg: 'bg-green-50', border: 'border-green-200' },
+  done: { title: 'Feito!', bg: 'bg-green-50 dark:bg-green-900/20', border: 'border-green-200 dark:border-green-800' },
 }
 
 const PlannerColumn = ({ status }: { status: PlannerTaskStatus }) => {
@@ -143,3 +143,4 @@ const PlannerPage = () => {
 }
 
 export default PlannerPage
+

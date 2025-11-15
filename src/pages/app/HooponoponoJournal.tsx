@@ -82,7 +82,7 @@ const HooponoponoJournalPage = () => {
           ) : (
             <div className="space-y-4">
               {entries.map((entry) => (
-                <Card key={entry.id} className="bg-secondary/50">
+                <Card key={entry.id} className="bg-secondary">
                   <CardHeader>
                     <CardTitle className="text-base">{entry.prompt}</CardTitle>
                     <CardDescription>
@@ -105,3 +105,4 @@ const HooponoponoJournalPage = () => {
 }
 
 export default HooponoponoJournalPage
+

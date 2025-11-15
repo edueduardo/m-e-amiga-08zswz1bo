@@ -24,7 +24,7 @@ export const HooponoponoDisplay = ({ variant }: HooponoponoDisplayProps) => {
   }
 
   return (
-    <Card className="bg-secondary/50 border-primary/20 animate-fade-in">
+    <Card className="bg-secondary border-primary/20 animate-fade-in">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="text-base">{practice.title}</CardTitle>
         <AidaTooltip story={practice.aidaStory} />
@@ -40,3 +40,4 @@ export const HooponoponoDisplay = ({ variant }: HooponoponoDisplayProps) => {
     </Card>
   )
 }
+

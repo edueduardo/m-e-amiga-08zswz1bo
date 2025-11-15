@@ -46,8 +46,8 @@ const featuresMap = new Map([
       link: '/app/care',
       icon: HeartHandshake,
       className:
-        'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
-      iconClassName: 'text-green-500',
+        'bg-accent/10 dark:bg-accent/20 border-accent/20 dark:border-accent/30',
+      iconClassName: 'text-accent',
     },
   ],
   [
@@ -59,8 +59,8 @@ const featuresMap = new Map([
       link: '/app/coaching',
       icon: Bot,
       className:
-        'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800',
-      iconClassName: 'text-indigo-500',
+        'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
+      iconClassName: 'text-blue-500',
     },
   ],
   [
@@ -85,8 +85,8 @@ const featuresMap = new Map([
       link: '/app/journal',
       icon: BookMarked,
       className:
-        'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800',
-      iconClassName: 'text-rose-500',
+        'bg-primary/10 dark:bg-primary/20 border-primary/20 dark:border-primary/30',
+      iconClassName: 'text-primary',
     },
   ],
   [
@@ -111,8 +111,8 @@ const featuresMap = new Map([
       link: '/app/support-circle',
       icon: Users,
       className:
-        'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-      iconClassName: 'text-blue-500',
+        'bg-secondary dark:bg-secondary/20 border-secondary-foreground/20 dark:border-secondary-foreground/30',
+      iconClassName: 'text-secondary-foreground',
     },
   ],
   [
@@ -176,8 +176,8 @@ const featuresMap = new Map([
       link: '/app/growth-garden',
       icon: Flower2,
       className:
-        'bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800',
-      iconClassName: 'text-pink-500',
+        'bg-accent/10 dark:bg-accent/20 border-accent/20 dark:border-accent/30',
+      iconClassName: 'text-accent',
     },
   ],
   [
@@ -351,3 +351,4 @@ const DashboardPage = () => {
 }
 
 export default DashboardPage
+

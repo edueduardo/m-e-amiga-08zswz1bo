@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = useCallback(async (user: User) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select('*, user_subscriptions(status)')
       .eq('id', user.id)
       .single()
 
@@ -61,7 +61,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      setIsSubscribed(true) // Mocking subscription status
+      const subscriptionData = Array.isArray(data.user_subscriptions)
+        ? data.user_subscriptions[0]
+        : data.user_subscriptions
+      const activeSubscription = subscriptionData?.status === 'active'
+      setIsSubscribed(activeSubscription)
+
       const userProfile: UserProfile = {
         id: user.id,
         full_name: data.full_name || '',
@@ -145,7 +150,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user, fetchProfile],
   )
 
-  const subscribe = useCallback(() => setIsSubscribed(true), [])
+  const subscribe = useCallback(async () => {
+    if (!user) return
+    const { error } = await supabase
+      .from('user_subscriptions')
+      .update({ status: 'active' })
+      .eq('user_id', user.id)
+    if (!error) {
+      setIsSubscribed(true)
+    }
+  }, [user])
 
   const sendPasswordResetEmail = useCallback(async (email: string) => {
     return supabase.auth.resetPasswordForEmail(email, {

@@ -5,7 +5,7 @@ import { NewsletterSignup } from './NewsletterSignup'
 
 export const Footer = () => {
   return (
-    <footer className="w-full border-t bg-secondary/50">
+    <footer className="w-full border-t bg-secondary">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 py-12">
         <div className="space-y-4">
           <h3 className="text-2xl font-bold">Mãe Amiga</h3>
@@ -46,7 +46,7 @@ export const Footer = () => {
           <NewsletterSignup />
         </div>
       </div>
-      <div className="bg-secondary">
+      <div className="bg-background/50">
         <div className="container mx-auto py-4 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>© Mãe Amiga {new Date().getFullYear()}</p>
           <div className="flex gap-4 mt-2 md:mt-0">
@@ -65,3 +65,4 @@ export const Footer = () => {
     </footer>
   )
 }
+

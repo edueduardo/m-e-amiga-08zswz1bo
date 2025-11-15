@@ -9,7 +9,7 @@ import { CookieConsentBanner } from './CookieConsentBanner'
 
 export default function Layout() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background">
       <PublicHeader />
       <main className="flex-grow">
         <Outlet />
@@ -19,3 +19,4 @@ export default function Layout() {
     </div>
   )
 }
+
