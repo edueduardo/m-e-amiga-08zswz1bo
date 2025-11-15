@@ -6,8 +6,9 @@ interface TextLessonProps {
 
 export const TextLesson = ({ lesson }: TextLessonProps) => {
   return (
-    <div className="prose dark:prose-invert max-w-none">
-      <p>{lesson.content}</p>
-    </div>
+    <div
+      className="prose dark:prose-invert max-w-none"
+      dangerouslySetInnerHTML={{ __html: lesson.content || '' }}
+    />
   )
 }

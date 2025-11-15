@@ -7,11 +7,11 @@ interface VideoLessonProps {
 
 export const VideoLesson = ({ lesson }: VideoLessonProps) => {
   if (!lesson.videoUrl) {
-    return <p>Vídeo indisponível.</p>
+    return <p>Vídeo indisponível no momento.</p>
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       <AspectRatio ratio={16 / 9}>
         <iframe
           src={lesson.videoUrl}
@@ -22,6 +22,12 @@ export const VideoLesson = ({ lesson }: VideoLessonProps) => {
           className="rounded-lg w-full h-full"
         ></iframe>
       </AspectRatio>
+      {lesson.content && (
+        <div
+          className="prose dark:prose-invert max-w-none text-sm"
+          dangerouslySetInnerHTML={{ __html: lesson.content }}
+        />
+      )}
     </div>
   )
 }
