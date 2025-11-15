@@ -18,15 +18,14 @@ USING (auth.uid() = user_id)
 WITH CHECK (auth.uid() = user_id);
 
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-RETURNS TRIGGER AS $
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER set_cbt_progress_timestamp
 BEFORE UPDATE ON public.cbt_progress
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
-

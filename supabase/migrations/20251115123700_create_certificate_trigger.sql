@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION public.handle_lesson_completion()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-AS $
+AS $$
 DECLARE
   user_id_to_check uuid;
 BEGIN
@@ -19,7 +19,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$;
+$$;
 
 DROP TRIGGER IF EXISTS on_lesson_completed ON public.cbt_progress;
 
@@ -27,4 +27,3 @@ CREATE TRIGGER on_lesson_completed
   AFTER INSERT ON public.cbt_progress
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_lesson_completion();
-
