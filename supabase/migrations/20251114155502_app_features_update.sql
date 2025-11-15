@@ -33,7 +33,7 @@ ALTER TABLE public.scheduled_notifications
 ADD COLUMN IF NOT EXISTS message text;
 
 -- Seed data for courses (only if table is empty)
-DO $
+DO $$
 BEGIN
    IF NOT EXISTS (SELECT 1 FROM public.courses LIMIT 1) THEN
       INSERT INTO public.courses (title, description, content_url, category) VALUES
@@ -41,10 +41,10 @@ BEGIN
       ('Comunicação Não-Violenta no Casamento', 'Transforme a comunicação com seu parceiro e fortaleça o relacionamento.', '/app/courses/comunicacao-nao-violenta', 'relationships'),
       ('Jornada do Autocuidado', 'Descubra como priorizar seu bem-estar sem culpa.', '/app/courses/jornada-do-autocuidado', 'self-care');
    END IF;
-END $;
+END $$;
 
 -- Seed data for challenges (only if table is empty)
-DO $
+DO $$
 BEGIN
    IF NOT EXISTS (SELECT 1 FROM public.challenges LIMIT 1) THEN
       INSERT INTO public.challenges (title, description, duration_days, start_date, end_date, category, community_challenge) VALUES
@@ -52,5 +52,4 @@ BEGIN
       ('Desafio do Detox Digital', 'Reduza o tempo de tela em 30 minutos por dia e reconecte-se consigo mesma.', 5, CURRENT_DATE, CURRENT_DATE + 5, 'mindset', false),
       ('Maratona de Cuidado Coletivo', 'Vamos juntas completar 100 atos de autocuidado esta semana!', 7, CURRENT_DATE, CURRENT_DATE + 7, 'wellness', true);
    END IF;
-END $;
-
+END $$;
