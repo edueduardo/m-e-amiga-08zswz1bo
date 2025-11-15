@@ -8,12 +8,16 @@ import {
   useEffect,
 } from 'react'
 import { SelfCarePlan, QuizResult } from '@/types'
-
-const SELF_CARE_KEY = 'mae-amiga-selfcare-history'
+import { useAuth } from './AuthContext'
+import { getSelfCareHistory, saveSelfCareResult } from '@/services/selfCare'
 
 interface SelfCareContextType {
   history: QuizResult[]
-  saveQuizAndPlan: (answers: Record<string, string>, plan: SelfCarePlan) => void
+  isLoading: boolean
+  saveQuizAndPlan: (
+    answers: Record<string, string>,
+    plan: SelfCarePlan,
+  ) => Promise<void>
 }
 
 export const SelfCareContext = createContext<SelfCareContextType | undefined>(
@@ -21,42 +25,43 @@ export const SelfCareContext = createContext<SelfCareContextType | undefined>(
 )
 
 export function SelfCareProvider({ children }: { children: ReactNode }) {
-  const [history, setHistory] = useState<QuizResult[]>(() => {
-    try {
-      const stored = localStorage.getItem(SELF_CARE_KEY)
-      return stored ? JSON.parse(stored) : []
-    } catch (error) {
-      console.error('Failed to parse self-care history', error)
-      return []
-    }
-  })
+  const { user } = useAuth()
+  const [history, setHistory] = useState<QuizResult[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(SELF_CARE_KEY, JSON.stringify(history))
-    } catch (error) {
-      console.error('Failed to save self-care history', error)
+    const fetchHistory = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getSelfCareHistory(user.id)
+        setHistory(data)
+        setIsLoading(false)
+      } else {
+        setHistory([])
+        setIsLoading(false)
+      }
     }
-  }, [history])
+    fetchHistory()
+  }, [user])
 
   const saveQuizAndPlan = useCallback(
-    (answers: Record<string, string>, plan: SelfCarePlan) => {
-      const newResult: QuizResult = {
-        date: new Date().toISOString(),
-        answers,
-        plan,
+    async (answers: Record<string, string>, plan: SelfCarePlan) => {
+      if (!user) return
+      const newResult = await saveSelfCareResult(user.id, answers, plan)
+      if (newResult) {
+        setHistory((prev) => [newResult, ...prev])
       }
-      setHistory((prev) => [newResult, ...prev])
     },
-    [],
+    [user],
   )
 
   const value = useMemo(
     () => ({
       history,
+      isLoading,
       saveQuizAndPlan,
     }),
-    [history, saveQuizAndPlan],
+    [history, isLoading, saveQuizAndPlan],
   )
 
   return (

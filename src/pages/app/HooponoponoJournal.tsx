@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { BookHeart, PlusCircle } from 'lucide-react'
+import { BookHeart, PlusCircle, Loader2 } from 'lucide-react'
 import { useJournal } from '@/contexts/JournalContext'
 
 const journalPrompts = [
@@ -30,12 +30,12 @@ const getDailyPrompt = () => {
 }
 
 const HooponoponoJournalPage = () => {
-  const { entries, addEntry } = useJournal()
+  const { entries, isLoading, addEntry } = useJournal()
   const [currentEntry, setCurrentEntry] = useState('')
   const dailyPrompt = getDailyPrompt()
 
-  const handleSaveEntry = () => {
-    addEntry(currentEntry, dailyPrompt)
+  const handleSaveEntry = async () => {
+    await addEntry(currentEntry, dailyPrompt)
     setCurrentEntry('')
   }
 
@@ -75,23 +75,29 @@ const HooponoponoJournalPage = () => {
       <div className="space-y-4">
         <h2 className="text-2xl font-bold">Suas Reflexões Anteriores</h2>
         <ScrollArea className="h-[400px] pr-4">
-          <div className="space-y-4">
-            {entries.map((entry) => (
-              <Card key={entry.id} className="bg-secondary/50">
-                <CardHeader>
-                  <CardTitle className="text-base">{entry.prompt}</CardTitle>
-                  <CardDescription>
-                    {format(new Date(entry.date), "dd 'de' MMMM, yyyy", {
-                      locale: ptBR,
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="whitespace-pre-wrap">{entry.content}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {entries.map((entry) => (
+                <Card key={entry.id} className="bg-secondary/50">
+                  <CardHeader>
+                    <CardTitle className="text-base">{entry.prompt}</CardTitle>
+                    <CardDescription>
+                      {format(new Date(entry.date), "dd 'de' MMMM, yyyy", {
+                        locale: ptBR,
+                      })}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="whitespace-pre-wrap">{entry.content}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </ScrollArea>
       </div>
     </div>

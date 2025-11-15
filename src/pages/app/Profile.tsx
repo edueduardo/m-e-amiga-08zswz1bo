@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress'
 import { useGamification } from '@/contexts/GamificationContext'
 import { useAuth } from '@/hooks/useAuth'
 import { gamificationBadges } from '@/lib/data'
-import { Award, Star } from 'lucide-react'
+import { Award, Star, Loader2 } from 'lucide-react'
 import {
   Tooltip,
   TooltipContent,
@@ -20,12 +20,20 @@ import { cn } from '@/lib/utils'
 
 const ProfilePage = () => {
   const { profile: authProfile } = useAuth()
-  const { profile: gamificationProfile } = useGamification()
+  const { profile: gamificationProfile, isLoading } = useGamification()
   const pointsForNextLevel = gamificationProfile.level * 100
   const progressToNextLevel =
     ((gamificationProfile.points - (gamificationProfile.level - 1) * 100) /
       100) *
     100
+
+  if (isLoading || !authProfile) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">

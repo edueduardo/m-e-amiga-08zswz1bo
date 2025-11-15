@@ -9,14 +9,20 @@ import {
 } from 'react'
 import { GardenGoal, GardenElement } from '@/types'
 import { useGamification } from './GamificationContext'
-
-const GARDEN_KEY = 'mae-amiga-growth-garden'
+import { useAuth } from './AuthContext'
+import {
+  getGardenData,
+  addGardenGoal,
+  updateGardenGoal,
+  updateGardenElement,
+} from '@/services/growthGarden'
 
 interface GrowthGardenContextType {
   goals: GardenGoal[]
   elements: GardenElement[]
-  addGoal: (goal: Omit<GardenGoal, 'id' | 'currentCount'>) => void
-  updateProgress: (feature: GardenGoal['relatedFeature']) => void
+  isLoading: boolean
+  addGoal: (goal: Omit<GardenGoal, 'id' | 'currentCount'>) => Promise<void>
+  updateProgress: (feature: GardenGoal['relatedFeature']) => Promise<void>
 }
 
 export const GrowthGardenContext = createContext<
@@ -24,87 +30,98 @@ export const GrowthGardenContext = createContext<
 >(undefined)
 
 export function GrowthGardenProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const { addPoints } = useGamification()
-  const [state, setState] = useState<{
-    goals: GardenGoal[]
-    elements: GardenElement[]
-  }>(() => {
-    try {
-      const stored = localStorage.getItem(GARDEN_KEY)
-      return stored ? JSON.parse(stored) : { goals: [], elements: [] }
-    } catch (error) {
-      return { goals: [], elements: [] }
-    }
-  })
+  const [goals, setGoals] = useState<GardenGoal[]>([])
+  const [elements, setElements] = useState<GardenElement[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    localStorage.setItem(GARDEN_KEY, JSON.stringify(state))
-  }, [state])
+    const fetchData = async () => {
+      if (user) {
+        setIsLoading(true)
+        const { goals, elements } = await getGardenData(user.id)
+        setGoals(goals)
+        setElements(elements)
+        setIsLoading(false)
+      } else {
+        setGoals([])
+        setElements([])
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [user])
 
   const addGoal = useCallback(
-    (goal: Omit<GardenGoal, 'id' | 'currentCount'>) => {
-      const newGoal: GardenGoal = {
-        ...goal,
-        id: `goal-${Date.now()}`,
-        currentCount: 0,
+    async (goal: Omit<GardenGoal, 'id' | 'currentCount'>) => {
+      if (!user) return
+      const result = await addGardenGoal(user.id, goal)
+      if (result) {
+        setGoals((prev) => [...prev, result.newGoal])
+        setElements((prev) => [...prev, result.newElement])
       }
-      const newElement: GardenElement = {
-        id: `elem-${Date.now()}`,
-        goalId: newGoal.id,
-        status: 'seed',
-        position: { x: Math.random() * 80 + 10, y: Math.random() * 80 + 10 },
-      }
-      setState((prev) => ({
-        goals: [...prev.goals, newGoal],
-        elements: [...prev.elements, newElement],
-      }))
     },
-    [],
+    [user],
   )
 
   const updateProgress = useCallback(
-    (feature: GardenGoal['relatedFeature']) => {
-      setState((prev) => {
-        const newGoals = [...prev.goals]
-        const newElements = [...prev.elements]
-        let goalCompleted = false
+    async (feature: GardenGoal['relatedFeature']) => {
+      const relevantGoals = goals.filter(
+        (g) => g.relatedFeature === feature && g.currentCount < g.targetCount,
+      )
+      if (relevantGoals.length === 0) return
 
-        newGoals.forEach((goal) => {
-          if (
-            goal.relatedFeature === feature &&
-            goal.currentCount < goal.targetCount
-          ) {
-            goal.currentCount += 1
-            const element = newElements.find((el) => el.goalId === goal.id)
-            if (element) {
-              const progress = goal.currentCount / goal.targetCount
-              if (progress >= 1 && element.status !== 'flower') {
-                element.status = 'flower'
-                goalCompleted = true
-              } else if (progress >= 0.5 && element.status === 'seed') {
-                element.status = 'seedling'
+      for (const goal of relevantGoals) {
+        const newCount = goal.currentCount + 1
+        const updatedGoal = await updateGardenGoal(goal.id, {
+          currentCount: newCount,
+        })
+        if (updatedGoal) {
+          setGoals((prev) =>
+            prev.map((g) => (g.id === goal.id ? updatedGoal : g)),
+          )
+          const element = elements.find((el) => el.goalId === goal.id)
+          if (element) {
+            const progress = newCount / goal.targetCount
+            let newStatus = element.status
+            if (progress >= 1 && element.status !== 'flower') {
+              newStatus = 'flower'
+              addPoints(
+                100,
+                'Cultivou uma planta no seu Jardim do Crescimento!',
+              )
+            } else if (progress >= 0.5 && element.status === 'seed') {
+              newStatus = 'seedling'
+            }
+            if (newStatus !== element.status) {
+              const updatedElement = await updateGardenElement(element.id, {
+                status: newStatus,
+              })
+              if (updatedElement) {
+                setElements((prev) =>
+                  prev.map((el) =>
+                    el.id === element.id ? updatedElement : el,
+                  ),
+                )
               }
             }
           }
-        })
-
-        if (goalCompleted) {
-          addPoints(100, 'Cultivou uma planta no seu Jardim do Crescimento!')
         }
-
-        return { goals: newGoals, elements: newElements }
-      })
+      }
     },
-    [addPoints],
+    [goals, elements, addPoints],
   )
 
   const value = useMemo(
     () => ({
-      ...state,
+      goals,
+      elements,
+      isLoading,
       addGoal,
       updateProgress,
     }),
-    [state, addGoal, updateProgress],
+    [goals, elements, isLoading, addGoal, updateProgress],
   )
 
   return (

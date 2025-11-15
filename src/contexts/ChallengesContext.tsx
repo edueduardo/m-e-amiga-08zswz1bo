@@ -8,14 +8,13 @@ import {
   useEffect,
 } from 'react'
 import { Challenge } from '@/types'
-import { weeklyChallenges } from '@/lib/data'
 import { useGamification } from './GamificationContext'
 import { useGrowthGarden } from './GrowthGardenContext'
-
-const CHALLENGES_KEY = 'mae-amiga-challenges'
+import { getChallenges } from '@/services/challenges'
 
 interface ChallengesContextType {
   challenges: Challenge[]
+  isLoading: boolean
   updateStepCompletion: (challengeId: string, stepId: string) => void
 }
 
@@ -26,29 +25,33 @@ export const ChallengesContext = createContext<
 export function ChallengesProvider({ children }: { children: ReactNode }) {
   const { addPoints } = useGamification()
   const { updateProgress } = useGrowthGarden()
-  const [challenges, setChallenges] = useState<Challenge[]>(() => {
-    try {
-      const stored = localStorage.getItem(CHALLENGES_KEY)
-      return stored ? JSON.parse(stored) : weeklyChallenges
-    } catch (error) {
-      console.error('Failed to parse challenges', error)
-      return weeklyChallenges
-    }
-  })
+  const [challenges, setChallenges] = useState<Challenge[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(CHALLENGES_KEY, JSON.stringify(challenges))
-    } catch (error) {
-      console.error('Failed to save challenges', error)
+    const fetchChallenges = async () => {
+      setIsLoading(true)
+      const data = await getChallenges()
+      // Mocking steps as they are not in the DB
+      const challengesWithSteps = data.map((c) => ({
+        ...c,
+        steps: Array.from({ length: c.duration_days || 3 }, (_, i) => ({
+          id: `step-${c.id}-${i + 1}`,
+          description: `Dia ${i + 1}`,
+          is_completed: false,
+        })),
+      }))
+      setChallenges(challengesWithSteps)
+      setIsLoading(false)
     }
-  }, [challenges])
+    fetchChallenges()
+  }, [])
 
   const updateStepCompletion = useCallback(
     (challengeId: string, stepId: string) => {
       setChallenges((prevChallenges) => {
         const newChallenges = prevChallenges.map((challenge) => {
-          if (challenge.id === challengeId) {
+          if (challenge.id === challengeId && challenge.steps) {
             const wasAlreadyCompleted = challenge.steps.every(
               (s) => s.is_completed,
             )
@@ -84,9 +87,10 @@ export function ChallengesProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       challenges,
+      isLoading,
       updateStepCompletion,
     }),
-    [challenges, updateStepCompletion],
+    [challenges, isLoading, updateStepCompletion],
   )
 
   return (

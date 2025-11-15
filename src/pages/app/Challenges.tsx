@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -11,71 +10,46 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Lightbulb, Trophy, Loader2 } from 'lucide-react'
-import { Challenge, ChallengeStep } from '@/types'
 import { Label } from '@/components/ui/label'
 import { useChallenges } from '@/contexts/ChallengesContext'
-import { getChallenges } from '@/services/challenges'
 
-const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
-  const { updateStepCompletion } = useChallenges()
-  const [localChallenge, setLocalChallenge] = useState(challenge)
+const ChallengeCard = ({ challengeId }: { challengeId: string }) => {
+  const { challenges, updateStepCompletion } = useChallenges()
+  const challenge = challenges.find((c) => c.id === challengeId)
 
-  useEffect(() => {
-    // Mocking steps as they are not in the DB
-    if (!localChallenge.steps) {
-      setLocalChallenge((prev) => ({
-        ...prev,
-        steps: Array.from({ length: prev.duration_days || 3 }, (_, i) => ({
-          id: `step-${i + 1}`,
-          description: `Dia ${i + 1}`,
-          is_completed: false,
-        })),
-        personalized_tip:
-          'Lembre-se, o progresso é mais importante que a perfeição. Um pequeno passo a cada dia faz uma grande diferença.',
-      }))
-    }
-  }, [localChallenge])
+  if (!challenge || !challenge.steps) {
+    return null
+  }
 
   const handleStepToggle = (stepId: string) => {
-    // This context update is now mocked on the frontend
-    // In a real app, you'd sync this with the backend
-    setLocalChallenge((prev) => {
-      const updatedSteps =
-        prev.steps?.map((step) =>
-          step.id === stepId
-            ? { ...step, is_completed: !step.is_completed }
-            : step,
-        ) || []
-      return { ...prev, steps: updatedSteps }
-    })
-    // updateStepCompletion(challenge.id, stepId); // This would be the ideal call
+    updateStepCompletion(challenge.id, stepId)
   }
 
   const completedSteps =
-    localChallenge.steps?.filter((step) => step.is_completed).length || 0
-  const totalSteps = localChallenge.steps?.length || 1
+    challenge.steps?.filter((step) => step.is_completed).length || 0
+  const totalSteps = challenge.steps?.length || 1
   const progress = (completedSteps / totalSteps) * 100
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{localChallenge.title}</CardTitle>
-        <CardDescription>{localChallenge.description}</CardDescription>
+        <CardTitle>{challenge.title}</CardTitle>
+        <CardDescription>{challenge.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
-          {localChallenge.steps?.map((step: ChallengeStep) => (
+          {challenge.steps?.map((step) => (
             <div
               key={step.id}
               className="flex items-center space-x-3 p-3 bg-secondary/50 rounded-md"
             >
               <Checkbox
-                id={`${localChallenge.id}-${step.id}`}
+                id={`${challenge.id}-${step.id}`}
                 checked={step.is_completed}
                 onCheckedChange={() => handleStepToggle(step.id)}
               />
               <Label
-                htmlFor={`${localChallenge.id}-${step.id}`}
+                htmlFor={`${challenge.id}-${step.id}`}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {step.description}
@@ -86,7 +60,10 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
         <Alert>
           <Lightbulb className="h-4 w-4" />
           <AlertTitle>Dica da Mãe Amiga</AlertTitle>
-          <AlertDescription>{localChallenge.personalized_tip}</AlertDescription>
+          <AlertDescription>
+            Lembre-se, o progresso é mais importante que a perfeição. Um pequeno
+            passo a cada dia faz uma grande diferença.
+          </AlertDescription>
         </Alert>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2">
@@ -98,18 +75,7 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
 }
 
 const ChallengesPage = () => {
-  const [challenges, setChallenges] = useState<Challenge[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchChallenges = async () => {
-      setIsLoading(true)
-      const data = await getChallenges()
-      setChallenges(data)
-      setIsLoading(false)
-    }
-    fetchChallenges()
-  }, [])
+  const { challenges, isLoading } = useChallenges()
 
   if (isLoading) {
     return (
@@ -133,7 +99,7 @@ const ChallengesPage = () => {
       </div>
       <div className="grid gap-8 md:grid-cols-2">
         {challenges.map((challenge) => (
-          <ChallengeCard key={challenge.id} challenge={challenge} />
+          <ChallengeCard key={challenge.id} challengeId={challenge.id} />
         ))}
       </div>
     </div>

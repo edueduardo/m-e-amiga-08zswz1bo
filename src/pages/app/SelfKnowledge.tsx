@@ -5,17 +5,19 @@ import { Loader2, BrainCircuit, RefreshCw } from 'lucide-react'
 import { EmotionOverTimeChart } from '@/components/self-knowledge/EmotionOverTimeChart'
 import { EmotionDistributionPieChart } from '@/components/self-knowledge/EmotionDistributionPieChart'
 import { InsightCard } from '@/components/self-knowledge/InsightCard'
+import { useConversations } from '@/contexts/ConversationsContext'
 
 const SelfKnowledgePage = () => {
   const { patterns, isLoading, fetchPatterns } = useSelfKnowledge()
+  const { entries, isLoading: isLoadingConversations } = useConversations()
 
   useEffect(() => {
-    if (patterns.length === 0) {
+    if (entries.length > 0 && patterns.length === 0) {
       fetchPatterns()
     }
-  }, [fetchPatterns, patterns.length])
+  }, [fetchPatterns, patterns.length, entries.length])
 
-  if (isLoading) {
+  if (isLoading || isLoadingConversations) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center">
         <BrainCircuit className="h-16 w-16 text-primary animate-pulse" />
@@ -45,27 +47,45 @@ const SelfKnowledgePage = () => {
         </Button>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        {patterns
-          .filter((p) => p.chartType === 'line')
-          .map((pattern) => (
-            <EmotionOverTimeChart key={pattern.id} pattern={pattern} />
-          ))}
-        {patterns
-          .filter((p) => p.chartType === 'pie')
-          .map((pattern) => (
-            <EmotionDistributionPieChart key={pattern.id} pattern={pattern} />
-          ))}
-      </div>
-
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Reflexões para Você</h2>
-        <div className="space-y-4">
-          {patterns.map((pattern) => (
-            <InsightCard key={pattern.id} pattern={pattern} />
-          ))}
+      {entries.length < 3 ? (
+        <div className="text-center p-8 border-2 border-dashed rounded-lg">
+          <BrainCircuit className="h-12 w-12 mx-auto text-muted-foreground" />
+          <h3 className="mt-4 text-xl font-semibold">
+            Continue compartilhando
+          </h3>
+          <p className="mt-2 text-muted-foreground">
+            Você precisa de pelo menos 3 desabafos para que eu possa começar a
+            identificar padrões emocionais.
+          </p>
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="grid gap-8 md:grid-cols-2">
+            {patterns
+              .filter((p) => p.chartType === 'line')
+              .map((pattern) => (
+                <EmotionOverTimeChart key={pattern.id} pattern={pattern} />
+              ))}
+            {patterns
+              .filter((p) => p.chartType === 'pie')
+              .map((pattern) => (
+                <EmotionDistributionPieChart
+                  key={pattern.id}
+                  pattern={pattern}
+                />
+              ))}
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Reflexões para Você</h2>
+            <div className="space-y-4">
+              {patterns.map((pattern) => (
+                <InsightCard key={pattern.id} pattern={pattern} />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

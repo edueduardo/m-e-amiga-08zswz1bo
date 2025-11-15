@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PlusCircle, Calendar as CalendarIcon } from 'lucide-react'
+import { PlusCircle, Calendar as CalendarIcon, Loader2 } from 'lucide-react'
 import { PlannerTaskStatus } from '@/types'
 import { cn } from '@/lib/utils'
 import {
@@ -96,11 +96,11 @@ const PlannerColumn = ({ status }: { status: PlannerTaskStatus }) => {
 }
 
 const PlannerPage = () => {
-  const { addTask } = usePlanner()
+  const { addTask, isLoading } = usePlanner()
   const [newTaskContent, setNewTaskContent] = useState('')
 
-  const handleAddTask = () => {
-    addTask(newTaskContent)
+  const handleAddTask = async () => {
+    await addTask(newTaskContent)
     setNewTaskContent('')
   }
 
@@ -127,11 +127,17 @@ const PlannerPage = () => {
           </Button>
         </CardContent>
       </Card>
-      <div className="grid md:grid-cols-3 gap-6">
-        {(Object.keys(statusMap) as PlannerTaskStatus[]).map((status) => (
-          <PlannerColumn key={status} status={status} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-3 gap-6">
+          {(Object.keys(statusMap) as PlannerTaskStatus[]).map((status) => (
+            <PlannerColumn key={status} status={status} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

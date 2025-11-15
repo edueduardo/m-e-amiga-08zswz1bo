@@ -8,14 +8,21 @@ import {
   useEffect,
 } from 'react'
 import { PlannerTask, PlannerTaskStatus } from '@/types'
-import { plannerTasks as initialTasks } from '@/lib/data'
-
-const PLANNER_KEY = 'mae-amiga-planner-tasks'
+import { useAuth } from './AuthContext'
+import {
+  getPlannerTasks,
+  addPlannerTask,
+  updatePlannerTaskStatus as updateStatusService,
+} from '@/services/planner'
 
 interface PlannerContextType {
   tasks: PlannerTask[]
-  addTask: (content: string) => void
-  updateTaskStatus: (taskId: string, newStatus: PlannerTaskStatus) => void
+  isLoading: boolean
+  addTask: (content: string) => Promise<void>
+  updateTaskStatus: (
+    taskId: string,
+    newStatus: PlannerTaskStatus,
+  ) => Promise<void>
 }
 
 export const PlannerContext = createContext<PlannerContextType | undefined>(
@@ -23,43 +30,44 @@ export const PlannerContext = createContext<PlannerContextType | undefined>(
 )
 
 export function PlannerProvider({ children }: { children: ReactNode }) {
-  const [tasks, setTasks] = useState<PlannerTask[]>(() => {
-    try {
-      const stored = localStorage.getItem(PLANNER_KEY)
-      return stored ? JSON.parse(stored) : initialTasks
-    } catch (error) {
-      console.error('Failed to parse planner tasks', error)
-      return initialTasks
-    }
-  })
+  const { user } = useAuth()
+  const [tasks, setTasks] = useState<PlannerTask[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(PLANNER_KEY, JSON.stringify(tasks))
-    } catch (error) {
-      console.error('Failed to save planner tasks', error)
-    }
-  }, [tasks])
-
-  const addTask = useCallback((content: string) => {
-    if (content.trim()) {
-      const newTask: PlannerTask = {
-        id: `task-${Date.now()}`,
-        content,
-        status: 'todo',
-        due_date: new Date().toISOString(),
+    const fetchTasks = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getPlannerTasks(user.id)
+        setTasks(data)
+        setIsLoading(false)
+      } else {
+        setTasks([])
+        setIsLoading(false)
       }
-      setTasks((prev) => [...prev, newTask])
     }
-  }, [])
+    fetchTasks()
+  }, [user])
+
+  const addTask = useCallback(
+    async (content: string) => {
+      if (!user || !content.trim()) return
+      const newTask = await addPlannerTask(user.id, content)
+      if (newTask) {
+        setTasks((prev) => [...prev, newTask])
+      }
+    },
+    [user],
+  )
 
   const updateTaskStatus = useCallback(
-    (taskId: string, newStatus: PlannerTaskStatus) => {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === taskId ? { ...task, status: newStatus } : task,
-        ),
-      )
+    async (taskId: string, newStatus: PlannerTaskStatus) => {
+      const updatedTask = await updateStatusService(taskId, newStatus)
+      if (updatedTask) {
+        setTasks((prev) =>
+          prev.map((task) => (task.id === taskId ? updatedTask : task)),
+        )
+      }
     },
     [],
   )
@@ -67,10 +75,11 @@ export function PlannerProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       tasks,
+      isLoading,
       addTask,
       updateTaskStatus,
     }),
-    [tasks, addTask, updateTaskStatus],
+    [tasks, isLoading, addTask, updateTaskStatus],
   )
 
   return (

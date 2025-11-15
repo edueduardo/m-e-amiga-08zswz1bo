@@ -10,12 +10,13 @@ import {
 import { HooponoponoJournalEntry } from '@/types'
 import { useGamification } from './GamificationContext'
 import { useGrowthGarden } from './GrowthGardenContext'
-
-const JOURNAL_KEY = 'mae-amiga-journal-entries'
+import { useAuth } from './AuthContext'
+import { getJournalEntries, addJournalEntry } from '@/services/journal'
 
 interface JournalContextType {
   entries: HooponoponoJournalEntry[]
-  addEntry: (content: string, prompt: string) => void
+  isLoading: boolean
+  addEntry: (content: string, prompt: string) => Promise<void>
 }
 
 export const JournalContext = createContext<JournalContextType | undefined>(
@@ -23,49 +24,48 @@ export const JournalContext = createContext<JournalContextType | undefined>(
 )
 
 export function JournalProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const { addPoints } = useGamification()
   const { updateProgress } = useGrowthGarden()
-  const [entries, setEntries] = useState<HooponoponoJournalEntry[]>(() => {
-    try {
-      const stored = localStorage.getItem(JOURNAL_KEY)
-      return stored ? JSON.parse(stored) : []
-    } catch (error) {
-      console.error('Failed to parse journal entries', error)
-      return []
-    }
-  })
+  const [entries, setEntries] = useState<HooponoponoJournalEntry[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries))
-    } catch (error) {
-      console.error('Failed to save journal entries', error)
+    const fetchEntries = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getJournalEntries(user.id)
+        setEntries(data)
+        setIsLoading(false)
+      } else {
+        setEntries([])
+        setIsLoading(false)
+      }
     }
-  }, [entries])
+    fetchEntries()
+  }, [user])
 
   const addEntry = useCallback(
-    (content: string, prompt: string) => {
-      if (content.trim()) {
-        const newEntry: HooponoponoJournalEntry = {
-          id: new Date().toISOString(),
-          date: new Date().toISOString(),
-          prompt,
-          content,
-        }
+    async (content: string, prompt: string) => {
+      if (!user || !content.trim()) return
+
+      const newEntry = await addJournalEntry(user.id, { content, prompt })
+      if (newEntry) {
         setEntries((prev) => [newEntry, ...prev])
         addPoints(25, "Escreveu no Diário Ho'oponopono")
         updateProgress('journal')
       }
     },
-    [addPoints, updateProgress],
+    [user, addPoints, updateProgress],
   )
 
   const value = useMemo(
     () => ({
       entries,
+      isLoading,
       addEntry,
     }),
-    [entries, addEntry],
+    [entries, isLoading, addEntry],
   )
 
   return (

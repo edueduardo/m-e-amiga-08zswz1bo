@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSupportCircle } from '@/contexts/SupportCircleContext'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,23 +25,35 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { MessageCircle, PlusCircle, Users } from 'lucide-react'
+import { MessageCircle, PlusCircle, Users, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const SupportCirclePage = () => {
-  const { rooms, posts, addPost, addReply } = useSupportCircle()
-  const [selectedRoomId, setSelectedRoomId] = useState<string>(rooms[0]?.id)
+  const { rooms, posts, isLoading, fetchPostsForRoom, addPost, addReply } =
+    useSupportCircle()
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null)
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
   const [newPostTitle, setNewPostTitle] = useState('')
   const [newPostContent, setNewPostContent] = useState('')
   const [newReplyContent, setNewReplyContent] = useState('')
   const [isNewPostDialogOpen, setIsNewPostDialogOpen] = useState(false)
 
-  const roomPosts = posts.filter((p) => p.roomId === selectedRoomId)
+  useEffect(() => {
+    if (rooms.length > 0 && !selectedRoomId) {
+      setSelectedRoomId(rooms[0].id)
+    }
+  }, [rooms, selectedRoomId])
+
+  const handleRoomSelect = (roomId: string) => {
+    setSelectedRoomId(roomId)
+    setSelectedPostId(null)
+    fetchPostsForRoom(roomId)
+  }
+
   const selectedPost = posts.find((p) => p.id === selectedPostId)
 
   const handleAddPost = async () => {
-    if (newPostTitle.trim() && newPostContent.trim()) {
+    if (newPostTitle.trim() && newPostContent.trim() && selectedRoomId) {
       await addPost(selectedRoomId, newPostTitle, newPostContent)
       setNewPostTitle('')
       setNewPostContent('')
@@ -67,10 +79,7 @@ const SupportCirclePage = () => {
             {rooms.map((room) => (
               <button
                 key={room.id}
-                onClick={() => {
-                  setSelectedRoomId(room.id)
-                  setSelectedPostId(null)
-                }}
+                onClick={() => handleRoomSelect(room.id)}
                 className={cn(
                   'w-full text-left p-4 hover:bg-secondary flex items-center gap-3',
                   selectedRoomId === room.id && 'bg-secondary',
@@ -88,7 +97,7 @@ const SupportCirclePage = () => {
             onOpenChange={setIsNewPostDialogOpen}
           >
             <DialogTrigger asChild>
-              <Button className="w-full">
+              <Button className="w-full" disabled={!selectedRoomId}>
                 <PlusCircle className="mr-2 h-4 w-4" /> Nova Publicação
               </Button>
             </DialogTrigger>
@@ -130,25 +139,31 @@ const SupportCirclePage = () => {
           </CardHeader>
           <CardContent className="p-0">
             <ScrollArea className="h-[200px]">
-              {roomPosts.map((post) => (
-                <button
-                  key={post.id}
-                  className={cn(
-                    'w-full text-left p-3 border-b hover:bg-secondary',
-                    selectedPostId === post.id && 'bg-secondary',
-                  )}
-                  onClick={() => setSelectedPostId(post.id)}
-                >
-                  <p className="font-semibold truncate">{post.title}</p>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
-                    <span>por {post.authorAlias}</span>
-                    <div className="flex items-center gap-1">
-                      <MessageCircle className="h-3 w-3" />
-                      {post.replies.length}
+              {isLoading ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </div>
+              ) : (
+                posts.map((post) => (
+                  <button
+                    key={post.id}
+                    className={cn(
+                      'w-full text-left p-3 border-b hover:bg-secondary',
+                      selectedPostId === post.id && 'bg-secondary',
+                    )}
+                    onClick={() => setSelectedPostId(post.id)}
+                  >
+                    <p className="font-semibold truncate">{post.title}</p>
+                    <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
+                      <span>por {post.author_alias}</span>
+                      <div className="flex items-center gap-1">
+                        <MessageCircle className="h-3 w-3" />
+                        {post.replies?.length || 0}
+                      </div>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                ))
+              )}
             </ScrollArea>
           </CardContent>
         </Card>
@@ -159,7 +174,7 @@ const SupportCirclePage = () => {
               <CardHeader className="p-4 border-b">
                 <CardTitle className="text-xl">{selectedPost.title}</CardTitle>
                 <CardDescription className="flex items-center gap-2 text-sm pt-1">
-                  <span>por {selectedPost.authorAlias}</span>
+                  <span>por {selectedPost.author_alias}</span>
                   <span>·</span>
                   <span>
                     {formatDistanceToNow(new Date(selectedPost.created_at), {
@@ -175,17 +190,17 @@ const SupportCirclePage = () => {
                 </p>
                 <Separator />
                 <div className="py-4 space-y-6">
-                  {selectedPost.replies.map((reply) => (
+                  {selectedPost.replies?.map((reply) => (
                     <div key={reply.id} className="flex items-start gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>
-                          {reply.authorAlias.charAt(0)}
+                          {reply.author_alias.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 bg-secondary p-3 rounded-lg">
                         <div className="flex items-center gap-2 text-sm">
                           <span className="font-semibold">
-                            {reply.authorAlias}
+                            {reply.author_alias}
                           </span>
                           <span className="text-muted-foreground">
                             {formatDistanceToNow(new Date(reply.created_at), {
@@ -220,7 +235,7 @@ const SupportCirclePage = () => {
                 Bem-vinda ao Círculo de Apoio
               </h3>
               <p>
-                {roomPosts.length > 0
+                {posts.length > 0
                   ? 'Escolha uma conversa na lista para ler e participar.'
                   : 'Seja a primeira a compartilhar algo nesta sala!'}
               </p>

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { PlusCircle, Sprout } from 'lucide-react'
+import { PlusCircle, Sprout, Loader2 } from 'lucide-react'
 import { useGrowthGarden } from '@/contexts/GrowthGardenContext'
 import { GardenPlot } from '@/components/garden/GardenPlot'
 import { GoalSetterDialog } from '@/components/garden/GoalSetterDialog'
 
 const GrowthGardenPage = () => {
-  const { goals, elements } = useGrowthGarden()
+  const { goals, elements, isLoading } = useGrowthGarden()
   const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false)
 
   return (
@@ -25,7 +25,11 @@ const GrowthGardenPage = () => {
       </div>
 
       <div className="relative w-full aspect-[2/1] bg-green-100 dark:bg-green-900/20 rounded-lg border-2 border-dashed border-green-300 dark:border-green-800 overflow-hidden">
-        {elements.length > 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <Loader2 className="h-8 w-8 animate-spin text-green-700" />
+          </div>
+        ) : elements.length > 0 ? (
           <GardenPlot elements={elements} goals={goals} />
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center text-green-700 dark:text-green-300">

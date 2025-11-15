@@ -11,6 +11,7 @@ const CoachingPage = () => {
   const {
     sessions,
     activeSession,
+    isLoading,
     startNewSession,
     sendMessage,
     setActiveSession,
@@ -57,21 +58,27 @@ const CoachingPage = () => {
           </Button>
         </div>
         <ScrollArea className="flex-grow">
-          {sessions.map((session) => (
-            <button
-              key={session.id}
-              onClick={() => setActiveSession(session.id)}
-              className={cn(
-                'w-full text-left p-3 hover:bg-secondary',
-                activeSession?.id === session.id && 'bg-secondary',
-              )}
-            >
-              <p className="font-medium truncate">{session.title}</p>
-              <p className="text-xs text-muted-foreground">
-                {session.messages.length} mensagens
-              </p>
-            </button>
-          ))}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : (
+            sessions.map((session) => (
+              <button
+                key={session.id}
+                onClick={() => setActiveSession(session.id)}
+                className={cn(
+                  'w-full text-left p-3 hover:bg-secondary',
+                  activeSession?.id === session.id && 'bg-secondary',
+                )}
+              >
+                <p className="font-medium truncate">{session.title}</p>
+                <p className="text-xs text-muted-foreground">
+                  {session.messages.length} mensagens
+                </p>
+              </button>
+            ))
+          )}
         </ScrollArea>
       </div>
       <div className="flex flex-col">

@@ -15,7 +15,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { usePlaylists } from '@/contexts/PlaylistContext'
 import { soothingSounds } from '@/lib/data'
 import { Playlist } from '@/types'
-import { Music2, Plus, Trash2 } from 'lucide-react'
 
 interface PlaylistEditorDialogProps {
   open: boolean
@@ -37,7 +36,7 @@ export const PlaylistEditorDialog = ({
   useEffect(() => {
     if (open && playlist) {
       setName(playlist.name)
-      setSelectedTrackIds(new Set(playlist.trackIds))
+      setSelectedTrackIds(new Set(playlist.track_ids))
     } else if (open) {
       setName('')
       setSelectedTrackIds(new Set())
@@ -56,21 +55,17 @@ export const PlaylistEditorDialog = ({
     })
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (name.trim()) {
       if (playlist) {
-        updatePlaylist(playlist.id, {
+        await updatePlaylist(playlist.id, {
           name,
-          trackIds: Array.from(selectedTrackIds),
+          track_ids: Array.from(selectedTrackIds),
         })
       } else {
-        createPlaylist(name)
-        // Note: In a real app, you'd get the new playlist ID back and then update it with tracks.
-        // For this mock, we'll assume the user edits it after creation to add tracks.
-        // Or, we can modify createPlaylist to accept tracks. Let's do that for a better UX.
-        // Let's assume createPlaylist is modified to handle this. For now, this is a limitation.
-        // A better approach would be to have createPlaylist return the new playlist, then update it.
-        // Let's stick to the current context API for simplicity. The user can edit after creation.
+        // This is a simplified flow. A better UX would be to create and then add tracks.
+        // For now, we create an empty playlist and the user can edit to add tracks.
+        await createPlaylist(name)
       }
       onOpenChange(false)
     }

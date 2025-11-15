@@ -72,13 +72,19 @@ const moodMap: { [key: string]: { color: string; border: string } } = {
   culpada: { color: 'bg-pink-100 text-pink-800', border: 'border-pink-200' },
   sobrecarregada: {
     color: 'bg-indigo-100 text-indigo-800',
-    border: 'border-indigo-200',
+    border: 'border-indigo-800',
   },
 }
 
 const ConversationsPage = () => {
   const { abTestGroup } = useAuth()
-  const { entries, addEntry, deleteEntry, updateFeedback } = useConversations()
+  const {
+    entries,
+    isLoading: isLoadingEntries,
+    addEntry,
+    deleteEntry,
+    updateFeedback,
+  } = useConversations()
   const { toast } = useToast()
   const [newEntry, setNewEntry] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -213,18 +219,15 @@ const ConversationsPage = () => {
       professional_help_suggestion,
     } = await generateMotherReply(transcript, abTestGroup || 'A')
 
-    const entry: VoiceEntry = {
-      id: new Date().toISOString(),
-      created_at: new Date().toISOString(),
+    const entry: Omit<VoiceEntry, 'id' | 'created_at' | 'feedback'> = {
       transcript,
       mood_label: mood_label as VoiceEntry['mood_label'],
       mother_reply: motherReply,
       audio_url: audioURL || undefined,
-      feedback: { rating: null },
       professional_help_suggestion,
     }
 
-    addEntry(entry)
+    await addEntry(entry)
     setNewEntry('')
     setAudioFile(null)
     setAudioURL(null)
@@ -244,7 +247,11 @@ const ConversationsPage = () => {
       <Card className="flex-grow flex flex-col">
         <CardContent className="p-0 flex-grow flex flex-col">
           <ScrollArea className="flex-grow p-6" viewportRef={scrollAreaRef}>
-            {entries.length > 0 ? (
+            {isLoadingEntries ? (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : entries.length > 0 ? (
               <div className="space-y-6">
                 {entries.map((entry) => (
                   <div key={entry.id} className="space-y-4 animate-fade-in-up">

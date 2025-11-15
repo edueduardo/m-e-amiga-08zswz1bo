@@ -28,23 +28,22 @@ interface AuthContextType {
   ) => Promise<{ error: any }>
   signOut: () => Promise<void>
   updateUser: (data: Partial<UserProfile>) => Promise<void>
-  subscribe: () => void // This would be replaced by a real subscription check
+  subscribe: () => void
   sendPasswordResetEmail: (email: string) => Promise<{ error: any }>
   updatePassword: (password: string) => Promise<{ error: any }>
-  requestPhoneEmailVerification: () => Promise<{
-    token: string | null
-    error: Error | null
-  }>
+  requestPhoneEmailVerification: () => Promise<string>
   confirmPhoneEmailVerification: (token: string) => Promise<boolean>
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+const mockVerificationStore: { [key: string]: string } = {}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [isSubscribed, setIsSubscribed] = useState(false) // Mocked for now
   const [abTestGroup, setAbTestGroup] = useState<ABTestGroup | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -61,9 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      // In a real app, subscription status would come from a separate table or a property here.
-      // For now, we'll assume any logged-in user is subscribed.
-      setIsSubscribed(true)
       const userProfile: UserProfile = {
         id: user.id,
         full_name: data.full_name || '',
@@ -93,6 +89,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fetchProfile(currentUser)
       } else {
         setProfile(null)
+      }
+      if (event === 'SIGNED_IN') {
+        // This handles both signup and signin
+        // In a real app, you'd check subscription status from your DB
+        setIsSubscribed(true)
+      }
+      if (event === 'SIGNED_OUT') {
         setIsSubscribed(false)
       }
       setIsLoading(false)
@@ -112,22 +115,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [fetchProfile])
 
   const signIn = useCallback(async (email: string, password: string) => {
-    return supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    return { error }
   }, [])
 
   const signUp = useCallback(
     async (email: string, password: string, fullName: string) => {
-      return supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName } },
+        options: {
+          data: { full_name: fullName },
+        },
       })
+      return { error }
     },
     [],
   )
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()
+    setProfile(null)
   }, [])
 
   const updateUser = useCallback(
@@ -149,38 +160,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const subscribe = useCallback(() => setIsSubscribed(true), [])
 
   const sendPasswordResetEmail = useCallback(async (email: string) => {
-    return supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     })
+    return { error }
   }, [])
 
   const updatePassword = useCallback(async (password: string) => {
-    return supabase.auth.updateUser({ password })
+    const { error } = await supabase.auth.updateUser({ password })
+    return { error }
   }, [])
 
   const requestPhoneEmailVerification = useCallback(async () => {
-    // This is a simplified flow. A real implementation would use a server-side function
-    // to generate a secure, short-lived token and send the email.
-    if (!profile?.phone_number)
-      return { token: null, error: new Error('Phone number not set.') }
+    if (!profile) return ''
+    const token = `mock_token_${Date.now()}`
+    mockVerificationStore[token] = profile.id
     await updateUser({ phone_verification_status: 'pending_email' })
-    const token = `mock_token_${Date.now()}` // MOCK TOKEN
     console.log(
-      `Mock verification email sent. Token: ${token}. Link: /verify-phone-by-email?token=${token}`,
+      `Verification email sent to ${profile.email} for phone ${profile.phone_number}. Token: ${token}`,
     )
-    return { token, error: null }
+    return token
   }, [profile, updateUser])
 
   const confirmPhoneEmailVerification = useCallback(
     async (token: string) => {
-      // This is a mock confirmation. In a real app, the backend would validate the token.
-      if (token.startsWith('mock_token_')) {
+      if (profile && mockVerificationStore[token] === profile.id) {
         await updateUser({ phone_verification_status: 'verified' })
+        delete mockVerificationStore[token]
         return true
       }
       return false
     },
-    [updateUser],
+    [profile, updateUser],
   )
 
   const value = useMemo(

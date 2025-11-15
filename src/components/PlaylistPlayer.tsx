@@ -12,7 +12,7 @@ interface PlaylistPlayerProps {
 }
 
 export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
-  const tracks = playlist.trackIds
+  const tracks = playlist.track_ids
     .map((id) => soothingSounds.find((s) => s.id === id))
     .filter((track): track is SoothingSound => track !== undefined)
 
@@ -78,6 +78,7 @@ export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
   }
 
   const formatTime = (time: number) => {
+    if (isNaN(time) || time === Infinity) return '0:00'
     const minutes = Math.floor(time / 60)
     const seconds = Math.floor(time % 60)
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
@@ -139,8 +140,7 @@ export const PlaylistPlayer = ({ playlist }: PlaylistPlayerProps) => {
               key={track.id}
               className={cn(
                 'p-2 rounded-md cursor-pointer hover:bg-secondary',
-                index === currentTrackIndex &&
-                  'bg-primary/10 text-primary-foreground',
+                index === currentTrackIndex && 'bg-primary/10 text-primary',
               )}
               onClick={() => setCurrentTrackIndex(index)}
             >

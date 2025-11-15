@@ -8,15 +8,24 @@ import {
   useEffect,
 } from 'react'
 import { VoiceEntry, Feedback } from '@/types'
-
-const CONVERSATIONS_KEY = 'mae-amiga-conversations'
+import { useAuth } from './AuthContext'
+import {
+  getConversations,
+  addConversation,
+  deleteConversation,
+  deleteAllConversations as deleteAllConversationsService,
+  updateConversationFeedback,
+} from '@/services/conversations'
 
 interface ConversationsContextType {
   entries: VoiceEntry[]
-  addEntry: (entry: VoiceEntry) => void
-  deleteEntry: (entryId: string) => void
-  deleteAllEntries: () => void
-  updateFeedback: (entryId: string, feedback: Feedback) => void
+  isLoading: boolean
+  addEntry: (
+    entry: Omit<VoiceEntry, 'id' | 'created_at' | 'feedback'>,
+  ) => Promise<void>
+  deleteEntry: (entryId: string) => Promise<void>
+  deleteAllEntries: () => Promise<void>
+  updateFeedback: (entryId: string, feedback: Feedback) => Promise<void>
 }
 
 export const ConversationsContext = createContext<
@@ -24,55 +33,84 @@ export const ConversationsContext = createContext<
 >(undefined)
 
 export function ConversationsProvider({ children }: { children: ReactNode }) {
-  const [entries, setEntries] = useState<VoiceEntry[]>(() => {
-    try {
-      const stored = localStorage.getItem(CONVERSATIONS_KEY)
-      return stored ? JSON.parse(stored) : []
-    } catch (error) {
-      console.error('Failed to parse conversations', error)
-      return []
-    }
-  })
+  const { user } = useAuth()
+  const [entries, setEntries] = useState<VoiceEntry[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(entries))
-    } catch (error) {
-      console.error('Failed to save conversations', error)
+    const fetchConversations = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getConversations(user.id)
+        setEntries(data)
+        setIsLoading(false)
+      } else {
+        setEntries([])
+        setIsLoading(false)
+      }
     }
-  }, [entries])
+    fetchConversations()
+  }, [user])
 
-  const addEntry = useCallback((entry: VoiceEntry) => {
-    setEntries((prevEntries) => [entry, ...prevEntries])
+  const addEntry = useCallback(
+    async (entry: Omit<VoiceEntry, 'id' | 'created_at' | 'feedback'>) => {
+      if (!user) return
+      const newEntry = await addConversation(user.id, entry)
+      if (newEntry) {
+        setEntries((prevEntries) => [newEntry, ...prevEntries])
+      }
+    },
+    [user],
+  )
+
+  const deleteEntry = useCallback(async (entryId: string) => {
+    const success = await deleteConversation(entryId)
+    if (success) {
+      setEntries((prevEntries) =>
+        prevEntries.filter((entry) => entry.id !== entryId),
+      )
+    }
   }, [])
 
-  const deleteEntry = useCallback((entryId: string) => {
-    setEntries((prevEntries) =>
-      prevEntries.filter((entry) => entry.id !== entryId),
-    )
-  }, [])
+  const deleteAllEntries = useCallback(async () => {
+    if (!user) return
+    const success = await deleteAllConversationsService(user.id)
+    if (success) {
+      setEntries([])
+    }
+  }, [user])
 
-  const deleteAllEntries = useCallback(() => {
-    setEntries([])
-  }, [])
-
-  const updateFeedback = useCallback((entryId: string, feedback: Feedback) => {
-    setEntries((prevEntries) =>
-      prevEntries.map((entry) =>
-        entry.id === entryId ? { ...entry, feedback } : entry,
-      ),
-    )
-  }, [])
+  const updateFeedback = useCallback(
+    async (entryId: string, feedback: Feedback) => {
+      const success = await updateConversationFeedback(entryId, feedback)
+      if (success) {
+        setEntries((prevEntries) =>
+          prevEntries.map((entry) =>
+            entry.id === entryId ? { ...entry, feedback } : entry,
+          ),
+        )
+      }
+    },
+    [],
+  )
 
   const value = useMemo(
     () => ({
       entries,
+      isLoading,
       addEntry,
       deleteEntry,
       deleteAllEntries,
       updateFeedback,
     }),
-    [entries, addEntry, deleteEntry, deleteAllEntries, updateFeedback],
+    [
+      entries,
+      isLoading,
+      addEntry,
+      deleteEntry,
+      deleteAllEntries,
+      updateFeedback,
+    ],
   )
 
   return (

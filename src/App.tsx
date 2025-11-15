@@ -72,15 +72,15 @@ const App = () => (
       <AuthProvider>
         <UserPreferencesProvider>
           <NotificationProvider>
-            <ConversationsProvider>
-              <AiResponseProvider>
-                <SelfCareProvider>
-                  <CoachingProvider>
-                    <SelfKnowledgeProvider>
-                      <SupportCircleProvider>
-                        <PlannerProvider>
-                          <GamificationProvider>
-                            <GrowthGardenProvider>
+            <GamificationProvider>
+              <GrowthGardenProvider>
+                <ConversationsProvider>
+                  <AiResponseProvider>
+                    <SelfCareProvider>
+                      <CoachingProvider>
+                        <SelfKnowledgeProvider>
+                          <SupportCircleProvider>
+                            <PlannerProvider>
                               <ChallengesProvider>
                                 <PlaylistProvider>
                                   <VirtualManProvider>
@@ -246,15 +246,15 @@ const App = () => (
                                   </VirtualManProvider>
                                 </PlaylistProvider>
                               </ChallengesProvider>
-                            </GrowthGardenProvider>
-                          </GamificationProvider>
-                        </PlannerProvider>
-                      </SupportCircleProvider>
-                    </SelfKnowledgeProvider>
-                  </CoachingProvider>
-                </SelfCareProvider>
-              </AiResponseProvider>
-            </ConversationsProvider>
+                            </PlannerProvider>
+                          </SupportCircleProvider>
+                        </SelfKnowledgeProvider>
+                      </CoachingProvider>
+                    </SelfCareProvider>
+                  </AiResponseProvider>
+                </ConversationsProvider>
+              </GrowthGardenProvider>
+            </GamificationProvider>
           </NotificationProvider>
         </UserPreferencesProvider>
       </AuthProvider>

@@ -8,14 +8,23 @@ import {
   useEffect,
 } from 'react'
 import { Playlist } from '@/types'
-
-const PLAYLIST_KEY = 'mae-amiga-playlists'
+import { useAuth } from './AuthContext'
+import {
+  getPlaylists,
+  createPlaylist as createPlaylistService,
+  updatePlaylist as updatePlaylistService,
+  deletePlaylist as deletePlaylistService,
+} from '@/services/playlists'
 
 interface PlaylistContextType {
   playlists: Playlist[]
-  createPlaylist: (name: string) => void
-  updatePlaylist: (playlistId: string, updates: Partial<Playlist>) => void
-  deletePlaylist: (playlistId: string) => void
+  isLoading: boolean
+  createPlaylist: (name: string) => Promise<void>
+  updatePlaylist: (
+    playlistId: string,
+    updates: Partial<Playlist>,
+  ) => Promise<void>
+  deletePlaylist: (playlistId: string) => Promise<void>
   getPlaylistById: (playlistId: string) => Playlist | undefined
 }
 
@@ -24,45 +33,53 @@ export const PlaylistContext = createContext<PlaylistContextType | undefined>(
 )
 
 export function PlaylistProvider({ children }: { children: ReactNode }) {
-  const [playlists, setPlaylists] = useState<Playlist[]>(() => {
-    try {
-      const stored = localStorage.getItem(PLAYLIST_KEY)
-      return stored ? JSON.parse(stored) : []
-    } catch (error) {
-      console.error('Failed to parse playlists from localStorage', error)
-      return []
-    }
-  })
+  const { user } = useAuth()
+  const [playlists, setPlaylists] = useState<Playlist[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(PLAYLIST_KEY, JSON.stringify(playlists))
-    } catch (error) {
-      console.error('Failed to save playlists to localStorage', error)
+    const fetchPlaylists = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getPlaylists(user.id)
+        setPlaylists(data)
+        setIsLoading(false)
+      } else {
+        setPlaylists([])
+        setIsLoading(false)
+      }
     }
-  }, [playlists])
+    fetchPlaylists()
+  }, [user])
 
-  const createPlaylist = useCallback((name: string) => {
-    const newPlaylist: Playlist = {
-      id: `playlist-${Date.now()}`,
-      name,
-      trackIds: [],
-      created_at: new Date().toISOString(),
-    }
-    setPlaylists((prev) => [newPlaylist, ...prev])
-  }, [])
+  const createPlaylist = useCallback(
+    async (name: string) => {
+      if (!user) return
+      const newPlaylist = await createPlaylistService(user.id, name)
+      if (newPlaylist) {
+        setPlaylists((prev) => [newPlaylist, ...prev])
+      }
+    },
+    [user],
+  )
 
   const updatePlaylist = useCallback(
-    (playlistId: string, updates: Partial<Playlist>) => {
-      setPlaylists((prev) =>
-        prev.map((p) => (p.id === playlistId ? { ...p, ...updates } : p)),
-      )
+    async (playlistId: string, updates: Partial<Playlist>) => {
+      const updatedPlaylist = await updatePlaylistService(playlistId, updates)
+      if (updatedPlaylist) {
+        setPlaylists((prev) =>
+          prev.map((p) => (p.id === playlistId ? updatedPlaylist : p)),
+        )
+      }
     },
     [],
   )
 
-  const deletePlaylist = useCallback((playlistId: string) => {
-    setPlaylists((prev) => prev.filter((p) => p.id !== playlistId))
+  const deletePlaylist = useCallback(async (playlistId: string) => {
+    const success = await deletePlaylistService(playlistId)
+    if (success) {
+      setPlaylists((prev) => prev.filter((p) => p.id !== playlistId))
+    }
   }, [])
 
   const getPlaylistById = useCallback(
@@ -75,6 +92,7 @@ export function PlaylistProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       playlists,
+      isLoading,
       createPlaylist,
       updatePlaylist,
       deletePlaylist,
@@ -82,6 +100,7 @@ export function PlaylistProvider({ children }: { children: ReactNode }) {
     }),
     [
       playlists,
+      isLoading,
       createPlaylist,
       updatePlaylist,
       deletePlaylist,

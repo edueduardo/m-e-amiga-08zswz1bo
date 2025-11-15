@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { getDynamicMeditations, getDynamicGuidedAudios } from '@/lib/data'
+import { useState } from 'react'
 import { MeditationAudio, Playlist } from '@/types'
 import { AudioPlayer } from '@/components/AudioPlayer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +8,7 @@ import {
   Music2,
   PlusCircle,
   MoreHorizontal,
+  Loader2,
 } from 'lucide-react'
 import { usePlaylists } from '@/contexts/PlaylistContext'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { soothingSounds } from '@/lib/data'
 
 const AudioCard = ({ audio }: { audio: MeditationAudio }) => {
   const formatDuration = (seconds: number) => {
@@ -44,19 +45,12 @@ const AudioCard = ({ audio }: { audio: MeditationAudio }) => {
 }
 
 const MusicPage = () => {
-  const [meditations, setMeditations] = useState<MeditationAudio[]>([])
-  const [guidedAudios, setGuidedAudios] = useState<MeditationAudio[]>([])
-  const { playlists, deletePlaylist } = usePlaylists()
+  const { playlists, isLoading, deletePlaylist } = usePlaylists()
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(
     null,
   )
   const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null)
-
-  useEffect(() => {
-    setMeditations(getDynamicMeditations())
-    setGuidedAudios(getDynamicGuidedAudios())
-  }, [])
 
   const handleEditPlaylist = (playlist: Playlist) => {
     setEditingPlaylist(playlist)
@@ -80,7 +74,11 @@ const MusicPage = () => {
             <PlusCircle className="mr-2 h-4 w-4" /> Nova Playlist
           </Button>
         </div>
-        {playlists.length > 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : playlists.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {playlists.map((playlist) => (
               <Card
@@ -122,7 +120,7 @@ const MusicPage = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    {playlist.trackIds.length} músicas
+                    {playlist.track_ids.length} músicas
                   </p>
                 </CardContent>
               </Card>
@@ -140,23 +138,20 @@ const MusicPage = () => {
       <section className="space-y-6">
         <div className="flex items-center gap-3">
           <Wind className="h-8 w-8 text-primary" />
-          <h2 className="text-2xl font-bold">Meditações Rápidas</h2>
+          <h2 className="text-2xl font-bold">Sons Relaxantes</h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {meditations.map((med) => (
-            <AudioCard key={med.id} audio={med} />
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Headphones className="h-8 w-8 text-primary" />
-          <h2 className="text-2xl font-bold">Áudios Guiados</h2>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {guidedAudios.map((audio) => (
-            <AudioCard key={audio.id} audio={audio} />
+          {soothingSounds.map((sound) => (
+            <AudioCard
+              key={sound.id}
+              audio={{
+                id: sound.id,
+                title: sound.name,
+                theme: 'relaxation',
+                duration_seconds: sound.duration_seconds,
+                audio_url: sound.url,
+              }}
+            />
           ))}
         </div>
       </section>

@@ -104,13 +104,20 @@ const SettingsPage = () => {
   }
 
   const handleRequestVerification = async () => {
-    const token = await requestPhoneEmailVerification()
-    toast({
-      title: 'E-mail de verificação enviado!',
-      description:
-        'Enviamos um link para o seu e-mail para confirmar seu número de telefone.',
-    })
-    console.log(`Verification link: /verify-phone-by-email?token=${token}`)
+    const { error } = await requestPhoneEmailVerification()
+    if (error) {
+      toast({
+        title: 'Erro',
+        description: error.message,
+        variant: 'destructive',
+      })
+    } else {
+      toast({
+        title: 'E-mail de verificação enviado!',
+        description:
+          'Enviamos um link para o seu e-mail para confirmar seu número de telefone.',
+      })
+    }
   }
 
   const handlePasswordUpdate = async (e: React.FormEvent<HTMLFormElement>) => {

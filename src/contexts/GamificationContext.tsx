@@ -10,8 +10,11 @@ import {
 import { UserGamificationProfile } from '@/types'
 import { gamificationBadges } from '@/lib/data'
 import { useToast } from '@/components/ui/use-toast'
-
-const GAMIFICATION_KEY = 'mae-amiga-gamification-profile'
+import { useAuth } from './AuthContext'
+import {
+  getGamificationProfile,
+  updateGamificationProfile,
+} from '@/services/gamification'
 
 const defaultProfile: UserGamificationProfile = {
   points: 0,
@@ -23,7 +26,8 @@ const POINTS_PER_LEVEL = 100
 
 interface GamificationContextType {
   profile: UserGamificationProfile
-  addPoints: (amount: number, action: string) => void
+  isLoading: boolean
+  addPoints: (amount: number, action: string) => Promise<void>
 }
 
 export const GamificationContext = createContext<
@@ -31,40 +35,57 @@ export const GamificationContext = createContext<
 >(undefined)
 
 export function GamificationProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
   const { toast } = useToast()
-  const [profile, setProfile] = useState<UserGamificationProfile>(() => {
-    try {
-      const stored = localStorage.getItem(GAMIFICATION_KEY)
-      return stored ? JSON.parse(stored) : defaultProfile
-    } catch (error) {
-      console.error('Failed to parse gamification profile', error)
-      return defaultProfile
-    }
-  })
+  const [profile, setProfile] =
+    useState<UserGamificationProfile>(defaultProfile)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(GAMIFICATION_KEY, JSON.stringify(profile))
-    } catch (error) {
-      console.error('Failed to save gamification profile', error)
+    const fetchProfile = async () => {
+      if (user) {
+        setIsLoading(true)
+        const data = await getGamificationProfile(user.id)
+        setProfile(data || defaultProfile)
+        setIsLoading(false)
+      } else {
+        setProfile(defaultProfile)
+        setIsLoading(false)
+      }
     }
-  }, [profile])
+    fetchProfile()
+  }, [user])
 
   const addPoints = useCallback(
-    (amount: number, action: string) => {
-      setProfile((prev) => {
-        const newPoints = prev.points + amount
-        const newLevel = Math.floor(newPoints / POINTS_PER_LEVEL) + 1
-        const newlyUnlockedBadges: string[] = []
+    async (amount: number, action: string) => {
+      if (!user) return
 
-        gamificationBadges.forEach((badge) => {
-          if (
-            !prev.unlockedBadges.includes(badge.id) &&
-            newPoints >= badge.pointsThreshold
-          ) {
-            newlyUnlockedBadges.push(badge.id)
-          }
-        })
+      const newPoints = profile.points + amount
+      const newLevel = Math.floor(newPoints / POINTS_PER_LEVEL) + 1
+      const newlyUnlockedBadges: string[] = []
+
+      gamificationBadges.forEach((badge) => {
+        if (
+          !profile.unlockedBadges.includes(badge.id) &&
+          newPoints >= badge.pointsThreshold
+        ) {
+          newlyUnlockedBadges.push(badge.id)
+        }
+      })
+
+      const updatedProfileData = {
+        points: newPoints,
+        level: newLevel,
+        unlockedBadges: [...profile.unlockedBadges, ...newlyUnlockedBadges],
+      }
+
+      const updatedProfile = await updateGamificationProfile(
+        user.id,
+        updatedProfileData,
+      )
+
+      if (updatedProfile) {
+        setProfile(updatedProfile)
 
         if (newlyUnlockedBadges.length > 0) {
           const badge = gamificationBadges.find(
@@ -76,7 +97,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
           })
         }
 
-        if (newLevel > prev.level) {
+        if (newLevel > profile.level) {
           toast({
             title: 'Subiu de Nível!',
             description: `Parabéns! Você alcançou o nível ${newLevel}.`,
@@ -87,23 +108,18 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
           title: `+${amount} pontos!`,
           description: `Por: ${action}`,
         })
-
-        return {
-          points: newPoints,
-          level: newLevel,
-          unlockedBadges: [...prev.unlockedBadges, ...newlyUnlockedBadges],
-        }
-      })
+      }
     },
-    [toast],
+    [user, profile, toast],
   )
 
   const value = useMemo(
     () => ({
       profile,
+      isLoading,
       addPoints,
     }),
-    [profile, addPoints],
+    [profile, isLoading, addPoints],
   )
 
   return (
