@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { CoachingSession, CoachingMessage } from '@/types'
 import { startCoachingSession, generateCoachingReply } from '@/lib/motherAi'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getCoachingSessions,
   addCoachingSession,

@@ -12,7 +12,7 @@ import {
   getUserPreferences,
   updateUserHomePageLayout,
 } from '@/services/userPreferences'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 export const defaultDashboardCards = [
   { id: 'care', title: 'Cuidar de mim hoje', visible: true },
@@ -59,7 +59,6 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
     const prefs = await getUserPreferences(user.id)
     if (prefs.home_page_layout && prefs.home_page_layout.length > 0) {
-      // Merge saved layout with default to handle new cards
       const savedLayoutMap = new Map(
         prefs.home_page_layout.map((item) => [item.id, item]),
       )

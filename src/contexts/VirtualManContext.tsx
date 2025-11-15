@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react'
 import { VirtualManInteraction, VirtualManProfile } from '@/types'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getVirtualManInteractions,
   addVirtualManInteraction,

@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react'
 import { VoiceEntry, Feedback } from '@/types'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getConversations,
   addConversation,

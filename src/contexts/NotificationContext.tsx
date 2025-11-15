@@ -13,7 +13,7 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
 } from '@/services/notifications'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface NotificationContextType {
   notifications: Notification[]

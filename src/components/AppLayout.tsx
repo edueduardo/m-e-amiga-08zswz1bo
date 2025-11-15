@@ -1,7 +1,7 @@
 import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import { AuthenticatedHeader } from './AuthenticatedHeader'
 import { AppSidebar } from './AppSidebar'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { Loader2 } from 'lucide-react'
 
 export const AppLayout = () => {

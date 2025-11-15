@@ -26,8 +26,6 @@ const ResetPasswordPage = () => {
   const [isTokenValid, setIsTokenValid] = useState(false)
 
   useEffect(() => {
-    // Supabase handles the token from the URL fragment (#) automatically
-    // We just need to check if the user is in a recovery session
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {

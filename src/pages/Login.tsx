@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,9 +16,15 @@ import { Loader2 } from 'lucide-react'
 
 const LoginPage = () => {
   const navigate = useNavigate()
-  const { signIn } = useAuth()
+  const { signIn, isAuthenticated } = useAuth()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app')
+    }
+  }, [isAuthenticated, navigate])
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -40,7 +46,7 @@ const LoginPage = () => {
         title: 'Login bem-sucedido!',
         description: 'Bem-vinda de volta!',
       })
-      navigate('/app')
+      // The onAuthStateChange listener in AuthContext will handle navigation
     }
     setIsLoading(false)
   }

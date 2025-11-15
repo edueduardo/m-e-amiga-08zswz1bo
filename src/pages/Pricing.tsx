@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card'
 import { Check } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
 
 const features = [

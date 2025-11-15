@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { SupportPost, SupportReply, ThematicRoom } from '@/types'
 import { moderateSupportPost } from '@/lib/motherAi'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getRooms,
   getPosts,

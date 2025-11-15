@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
 import {
   Card,
@@ -34,9 +34,7 @@ const VerifyPhoneNumberByEmailPage = () => {
     }
 
     const verifyToken = async () => {
-      // In a real app, you'd call an API. Here we simulate it.
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      const success = confirmPhoneEmailVerification(token)
+      const success = await confirmPhoneEmailVerification(token)
 
       if (success) {
         setStatus('success')

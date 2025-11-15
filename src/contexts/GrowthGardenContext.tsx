@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { GardenGoal, GardenElement } from '@/types'
 import { useGamification } from './GamificationContext'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getGardenData,
   addGardenGoal,

@@ -5,7 +5,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 // Context Providers
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ConversationsProvider } from './contexts/ConversationsContext'
 import { AiResponseProvider } from './contexts/AiResponseContext'

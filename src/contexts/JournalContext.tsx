@@ -10,7 +10,7 @@ import {
 import { HooponoponoJournalEntry } from '@/types'
 import { useGamification } from './GamificationContext'
 import { useGrowthGarden } from './GrowthGardenContext'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { getJournalEntries, addJournalEntry } from '@/services/journal'
 
 interface JournalContextType {

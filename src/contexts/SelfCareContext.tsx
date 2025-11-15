@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react'
 import { SelfCarePlan, QuizResult } from '@/types'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { getSelfCareHistory, saveSelfCareResult } from '@/services/selfCare'
 
 interface SelfCareContextType {

@@ -29,7 +29,7 @@ import {
   Loader2,
   LayoutDashboard,
 } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import { HooponoponoDisplay } from '@/components/HooponoponoDisplay'

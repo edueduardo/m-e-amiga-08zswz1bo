@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { useGamification } from '@/contexts/GamificationContext'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import { gamificationBadges } from '@/lib/data'
 import { Award, Star, Loader2 } from 'lucide-react'
 import {

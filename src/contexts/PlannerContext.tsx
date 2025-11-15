@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react'
 import { PlannerTask, PlannerTaskStatus } from '@/types'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getPlannerTasks,
   addPlannerTask,

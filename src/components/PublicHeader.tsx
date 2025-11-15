@@ -10,7 +10,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 
 const navLinks = [
   { href: '/#how-it-works', label: 'Como Funciona' },

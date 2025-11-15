@@ -8,7 +8,7 @@ import {
   useEffect,
 } from 'react'
 import { Playlist } from '@/types'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getPlaylists,
   createPlaylist as createPlaylistService,

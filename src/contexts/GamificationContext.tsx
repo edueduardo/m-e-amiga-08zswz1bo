@@ -10,7 +10,7 @@ import {
 import { UserGamificationProfile } from '@/types'
 import { gamificationBadges } from '@/lib/data'
 import { useToast } from '@/components/ui/use-toast'
-import { useAuth } from './AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   getGamificationProfile,
   updateGamificationProfile,

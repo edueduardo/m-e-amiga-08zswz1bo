@@ -46,9 +46,11 @@ const SignupPage = () => {
       })
     } else {
       toast({
-        title: 'Conta criada com sucesso!',
-        description: 'Bem-vinda! Redirecionando para o aplicativo...',
+        title: 'Verifique seu e-mail',
+        description:
+          'Enviamos um link de confirmação para o seu e-mail para ativar sua conta.',
       })
+      navigate('/verify-email')
     }
     setIsLoading(false)
   }
