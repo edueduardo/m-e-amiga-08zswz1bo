@@ -24,12 +24,12 @@ export const HooponoponoDesireSection = () => {
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
           <Sparkles className="h-12 w-12 text-primary" />
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-            Imagine um caminho para a paz interior
+            Encontre a Paz Interior com a Prática Ho'oponopono
           </h2>
           <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            O Ho'oponopono é uma prática ancestral de perdão e reconciliação. É
-            uma ferramenta simples e poderosa para limpar memórias dolorosas e
-            encontrar a calma que você deseja.
+            O Ho'oponopono é uma prática ancestral de perdão e reconciliação.
+            Use estas quatro frases simples para limpar memórias dolorosas,
+            liberar o passado e sentir a calma que você tanto busca.
           </p>
         </div>
         <div className="mx-auto max-w-2xl">

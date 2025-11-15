@@ -40,8 +40,8 @@ export const WhyUsSection = () => {
             Por que escolher a Mãe Amiga?
           </h2>
           <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            Em um mundo barulhento, criamos um silêncio acolhedor onde sua voz é
-            a única que importa.
+            Criamos um espaço seguro e silencioso onde você pode desabafar e ser
+            ouvida sem julgamentos, a qualquer momento.
           </p>
         </div>
         <div className="mx-auto grid max-w-5xl items-start gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">

@@ -44,7 +44,7 @@ export const HeroSection = () => {
 
   const headline = 'Sinta-se ouvida. Encontre seu equilíbrio.'
   const subheadline =
-    'Descubra também como ele pode pensar e reagir – uma ferramenta exclusiva para entender perspectivas masculinas.'
+    'Descubra como os homens da sua vida (parceiro, pai, filho) pensam e reagem – uma ferramenta exclusiva para entender perspectivas masculinas.'
 
   return (
     <>
