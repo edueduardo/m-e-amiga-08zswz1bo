@@ -9,103 +9,97 @@
 
 @layer base {
   :root {
-    /* Change the colors to match the design system */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* New Color Palette: Welcoming, Supportive, and Feminine */
+    --background: 0 0% 100%; /* White */
+    --foreground: 224 71.4% 4.1%; /* Dark Gray */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
 
-    --primary: 222.2 84% 4.9%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 340 65% 55%; /* Soft Pink/Rose */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary: 200 100% 97%; /* Calming Light Blue */
+    --secondary-foreground: 224 71.4% 4.1%;
 
-    --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14.3% 95.9%; /* Light Gray */
+    --muted-foreground: 220 8.9% 46.1%; /* Soft Gray */
 
-    --accent: 210 40% 98%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 142.1 76.2% 36.3%; /* Gentle Green */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 91%; /* Light Gray */
+    --input: 220 13% 91%;
+    --ring: 340 65% 55%; /* Soft Pink/Rose */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
+    --sidebar-background: 210 40% 98%;
     --sidebar-foreground: 222.2 84% 4.9%;
-
-    --sidebar-primary: 222.2 84% 4.9%;
-
+    --sidebar-primary: 340 65% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-
-    --sidebar-accent: 210 40% 98%;
-
+    --sidebar-accent: 210 40% 96.1%;
     --sidebar-accent-foreground: 222.2 84% 4.9%;
-
     --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 340 65% 55%;
 
-    --sidebar-ring: 222.2 84% 4.9%;
-
-    --chart-1: 34 100% 44%;
-    --chart-2: 189 100% 38%;
-    --chart-3: 209 100% 32%;
-    --chart-4: 42 100% 50%;
-    --chart-5: 33 100% 50%;
+    --chart-1: 340 65% 55%; /* Pink */
+    --chart-2: 195 53% 79%; /* Blue */
+    --chart-3: 120 73% 75%; /* Green */
+    --chart-4: 45 93% 70%; /* Yellow */
+    --chart-5: 260 80% 75%; /* Purple */
   }
 
   .dark {
-    /* Change the colors to match the design system consistent with the dark mode */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark Mode Palette */
+    --background: 224 71.4% 4.1%; /* Dark Slate */
+    --foreground: 210 20% 98%; /* Almost White */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary: 340 65% 55%; /* Soft Pink/Rose */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 222.2 84% 4.9%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 13.1% 18.2%; /* Darker Gray-Blue */
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 222.2 84% 4.9%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 13.1% 18.2%;
+    --muted-foreground: 220 9.8% 50.8%; /* Lighter Gray */
 
-    --accent: 222.2 84% 4.9%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 142.1 76.2% 36.3%; /* Gentle Green */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 222.2 84% 4.9%;
-    --input: 222.2 84% 4.9%;
-    --ring: 214.3 31.8% 91.4%;
-    --sidebar-background: 222.2 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 222.2 84% 4.9%;
+    --border: 220 13.1% 18.2%; /* Dark Border */
+    --input: 220 13.1% 18.2%;
+    --ring: 340 65% 55%;
+
+    --sidebar-background: 224 71.4% 4.1%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 340 65% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222.2 84% 4.9%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222.2 84% 4.9%;
-    --sidebar-ring: 222.2 84% 4.9%;
+    --sidebar-accent: 220 13.1% 18.2%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 220 13.1% 18.2%;
+    --sidebar-ring: 340 65% 55%;
 
-    --chart-1: 270 100% 44%;
-    --chart-2: 164 100% 38%;
-    --chart-3: 43 100% 32%;
-    --chart-4: 340 100% 50%;
-    --chart-5: 10 100% 50%;
+    --chart-1: 340 65% 55%; /* Pink */
+    --chart-2: 195 53% 79%; /* Blue */
+    --chart-3: 120 73% 75%; /* Green */
+    --chart-4: 45 93% 70%; /* Yellow */
+    --chart-5: 260 80% 75%; /* Purple */
   }
 
   /* NEVER REMOVE THIS */
