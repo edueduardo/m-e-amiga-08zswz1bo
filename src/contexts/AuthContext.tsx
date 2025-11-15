@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      setIsSubscribed(true)
+      setIsSubscribed(true) // Mocking subscription status
       const userProfile: UserProfile = {
         id: user.id,
         full_name: data.full_name || '',
@@ -71,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         phone_verification_status:
           data.phone_verification_status || 'not_verified',
         is_two_factor_enabled: data.is_two_factor_enabled || false,
+        role: data.role || 'user',
       }
       setProfile(userProfile)
       return userProfile

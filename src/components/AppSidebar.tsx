@@ -27,12 +27,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { ReactNode } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface NavItem {
   href: string
   label: string
   icon: React.ElementType
   description: ReactNode
+  adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
@@ -81,23 +83,24 @@ const navItems: NavItem[] = [
     description: (
       <div className="p-2 space-y-2 max-w-xs text-left">
         <p>
-          <strong className="font-semibold text-primary">Attention:</strong>{' '}
-          Feel heard and understood at any time.
+          <strong className="font-semibold text-primary">Atenção:</strong>{' '}
+          Sinta-se ouvida e compreendida a qualquer momento.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Interest:</strong> With
-          AI-Guided Coaching Sessions, you have a personal coach available 24/7
-          for deep conversations and practical exercises.
+          <strong className="font-semibold text-primary">Interesse:</strong> Com
+          as Sessões de Aconselhamento Guiadas por IA, você tem uma coach
+          pessoal disponível 24/7 para conversas profundas e exercícios
+          práticos.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Desire:</strong>{' '}
-          Discover clarity, find solutions to your challenges, and track your
-          progress in a safe and confidential environment. It's like having
-          constant support for your emotional well-being.
+          <strong className="font-semibold text-primary">Desejo:</strong>{' '}
+          Descubra clareza, encontre soluções para seus desafios e acompanhe seu
+          progresso em um ambiente seguro e confidencial. É como ter suporte
+          constante para seu bem-estar emocional.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Action:</strong> Start
-          your session and begin your self-discovery journey today!
+          <strong className="font-semibold text-primary">Ação:</strong> Comece
+          sua sessão e inicie sua jornada de autodescoberta hoje mesmo!
         </p>
       </div>
     ),
@@ -109,25 +112,25 @@ const navItems: NavItem[] = [
     description: (
       <div className="p-2 space-y-2 max-w-xs text-left">
         <p>
-          <strong className="font-semibold text-primary">Attention:</strong>{' '}
-          Unravel the secrets of your emotions.
+          <strong className="font-semibold text-primary">Atenção:</strong>{' '}
+          Desvende os segredos de suas emoções.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Interest:</strong> The
-          Self-Knowledge Journey with Emotional Pattern Analysis uses AI to
-          analyze your interactions, notes, and mood, revealing unique emotional
-          triggers and patterns.
+          <strong className="font-semibold text-primary">Interesse:</strong> A
+          Jornada de Autoconhecimento com Análise de Padrões Emocionais usa IA
+          para analisar suas interações, anotações e humor, revelando gatilhos e
+          padrões emocionais únicos.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Desire:</strong> Gain
-          deep insights into yourself, understand what affects you, and receive
-          personalized recommendations to cultivate lasting well-being.
-          Transform how you relate to your emotions.
+          <strong className="font-semibold text-primary">Desejo:</strong>{' '}
+          Obtenha insights profundos sobre você, entenda o que te afeta e receba
+          recomendações personalizadas para cultivar um bem-estar duradouro.
+          Transforme como você se relaciona com suas emoções.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Action:</strong>{' '}
-          Explore your emotional patterns and start building a more balanced
-          life!
+          <strong className="font-semibold text-primary">Ação:</strong> Explore
+          seus padrões emocionais e comece a construir uma vida mais
+          equilibrada!
         </p>
       </div>
     ),
@@ -139,25 +142,25 @@ const navItems: NavItem[] = [
     description: (
       <div className="p-2 space-y-2 max-w-xs text-left">
         <p>
-          <strong className="font-semibold text-primary">Attention:</strong>{' '}
-          Learn and grow at your own pace, your way.
+          <strong className="font-semibold text-primary">Atenção:</strong>{' '}
+          Aprenda e cresça no seu ritmo, do seu jeito.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Interest:</strong>{' '}
-          Adaptive AI-Generated Learning Paths create personalized
-          'mini-workshops' for you, dynamically adjusting to your needs and
-          learning style.
+          <strong className="font-semibold text-primary">Interesse:</strong> As
+          Trilhas de Aprendizagem Adaptativas criam 'mini-workshops'
+          personalizados para você, ajustando-se dinamicamente às suas
+          necessidades e estilo de aprendizado.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Desire:</strong>{' '}
-          Receive relevant and effective content to overcome specific
-          challenges, develop new skills, and deepen your knowledge on topics
-          that truly matter to you. Your personal development has never been so
-          personalized.
+          <strong className="font-semibold text-primary">Desejo:</strong> Receba
+          conteúdo relevante e eficaz para superar desafios específicos,
+          desenvolver novas habilidades e aprofundar seu conhecimento em tópicos
+          que realmente importam para você. Seu desenvolvimento pessoal nunca
+          foi tão personalizado.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Action:</strong>{' '}
-          Discover your learning path and boost your personal growth!
+          <strong className="font-semibold text-primary">Ação:</strong> Descubra
+          sua trilha de aprendizado e impulsione seu crescimento pessoal!
         </p>
       </div>
     ),
@@ -182,24 +185,24 @@ const navItems: NavItem[] = [
     description: (
       <div className="p-2 space-y-2 max-w-xs text-left">
         <p>
-          <strong className="font-semibold text-primary">Attention:</strong>{' '}
-          Connect and share in a community that understands you.
+          <strong className="font-semibold text-primary">Atenção:</strong>{' '}
+          Conecte-se e compartilhe em uma comunidade que te entende.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Interest:</strong> The
-          enhanced Support Circle offers discussion rooms focused on specific
-          themes, such as 'Mothers of Babies' or 'Relationship Challenges', with
-          AI assisting in moderation.
+          <strong className="font-semibold text-primary">Interesse:</strong> O
+          Círculo de Apoio aprimorado oferece salas de discussão focadas em
+          temas específicos, como 'Mães de Bebês' ou 'Desafios no
+          Relacionamento', com a IA auxiliando na moderação.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Desire:</strong> Find
-          support, share experiences, and build bonds with other mothers in a
-          safe, welcoming, and constructive environment. Feel part of something
-          bigger, where your voice is valued.
+          <strong className="font-semibold text-primary">Desejo:</strong>{' '}
+          Encontre apoio, compartilhe experiências e crie laços com outras mães
+          em um ambiente seguro, acolhedor e construtivo. Sinta-se parte de algo
+          maior, onde sua voz é valorizada.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Action:</strong> Join a
-          thematic room and find your tribe!
+          <strong className="font-semibold text-primary">Ação:</strong>{' '}
+          Participe de uma sala temática e encontre sua tribo!
         </p>
       </div>
     ),
@@ -235,24 +238,24 @@ const navItems: NavItem[] = [
     description: (
       <div className="p-2 space-y-2 max-w-xs text-left">
         <p>
-          <strong className="font-semibold text-primary">Attention:</strong>{' '}
-          Transform your self-care into a fun and rewarding journey.
+          <strong className="font-semibold text-primary">Atenção:</strong>{' '}
+          Transforme seu autocuidado em uma jornada divertida e gratificante.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Interest:</strong> With
-          the 'Growth Garden', your goals and progress are visually represented
-          by seeds that bloom and elements that grow as you advance in your
-          well-being.
+          <strong className="font-semibold text-primary">Interesse:</strong> Com
+          o 'Jardim do Crescimento', suas metas e progresso são visualmente
+          representados por sementes que florescem e elementos que crescem à
+          medida que você avança em seu bem-estar.
         </p>
         <p>
-          <strong className="font-semibold text-primary">Desire:</strong> Stay
-          motivated, celebrate your achievements, and watch your efforts bloom
-          in a playful and rewarding way. Every step towards your well-being is
-          a new flower in your garden!
+          <strong className="font-semibold text-primary">Desejo:</strong>{' '}
+          Mantenha-se motivado, celebre suas conquistas e veja seus esforços
+          florescerem de forma lúdica e recompensadora. Cada passo em direção ao
+          seu bem-estar é uma nova flor em seu jardim!
         </p>
         <p>
-          <strong className="font-semibold text-primary">Action:</strong>{' '}
-          Cultivate your garden and watch your progress bloom!
+          <strong className="font-semibold text-primary">Ação:</strong> Cultive
+          seu jardim e veja seu progresso florescer!
         </p>
       </div>
     ),
@@ -280,6 +283,7 @@ const navItems: NavItem[] = [
     label: 'Admin',
     icon: Shield,
     description: 'Painel de administração e análise de dados.',
+    adminOnly: true,
   },
   {
     href: '/app/settings',
@@ -291,6 +295,12 @@ const navItems: NavItem[] = [
 
 export const AppSidebar = () => {
   const location = useLocation()
+  const { profile } = useAuth()
+  const isSuperuser = profile?.role === 'superuser'
+
+  const filteredNavItems = navItems.filter(
+    (item) => !item.adminOnly || isSuperuser,
+  )
 
   return (
     <div className="flex h-full max-h-screen flex-col gap-2">
@@ -301,7 +311,7 @@ export const AppSidebar = () => {
       </div>
       <div className="flex-1">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-          {navItems.map((item) => (
+          {filteredNavItems.map((item) => (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
                 <Button
