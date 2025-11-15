@@ -1,0 +1,23 @@
+{
+  "name": "Mãe Amiga",
+  "short_name": "Mãe Amiga",
+  "description": "Apoio emocional e conselhos de vida para mulheres casadas, com respostas carinhosas de uma IA.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FEF6F8",
+  "theme_color": "#F472B6",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
