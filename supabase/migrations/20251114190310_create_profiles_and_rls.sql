@@ -29,13 +29,13 @@ CREATE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-AS $$
+AS $
 BEGIN
   INSERT INTO public.profiles (id, full_name)
   VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name');
   RETURN NEW;
 END;
-$$;
+$;
 
 -- Trigger to call the function when a new user is created in auth.users
 CREATE TRIGGER on_auth_user_created
@@ -46,15 +46,16 @@ CREATE TRIGGER on_auth_user_created
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-AS $$
+AS $
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$;
+$;
 
 -- Trigger to update 'updated_at' when a profile is updated
 CREATE TRIGGER set_timestamp
 BEFORE UPDATE ON public.profiles
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
+

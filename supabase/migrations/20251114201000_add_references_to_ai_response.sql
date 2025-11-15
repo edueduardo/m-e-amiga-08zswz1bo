@@ -24,3 +24,5 @@
 
 -- No DDL commands are necessary as the column type is already flexible (jsonb).
 -- This file serves as documentation for the evolving schema.
+
+

@@ -14,3 +14,4 @@ CREATE POLICY "Allow public read-only access"
 ON public.virtual_man_feedback_analysis
 FOR SELECT
 USING (true);
+

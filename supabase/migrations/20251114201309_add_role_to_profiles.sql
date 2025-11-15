@@ -16,3 +16,5 @@ CREATE POLICY "Superusers have full access to virtual man interactions"
 ON public.virtual_man_interactions
 FOR ALL
 USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'superuser');
+
+
