@@ -78,9 +78,9 @@ const App = () => (
                     <SelfKnowledgeProvider>
                       <SupportCircleProvider>
                         <PlannerProvider>
-                          <ChallengesProvider>
-                            <GamificationProvider>
-                              <GrowthGardenProvider>
+                          <GamificationProvider>
+                            <GrowthGardenProvider>
+                              <ChallengesProvider>
                                 <PlaylistProvider>
                                   <VirtualManProvider>
                                     <LayoutProvider>
@@ -242,9 +242,9 @@ const App = () => (
                                     </LayoutProvider>
                                   </VirtualManProvider>
                                 </PlaylistProvider>
-                              </GrowthGardenProvider>
-                            </GamificationProvider>
-                          </ChallengesProvider>
+                              </ChallengesProvider>
+                            </GrowthGardenProvider>
+                          </GamificationProvider>
                         </PlannerProvider>
                       </SupportCircleProvider>
                     </SelfKnowledgeProvider>
