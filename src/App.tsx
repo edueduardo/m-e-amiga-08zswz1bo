@@ -22,6 +22,7 @@ import { NotificationProvider } from './contexts/NotificationContext'
 import { UserPreferencesProvider } from './contexts/UserPreferencesContext'
 import { VirtualManProvider } from './contexts/VirtualManContext'
 import { LayoutProvider } from './contexts/LayoutContext'
+import { JournalProvider } from './contexts/JournalContext'
 
 // Layouts
 import Layout from './components/Layout'
@@ -84,161 +85,163 @@ const App = () => (
                                 <PlaylistProvider>
                                   <VirtualManProvider>
                                     <LayoutProvider>
-                                      <TooltipProvider>
-                                        <Toaster />
-                                        <Sonner />
-                                        <Routes>
-                                          <Route element={<Layout />}>
+                                      <JournalProvider>
+                                        <TooltipProvider>
+                                          <Toaster />
+                                          <Sonner />
+                                          <Routes>
+                                            <Route element={<Layout />}>
+                                              <Route
+                                                path="/"
+                                                element={<Index />}
+                                              />
+                                              <Route
+                                                path="/about"
+                                                element={<AboutPage />}
+                                              />
+                                              <Route
+                                                path="/contact"
+                                                element={<ContactPage />}
+                                              />
+                                              <Route
+                                                path="/cookie-policy"
+                                                element={<CookiePolicyPage />}
+                                              />
+                                              <Route
+                                                path="/forgot-password"
+                                                element={<ForgotPasswordPage />}
+                                              />
+                                              <Route
+                                                path="/login"
+                                                element={<LoginPage />}
+                                              />
+                                              <Route
+                                                path="/pricing"
+                                                element={<PricingPage />}
+                                              />
+                                              <Route
+                                                path="/reset-password"
+                                                element={<ResetPasswordPage />}
+                                              />
+                                              <Route
+                                                path="/signup"
+                                                element={<SignupPage />}
+                                              />
+                                              <Route
+                                                path="/terms-of-use"
+                                                element={<TermsOfUsePage />}
+                                              />
+                                              <Route
+                                                path="/verify-email"
+                                                element={<VerifyEmailPage />}
+                                              />
+                                              <Route
+                                                path="/verify-phone-by-email"
+                                                element={
+                                                  <VerifyPhoneNumberByEmailPage />
+                                                }
+                                              />
+                                            </Route>
                                             <Route
-                                              path="/"
-                                              element={<Index />}
-                                            />
+                                              path="/app"
+                                              element={<AppLayout />}
+                                            >
+                                              <Route
+                                                index
+                                                element={<DashboardPage />}
+                                              />
+                                              <Route
+                                                path="admin"
+                                                element={<AdminPage />}
+                                              />
+                                              <Route
+                                                path="care"
+                                                element={<CarePage />}
+                                              />
+                                              <Route
+                                                path="challenges"
+                                                element={<ChallengesPage />}
+                                              />
+                                              <Route
+                                                path="coaching"
+                                                element={<CoachingPage />}
+                                              />
+                                              <Route
+                                                path="community-challenges"
+                                                element={
+                                                  <CommunityChallengesPage />
+                                                }
+                                              />
+                                              <Route
+                                                path="conversations"
+                                                element={<ConversationsPage />}
+                                              />
+                                              <Route
+                                                path="courses"
+                                                element={<CoursesPage />}
+                                              />
+                                              <Route
+                                                path="courses/:slug"
+                                                element={<CourseDetailPage />}
+                                              />
+                                              <Route
+                                                path="growth-garden"
+                                                element={<GrowthGardenPage />}
+                                              />
+                                              <Route
+                                                path="journal"
+                                                element={
+                                                  <HooponoponoJournalPage />
+                                                }
+                                              />
+                                              <Route
+                                                path="library"
+                                                element={<LibraryPage />}
+                                              />
+                                              <Route
+                                                path="music"
+                                                element={<MusicPage />}
+                                              />
+                                              <Route
+                                                path="planner"
+                                                element={<PlannerPage />}
+                                              />
+                                              <Route
+                                                path="profile"
+                                                element={<ProfilePage />}
+                                              />
+                                              <Route
+                                                path="response"
+                                                element={<ResponsePage />}
+                                              />
+                                              <Route
+                                                path="self-knowledge"
+                                                element={<SelfKnowledgePage />}
+                                              />
+                                              <Route
+                                                path="settings"
+                                                element={<SettingsPage />}
+                                              />
+                                              <Route
+                                                path="summary"
+                                                element={<SummaryPage />}
+                                              />
+                                              <Route
+                                                path="support-circle"
+                                                element={<SupportCirclePage />}
+                                              />
+                                              <Route
+                                                path="virtual-man"
+                                                element={<VirtualManPage />}
+                                              />
+                                            </Route>
                                             <Route
-                                              path="/about"
-                                              element={<AboutPage />}
+                                              path="*"
+                                              element={<NotFound />}
                                             />
-                                            <Route
-                                              path="/contact"
-                                              element={<ContactPage />}
-                                            />
-                                            <Route
-                                              path="/cookie-policy"
-                                              element={<CookiePolicyPage />}
-                                            />
-                                            <Route
-                                              path="/forgot-password"
-                                              element={<ForgotPasswordPage />}
-                                            />
-                                            <Route
-                                              path="/login"
-                                              element={<LoginPage />}
-                                            />
-                                            <Route
-                                              path="/pricing"
-                                              element={<PricingPage />}
-                                            />
-                                            <Route
-                                              path="/reset-password"
-                                              element={<ResetPasswordPage />}
-                                            />
-                                            <Route
-                                              path="/signup"
-                                              element={<SignupPage />}
-                                            />
-                                            <Route
-                                              path="/terms-of-use"
-                                              element={<TermsOfUsePage />}
-                                            />
-                                            <Route
-                                              path="/verify-email"
-                                              element={<VerifyEmailPage />}
-                                            />
-                                            <Route
-                                              path="/verify-phone-by-email"
-                                              element={
-                                                <VerifyPhoneNumberByEmailPage />
-                                              }
-                                            />
-                                          </Route>
-                                          <Route
-                                            path="/app"
-                                            element={<AppLayout />}
-                                          >
-                                            <Route
-                                              index
-                                              element={<DashboardPage />}
-                                            />
-                                            <Route
-                                              path="admin"
-                                              element={<AdminPage />}
-                                            />
-                                            <Route
-                                              path="care"
-                                              element={<CarePage />}
-                                            />
-                                            <Route
-                                              path="challenges"
-                                              element={<ChallengesPage />}
-                                            />
-                                            <Route
-                                              path="coaching"
-                                              element={<CoachingPage />}
-                                            />
-                                            <Route
-                                              path="community-challenges"
-                                              element={
-                                                <CommunityChallengesPage />
-                                              }
-                                            />
-                                            <Route
-                                              path="conversations"
-                                              element={<ConversationsPage />}
-                                            />
-                                            <Route
-                                              path="courses"
-                                              element={<CoursesPage />}
-                                            />
-                                            <Route
-                                              path="courses/:slug"
-                                              element={<CourseDetailPage />}
-                                            />
-                                            <Route
-                                              path="growth-garden"
-                                              element={<GrowthGardenPage />}
-                                            />
-                                            <Route
-                                              path="journal"
-                                              element={
-                                                <HooponoponoJournalPage />
-                                              }
-                                            />
-                                            <Route
-                                              path="library"
-                                              element={<LibraryPage />}
-                                            />
-                                            <Route
-                                              path="music"
-                                              element={<MusicPage />}
-                                            />
-                                            <Route
-                                              path="planner"
-                                              element={<PlannerPage />}
-                                            />
-                                            <Route
-                                              path="profile"
-                                              element={<ProfilePage />}
-                                            />
-                                            <Route
-                                              path="response"
-                                              element={<ResponsePage />}
-                                            />
-                                            <Route
-                                              path="self-knowledge"
-                                              element={<SelfKnowledgePage />}
-                                            />
-                                            <Route
-                                              path="settings"
-                                              element={<SettingsPage />}
-                                            />
-                                            <Route
-                                              path="summary"
-                                              element={<SummaryPage />}
-                                            />
-                                            <Route
-                                              path="support-circle"
-                                              element={<SupportCirclePage />}
-                                            />
-                                            <Route
-                                              path="virtual-man"
-                                              element={<VirtualManPage />}
-                                            />
-                                          </Route>
-                                          <Route
-                                            path="*"
-                                            element={<NotFound />}
-                                          />
-                                        </Routes>
-                                      </TooltipProvider>
+                                          </Routes>
+                                        </TooltipProvider>
+                                      </JournalProvider>
                                     </LayoutProvider>
                                   </VirtualManProvider>
                                 </PlaylistProvider>

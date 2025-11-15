@@ -1,19 +1,32 @@
-/* Home Page - Displays a greeting message in Portuguese. */
+import { HeroSection } from '@/components/landing/HeroSection'
+import { SocialProofSection } from '@/components/landing/SocialProofSection'
+import { PainPointsSection } from '@/components/landing/PainPointsSection'
+import { HowItWorksSection } from '@/components/landing/HowItWorksSection'
+import { CoreFeaturesSection } from '@/components/landing/CoreFeaturesSection'
+import { InterestSection } from '@/components/landing/InterestSection'
+import { HooponoponoDesireSection } from '@/components/landing/HooponoponoDesireSection'
+import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
+import { PricingSection } from '@/components/landing/PricingSection'
+import { FAQsSection } from '@/components/landing/FAQsSection'
+import { CtaSection } from '@/components/landing/CtaSection'
+import { EthicalNoticeSection } from '@/components/landing/EthicalNoticeSection'
+
 const Index = () => {
   return (
-    <div className="flex flex-grow items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl animate-fade-in-up">
-          Olá, Mundo!
-        </h1>
-        <p
-          className="mt-4 text-lg text-muted-foreground animate-fade-in-up"
-          style={{ animationDelay: '0.2s' }}
-        >
-          Bem-vindo ao seu novo projeto.
-        </p>
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <SocialProofSection />
+      <PainPointsSection />
+      <HowItWorksSection />
+      <CoreFeaturesSection />
+      <InterestSection />
+      <HooponoponoDesireSection />
+      <TestimonialsSection />
+      <PricingSection />
+      <FAQsSection />
+      <CtaSection />
+      <EthicalNoticeSection />
+    </>
   )
 }
 
