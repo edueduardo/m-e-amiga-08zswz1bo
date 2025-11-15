@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   ChevronLeft,
-  CheckCircle,
   Loader2,
   Clock,
   BookText,
   Video,
   Download,
 } from 'lucide-react'
-import { useGrowthGarden } from '@/contexts/GrowthGardenContext'
 import { useGamification } from '@/contexts/GamificationContext'
 import { SocialShareButtons } from '@/components/SocialShareButtons'
 import { getCourseBySlug, getCourseContent } from '@/services/courses'
@@ -26,7 +24,11 @@ import { TextLesson } from '@/components/course/TextLesson'
 import { VideoLesson } from '@/components/course/VideoLesson'
 import { DownloadLesson } from '@/components/course/DownloadLesson'
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
+import { useProgress } from '@/contexts/ProgressContext'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Progress } from '@/components/ui/progress'
+import { useToast } from '@/components/ui/use-toast'
 
 const lessonIconMap: Record<CourseLessonType, React.ElementType> = {
   text: BookText,
@@ -37,19 +39,19 @@ const lessonIconMap: Record<CourseLessonType, React.ElementType> = {
 const CourseDetailPage = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
-  const { updateProgress } = useGrowthGarden()
   const { addPoints } = useGamification()
+  const { markAsComplete, isCompleted, progress } = useProgress()
+  const { toast } = useToast()
+
   const [course, setCourse] = useState<Course | null>(null)
   const [courseContent, setCourseContent] = useState<CourseContent | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [activeLesson, setActiveLesson] = useState<CourseLesson | null>(null)
+  const [hasTriggeredCompletion, setHasTriggeredCompletion] = useState(false)
 
   useEffect(() => {
     const fetchCourseData = async () => {
-      if (!slug) {
-        setIsLoading(false)
-        return
-      }
+      if (!slug) return setIsLoading(false)
       setIsLoading(true)
       const courseData = await getCourseBySlug(slug)
       setCourse(courseData)
@@ -66,21 +68,34 @@ const CourseDetailPage = () => {
     fetchCourseData()
   }, [slug])
 
-  const finishCourse = () => {
-    if (!course) return
-    addPoints(100, `Concluiu o curso: ${course.title}`)
-    updateProgress('course')
-    navigate('/app/courses')
-  }
+  const allLessons = useMemo(
+    () => courseContent?.modules.flatMap((m) => m.lessons) || [],
+    [courseContent],
+  )
+
+  const completedLessonsCount = useMemo(
+    () => allLessons.filter((l) => isCompleted(l.id)).length,
+    [allLessons, isCompleted],
+  )
+
+  const courseProgress =
+    allLessons.length > 0
+      ? (completedLessonsCount / allLessons.length) * 100
+      : 0
+
+  useEffect(() => {
+    if (courseProgress === 100 && !hasTriggeredCompletion && course) {
+      addPoints(100, `Concluiu o curso: ${course.title}`)
+      toast({
+        title: 'Parabéns!',
+        description: `Você concluiu o curso "${course.title}".`,
+      })
+      setHasTriggeredCompletion(true)
+    }
+  }, [courseProgress, hasTriggeredCompletion, addPoints, course, toast])
 
   const renderLessonContent = () => {
-    if (!activeLesson) {
-      return (
-        <p className="text-muted-foreground">
-          Selecione uma aula para começar.
-        </p>
-      )
-    }
+    if (!activeLesson) return <p>Selecione uma aula para começar.</p>
     switch (activeLesson.type) {
       case 'text':
         return <TextLesson lesson={activeLesson} />
@@ -105,16 +120,8 @@ const CourseDetailPage = () => {
     return (
       <div className="text-center p-8">
         <h2 className="text-2xl font-bold">Curso não encontrado</h2>
-        <p className="text-muted-foreground mt-2">
-          O conteúdo para este curso não pôde ser carregado.
-        </p>
-        <Button
-          asChild
-          variant="link"
-          className="mt-4"
-          onClick={() => navigate('/app/courses')}
-        >
-          <a>Voltar para os cursos</a>
+        <Button onClick={() => navigate('/app/courses')} variant="link">
+          Voltar
         </Button>
       </div>
     )
@@ -122,14 +129,9 @@ const CourseDetailPage = () => {
 
   return (
     <div className="space-y-6">
-      <Button
-        variant="ghost"
-        onClick={() => navigate('/app/courses')}
-        className="text-muted-foreground"
-      >
+      <Button variant="ghost" onClick={() => navigate('/app/courses')}>
         <ChevronLeft className="mr-2 h-4 w-4" /> Voltar para Cursos
       </Button>
-
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <Card>
@@ -137,22 +139,22 @@ const CourseDetailPage = () => {
               <Badge variant="secondary" className="w-fit mb-2">
                 {course.category}
               </Badge>
-              <h1 className="text-3xl font-bold">{activeLesson?.title}</h1>
-              <p className="text-muted-foreground">{course.description}</p>
+              <h1 className="text-3xl font-bold">{course.title}</h1>
+              <div className="pt-4 space-y-2">
+                <Progress value={courseProgress} />
+                <p className="text-sm text-muted-foreground text-right">
+                  {completedLessonsCount} de {allLessons.length} aulas
+                  concluídas ({courseProgress.toFixed(0)}%)
+                </p>
+              </div>
             </CardHeader>
             <CardContent>{renderLessonContent()}</CardContent>
           </Card>
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <Button onClick={finishCourse} size="lg">
-              <CheckCircle className="mr-2 h-4 w-4" /> Marcar como Concluído
-            </Button>
-            <SocialShareButtons
-              url={window.location.href}
-              title={`Estou fazendo o curso "${course.title}" no Mãe Amiga!`}
-            />
-          </div>
+          <SocialShareButtons
+            url={window.location.href}
+            title={`Estou fazendo o curso "${course.title}" no Mãe Amiga!`}
+          />
         </div>
-
         <Card className="lg:col-span-1 h-fit sticky top-24">
           <CardHeader>
             <CardTitle>Conteúdo do Curso</CardTitle>
@@ -162,37 +164,44 @@ const CourseDetailPage = () => {
               type="single"
               collapsible
               defaultValue={courseContent.modules[0]?.id}
-              className="w-full"
             >
               {courseContent.modules.map((module) => (
                 <AccordionItem value={module.id} key={module.id}>
                   <AccordionTrigger>{module.title}</AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       {module.lessons.map((lesson) => {
                         const Icon = lessonIconMap[lesson.type]
                         return (
-                          <Button
+                          <div
                             key={lesson.id}
-                            variant={
-                              activeLesson?.id === lesson.id
-                                ? 'secondary'
-                                : 'ghost'
-                            }
-                            className="w-full justify-start h-auto py-2"
-                            onClick={() => setActiveLesson(lesson)}
+                            className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary"
                           >
-                            <Icon className="h-4 w-4 mr-3 flex-shrink-0" />
-                            <div className="flex flex-col items-start">
-                              <span className="text-left">{lesson.title}</span>
-                              {lesson.durationMinutes && (
-                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {lesson.durationMinutes} min
-                                </span>
-                              )}
+                            <Checkbox
+                              id={lesson.id}
+                              checked={isCompleted(lesson.id)}
+                              onCheckedChange={() =>
+                                markAsComplete(slug, lesson.id)
+                              }
+                            />
+                            <div
+                              className="flex-grow flex items-center gap-2 cursor-pointer"
+                              onClick={() => setActiveLesson(lesson)}
+                            >
+                              <Icon className="h-4 w-4 text-muted-foreground" />
+                              <div className="flex flex-col">
+                                <Label htmlFor={lesson.id}>
+                                  {lesson.title}
+                                </Label>
+                                {lesson.durationMinutes && (
+                                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {lesson.durationMinutes} min
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </Button>
+                          </div>
                         )
                       })}
                     </div>

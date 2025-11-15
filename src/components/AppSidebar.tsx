@@ -20,6 +20,7 @@ import {
   Flower2,
   UserRound,
   Shield,
+  GraduationCap,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -277,6 +278,12 @@ const navItems: NavItem[] = [
     label: 'Minha Jornada',
     icon: Award,
     description: 'Veja seu progresso e suas conquistas.',
+  },
+  {
+    href: '/app/certificates',
+    label: 'Meus Certificados',
+    icon: GraduationCap,
+    description: 'Acesse seus certificados de conclusão de cursos.',
   },
   {
     href: '/app/admin',
