@@ -40,7 +40,7 @@ const CourseDetailPage = () => {
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const { addPoints } = useGamification()
-  const { markAsComplete, isCompleted, progress } = useProgress()
+  const { markAsComplete, isCompleted } = useProgress()
   const { toast } = useToast()
 
   const [course, setCourse] = useState<Course | null>(null)
@@ -95,7 +95,12 @@ const CourseDetailPage = () => {
   }, [courseProgress, hasTriggeredCompletion, addPoints, course, toast])
 
   const renderLessonContent = () => {
-    if (!activeLesson) return <p>Selecione uma aula para começar.</p>
+    if (!activeLesson)
+      return (
+        <p className="text-muted-foreground">
+          Selecione uma aula para começar.
+        </p>
+      )
     switch (activeLesson.type) {
       case 'text':
         return <TextLesson lesson={activeLesson} />
@@ -120,8 +125,11 @@ const CourseDetailPage = () => {
     return (
       <div className="text-center p-8">
         <h2 className="text-2xl font-bold">Curso não encontrado</h2>
-        <Button onClick={() => navigate('/app/courses')} variant="link">
-          Voltar
+        <p className="text-muted-foreground mt-2">
+          O conteúdo para este curso não pôde ser carregado.
+        </p>
+        <Button asChild variant="link" className="mt-4">
+          <a onClick={() => navigate('/app/courses')}>Voltar para os cursos</a>
         </Button>
       </div>
     )
@@ -129,7 +137,11 @@ const CourseDetailPage = () => {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" onClick={() => navigate('/app/courses')}>
+      <Button
+        variant="ghost"
+        onClick={() => navigate('/app/courses')}
+        className="text-muted-foreground"
+      >
         <ChevronLeft className="mr-2 h-4 w-4" /> Voltar para Cursos
       </Button>
       <div className="grid lg:grid-cols-3 gap-8">
@@ -164,6 +176,7 @@ const CourseDetailPage = () => {
               type="single"
               collapsible
               defaultValue={courseContent.modules[0]?.id}
+              className="w-full"
             >
               {courseContent.modules.map((module) => (
                 <AccordionItem value={module.id} key={module.id}>
@@ -181,7 +194,7 @@ const CourseDetailPage = () => {
                               id={lesson.id}
                               checked={isCompleted(lesson.id)}
                               onCheckedChange={() =>
-                                markAsComplete(slug, lesson.id)
+                                markAsComplete(slug!, lesson.id)
                               }
                             />
                             <div
@@ -190,7 +203,10 @@ const CourseDetailPage = () => {
                             >
                               <Icon className="h-4 w-4 text-muted-foreground" />
                               <div className="flex flex-col">
-                                <Label htmlFor={lesson.id}>
+                                <Label
+                                  htmlFor={lesson.id}
+                                  className="cursor-pointer"
+                                >
                                   {lesson.title}
                                 </Label>
                                 {lesson.durationMinutes && (

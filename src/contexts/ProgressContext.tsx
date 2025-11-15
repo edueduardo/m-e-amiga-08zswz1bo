@@ -44,6 +44,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     fetchProgress()
   }, [fetchProgress])
 
+  const isCompleted = useCallback(
+    (lessonId: string) => {
+      return progress.some((p) => p.lesson_id === lessonId)
+    },
+    [progress],
+  )
+
   const markAsComplete = useCallback(
     async (courseSlug: string, lessonId: string) => {
       if (!user || isCompleted(lessonId)) return
@@ -56,13 +63,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       }
     },
     [user, isCompleted],
-  )
-
-  const isCompleted = useCallback(
-    (lessonId: string) => {
-      return progress.some((p) => p.lesson_id === lessonId)
-    },
-    [progress],
   )
 
   const value = useMemo(
