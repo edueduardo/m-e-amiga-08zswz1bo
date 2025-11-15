@@ -25,7 +25,7 @@
     --secondary-foreground: 224 71.4% 4.1%;
 
     --muted: 220 14.3% 95.9%; /* Light Gray */
-    --muted-foreground: 220 8.9% 46.1%; /* Soft Gray */
+    --muted-foreground: 220 8.9% 35%; /* Soft Gray - increased contrast */
 
     --accent: 142.1 76.2% 36.3%; /* Gentle Green */
     --accent-foreground: 0 0% 100%;
@@ -281,4 +281,3 @@
     animation: spotlight 2s ease forwards;
   }
 }
-

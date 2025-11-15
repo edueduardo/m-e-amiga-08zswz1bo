@@ -102,4 +102,3 @@ export default {
   },
   plugins: [animatePlugin, typographyPlugin, aspectRatioPlugin],
 } satisfies Config
-

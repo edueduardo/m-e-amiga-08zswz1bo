@@ -41,4 +41,3 @@ export const CoachingMessage = ({ message }: CoachingMessageProps) => {
     </div>
   )
 }
-

@@ -48,4 +48,3 @@ const GrowthGardenPage = () => {
 }
 
 export default GrowthGardenPage
-

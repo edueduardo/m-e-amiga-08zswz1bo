@@ -104,9 +104,7 @@ export const InteractiveDemo = () => {
                   <div
                     className={cn(
                       'p-3 rounded-lg max-w-md',
-                      msg.sender === 'user'
-                        ? 'bg-background'
-                        : 'bg-primary/10',
+                      msg.sender === 'user' ? 'bg-background' : 'bg-primary/10',
                     )}
                   >
                     <p className="text-sm">{msg.text}</p>
@@ -137,4 +135,3 @@ export const InteractiveDemo = () => {
     </section>
   )
 }
-

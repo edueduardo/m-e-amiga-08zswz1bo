@@ -105,4 +105,3 @@ const HooponoponoJournalPage = () => {
 }
 
 export default HooponoponoJournalPage
-

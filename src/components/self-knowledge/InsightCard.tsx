@@ -27,4 +27,3 @@ export const InsightCard = ({ pattern }: InsightCardProps) => {
     </Card>
   )
 }
-

@@ -18,15 +18,15 @@ import Autoplay from 'embla-carousel-autoplay'
 
 const carouselImages = [
   {
-    src: 'https://img.usecurling.com/p/600/800?q=woman%20listening%20calmly',
+    src: 'https://img.usecurling.com/p/800/600?q=woman%20listening%20calmly',
     alt: 'Mulher ouvindo com calma',
   },
   {
-    src: 'https://img.usecurling.com/p/600/800?q=woman%20smiling%20serenely',
+    src: 'https://img.usecurling.com/p/800/600?q=woman%20smiling%20serenely',
     alt: 'Mulher sorrindo serenamente',
   },
   {
-    src: 'https://img.usecurling.com/p/600/800?q=woman%20writing%20in%20journal',
+    src: 'https://img.usecurling.com/p/800/600?q=woman%20writing%20in%20journal',
     alt: 'Mulher escrevendo em um diário',
   },
 ]
@@ -96,7 +96,7 @@ export const HeroSection = () => {
                       <img
                         src={image.src}
                         alt={image.alt}
-                        className="rounded-lg shadow-2xl object-cover aspect-[3/4] w-full"
+                        className="rounded-lg shadow-2xl object-cover aspect-[4/3] w-full"
                       />
                     </CarouselItem>
                   ))}
@@ -120,4 +120,3 @@ export const HeroSection = () => {
     </>
   )
 }
-
