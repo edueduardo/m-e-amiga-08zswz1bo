@@ -79,6 +79,7 @@ export interface UserProfile {
   is_email_verified?: boolean
   phone_verification_status?: PhoneVerificationStatus
   is_two_factor_enabled?: boolean
+  role?: 'user' | 'superuser'
 }
 
 export interface QuizQuestion {
@@ -112,16 +113,16 @@ export interface QuizResult {
 
 export interface SupportReply {
   id: string
-  postId: string
-  authorAlias: string
+  post_id: string
+  author_alias: string
   content: string
   created_at: string
 }
 
 export interface SupportPost {
   id: string
-  roomId: string
-  authorAlias: string
+  room_id: string
+  author_alias: string
   title: string
   content: string
   created_at: string
@@ -216,6 +217,7 @@ export interface GamificationBadge {
   name: string
   description: string
   icon: LucideIcon
+  pointsThreshold: number
 }
 
 export interface UserGamificationProfile {
@@ -278,7 +280,7 @@ export interface CommunityChallenge {
 export interface Playlist {
   id: string
   name: string
-  trackIds: string[]
+  track_ids: string[]
   created_at: string
 }
 
@@ -346,8 +348,31 @@ export interface GardenElement {
   position: { x: number; y: number }
 }
 
+export type CourseLessonType = 'text' | 'video' | 'download'
+
+export interface CourseLesson {
+  id: string
+  title: string
+  type: CourseLessonType
+  content?: string
+  videoUrl?: string
+  downloadUrl?: string
+  durationMinutes?: number
+}
+
+export interface CourseModule {
+  id: string
+  title: string
+  lessons: CourseLesson[]
+}
+
+export interface CourseContent {
+  modules: CourseModule[]
+}
+
 export interface Course {
   id: string
+  slug: string
   title: string
   description: string
   content_url: string
@@ -385,6 +410,7 @@ export interface CustomReminder {
   message: string
   cron_schedule: string
   is_active: boolean
+  created_at: string
 }
 
 export type VirtualManProfile =
