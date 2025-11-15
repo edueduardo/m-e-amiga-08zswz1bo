@@ -13,13 +13,13 @@ CREATE OR REPLACE FUNCTION public.handle_new_user_gamification()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-AS $
+AS $$
 BEGIN
   INSERT INTO public.gamification_profiles (user_id)
   VALUES (NEW.id);
   RETURN NEW;
 END;
-$;
+$$;
 
 -- Trigger to call the function when a new user is created
 DROP TRIGGER IF EXISTS on_auth_user_created_gamification ON auth.users;
@@ -63,4 +63,3 @@ CREATE TABLE IF NOT EXISTS public.self_care_history (
 );
 ALTER TABLE public.self_care_history ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their own self care history" ON public.self_care_history FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
-

@@ -40,6 +40,13 @@ export function SupportCircleProvider({ children }: { children: ReactNode }) {
   const [posts, setPosts] = useState<SupportPost[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const fetchPostsForRoom = useCallback(async (roomId: string) => {
+    setIsLoading(true)
+    const data = await getPosts(roomId)
+    setPosts(data)
+    setIsLoading(false)
+  }, [])
+
   useEffect(() => {
     const fetchRooms = async () => {
       setIsLoading(true)
@@ -51,14 +58,7 @@ export function SupportCircleProvider({ children }: { children: ReactNode }) {
       setIsLoading(false)
     }
     fetchRooms()
-  }, [])
-
-  const fetchPostsForRoom = useCallback(async (roomId: string) => {
-    setIsLoading(true)
-    const data = await getPosts(roomId)
-    setPosts(data)
-    setIsLoading(false)
-  }, [])
+  }, [fetchPostsForRoom])
 
   const addPost = useCallback(
     async (roomId: string, title: string, content: string) => {
@@ -97,7 +97,9 @@ export function SupportCircleProvider({ children }: { children: ReactNode }) {
       if (newReply) {
         setPosts((prev) =>
           prev.map((p) =>
-            p.id === postId ? { ...p, replies: [...p.replies, newReply] } : p,
+            p.id === postId
+              ? { ...p, replies: [...(p.replies || []), newReply] }
+              : p,
           ),
         )
       }
