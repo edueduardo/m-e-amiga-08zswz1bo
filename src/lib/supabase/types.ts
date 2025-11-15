@@ -11,7 +11,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '13.0.5'
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -83,7 +83,7 @@ export type Database = {
       }
       checkins: {
         Row: {
-          hunger_type: Database['public']['Enums']['hunger_type'] | null
+          hunger_type: Database["public"]["Enums"]["hunger_type"] | null
           id: string
           mood: number | null
           sleep_hours: number | null
@@ -92,7 +92,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          hunger_type?: Database['public']['Enums']['hunger_type'] | null
+          hunger_type?: Database["public"]["Enums"]["hunger_type"] | null
           id?: string
           mood?: number | null
           sleep_hours?: number | null
@@ -101,12 +101,75 @@ export type Database = {
           user_id: string
         }
         Update: {
-          hunger_type?: Database['public']['Enums']['hunger_type'] | null
+          hunger_type?: Database["public"]["Enums"]["hunger_type"] | null
           id?: string
           mood?: number | null
           sleep_hours?: number | null
           stress?: number | null
           ts?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coaching_sessions: {
+        Row: {
+          id: string
+          messages: Json
+          started_at: string
+          status: Database["public"]["Enums"]["coaching_session_status"]
+          title: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          messages?: Json
+          started_at: string
+          status?: Database["public"]["Enums"]["coaching_session_status"]
+          title: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          messages?: Json
+          started_at?: string
+          status?: Database["public"]["Enums"]["coaching_session_status"]
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          feedback: Json | null
+          id: string
+          mood_label: string
+          mother_reply: string
+          professional_help_suggestion: string | null
+          transcript: string
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          feedback?: Json | null
+          id?: string
+          mood_label: string
+          mother_reply: string
+          professional_help_suggestion?: string | null
+          transcript: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          feedback?: Json | null
+          id?: string
+          mood_label?: string
+          mother_reply?: string
+          professional_help_suggestion?: string | null
+          transcript?: string
           user_id?: string
         }
         Relationships: []
@@ -189,6 +252,113 @@ export type Database = {
         }
         Relationships: []
       }
+      gamification_profiles: {
+        Row: {
+          level: number
+          points: number
+          unlocked_badges: string[]
+          user_id: string
+        }
+        Insert: {
+          level?: number
+          points?: number
+          unlocked_badges?: string[]
+          user_id: string
+        }
+        Update: {
+          level?: number
+          points?: number
+          unlocked_badges?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      growth_garden_elements: {
+        Row: {
+          goal_id: string
+          id: string
+          position: Json
+          status: Database["public"]["Enums"]["garden_element_status"]
+          user_id: string
+        }
+        Insert: {
+          goal_id: string
+          id?: string
+          position: Json
+          status?: Database["public"]["Enums"]["garden_element_status"]
+          user_id: string
+        }
+        Update: {
+          goal_id?: string
+          id?: string
+          position?: Json
+          status?: Database["public"]["Enums"]["garden_element_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_garden_elements_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "growth_garden_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      growth_garden_goals: {
+        Row: {
+          current_count: number
+          id: string
+          related_feature: Database["public"]["Enums"]["garden_related_feature"]
+          target_count: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          current_count?: number
+          id?: string
+          related_feature: Database["public"]["Enums"]["garden_related_feature"]
+          target_count: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          current_count?: number
+          id?: string
+          related_feature?: Database["public"]["Enums"]["garden_related_feature"]
+          target_count?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          content: string
+          created_at: string
+          date: string
+          id: string
+          prompt: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          date: string
+          id?: string
+          prompt: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          date?: string
+          id?: string
+          prompt?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       meals: {
         Row: {
           context_tags: string[] | null
@@ -234,11 +404,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'org_aggregates_org_id_fkey'
-            columns: ['org_id']
+            foreignKeyName: "org_aggregates_org_id_fkey"
+            columns: ["org_id"]
             isOneToOne: false
-            referencedRelation: 'orgs'
-            referencedColumns: ['id']
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -263,11 +433,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'org_members_org_id_fkey'
-            columns: ['org_id']
+            foreignKeyName: "org_members_org_id_fkey"
+            columns: ["org_id"]
             isOneToOne: false
-            referencedRelation: 'orgs'
-            referencedColumns: ['id']
+            referencedRelation: "orgs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -293,22 +463,70 @@ export type Database = {
         Row: {
           id: string
           insight: string | null
-          kind: Database['public']['Enums']['insight_kind']
+          kind: Database["public"]["Enums"]["insight_kind"]
           ts: string | null
           user_id: string
         }
         Insert: {
           id?: string
           insight?: string | null
-          kind: Database['public']['Enums']['insight_kind']
+          kind: Database["public"]["Enums"]["insight_kind"]
           ts?: string | null
           user_id: string
         }
         Update: {
           id?: string
           insight?: string | null
-          kind?: Database['public']['Enums']['insight_kind']
+          kind?: Database["public"]["Enums"]["insight_kind"]
           ts?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      planner_tasks: {
+        Row: {
+          content: string
+          due_date: string | null
+          id: string
+          status: Database["public"]["Enums"]["planner_task_status"]
+          user_id: string
+        }
+        Insert: {
+          content: string
+          due_date?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["planner_task_status"]
+          user_id: string
+        }
+        Update: {
+          content?: string
+          due_date?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["planner_task_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      playlists: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          track_ids: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          track_ids?: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          track_ids?: string[]
           user_id?: string
         }
         Relationships: []
@@ -344,7 +562,7 @@ export type Database = {
           is_two_factor_enabled: boolean | null
           phone_number: string | null
           phone_verification_status:
-            | Database['public']['Enums']['phone_verification_status']
+            | Database["public"]["Enums"]["phone_verification_status"]
             | null
           role: string
           updated_at: string | null
@@ -355,7 +573,7 @@ export type Database = {
           is_two_factor_enabled?: boolean | null
           phone_number?: string | null
           phone_verification_status?:
-            | Database['public']['Enums']['phone_verification_status']
+            | Database["public"]["Enums"]["phone_verification_status"]
             | null
           role?: string
           updated_at?: string | null
@@ -366,7 +584,7 @@ export type Database = {
           is_two_factor_enabled?: boolean | null
           phone_number?: string | null
           phone_verification_status?:
-            | Database['public']['Enums']['phone_verification_status']
+            | Database["public"]["Enums"]["phone_verification_status"]
             | null
           role?: string
           updated_at?: string | null
@@ -376,21 +594,21 @@ export type Database = {
       safety_flags: {
         Row: {
           id: string
-          level: Database['public']['Enums']['safety_flag_level']
+          level: Database["public"]["Enums"]["safety_flag_level"]
           source: string | null
           ts: string | null
           user_id: string
         }
         Insert: {
           id?: string
-          level: Database['public']['Enums']['safety_flag_level']
+          level: Database["public"]["Enums"]["safety_flag_level"]
           source?: string | null
           ts?: string | null
           user_id: string
         }
         Update: {
           id?: string
-          level?: Database['public']['Enums']['safety_flag_level']
+          level?: Database["public"]["Enums"]["safety_flag_level"]
           source?: string | null
           ts?: string | null
           user_id?: string
@@ -427,6 +645,30 @@ export type Database = {
         }
         Relationships: []
       }
+      self_care_history: {
+        Row: {
+          answers: Json
+          date: string
+          id: string
+          plan: Json
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          date: string
+          id?: string
+          plan: Json
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          date?: string
+          id?: string
+          plan?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       sos_sessions: {
         Row: {
           duration_seconds: number | null
@@ -454,20 +696,114 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'sos_sessions_technique_usage_id_fkey'
-            columns: ['technique_usage_id']
+            foreignKeyName: "sos_sessions_technique_usage_id_fkey"
+            columns: ["technique_usage_id"]
             isOneToOne: false
-            referencedRelation: 'technique_usage'
-            referencedColumns: ['id']
+            referencedRelation: "technique_usage"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'sos_sessions_urge_id_fkey'
-            columns: ['urge_id']
+            foreignKeyName: "sos_sessions_urge_id_fkey"
+            columns: ["urge_id"]
             isOneToOne: false
-            referencedRelation: 'urges'
-            referencedColumns: ['id']
+            referencedRelation: "urges"
+            referencedColumns: ["id"]
           },
         ]
+      }
+      support_posts: {
+        Row: {
+          author_alias: string
+          content: string
+          created_at: string
+          id: string
+          room_id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          author_alias: string
+          content: string
+          created_at?: string
+          id?: string
+          room_id: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          author_alias?: string
+          content?: string
+          created_at?: string
+          id?: string
+          room_id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_posts_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "support_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_replies: {
+        Row: {
+          author_alias: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          author_alias: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          author_alias?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "support_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_rooms: {
+        Row: {
+          description: string
+          icon_name: string
+          id: string
+          name: string
+        }
+        Insert: {
+          description: string
+          icon_name: string
+          id?: string
+          name: string
+        }
+        Update: {
+          description?: string
+          icon_name?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       team_members: {
         Row: {
@@ -501,21 +837,21 @@ export type Database = {
       }
       technique_catalog: {
         Row: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           description: string | null
           duration_minutes: number | null
           id: string
           name: string
         }
         Insert: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           description?: string | null
           duration_minutes?: number | null
           id?: string
           name: string
         }
         Update: {
-          category?: Database['public']['Enums']['technique_category']
+          category?: Database["public"]["Enums"]["technique_category"]
           description?: string | null
           duration_minutes?: number | null
           id?: string
@@ -547,11 +883,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'technique_usage_technique_id_fkey'
-            columns: ['technique_id']
+            foreignKeyName: "technique_usage_technique_id_fkey"
+            columns: ["technique_id"]
             isOneToOne: false
-            referencedRelation: 'technique_catalog'
-            referencedColumns: ['id']
+            referencedRelation: "technique_catalog"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -591,7 +927,7 @@ export type Database = {
           notification_preferences: Json | null
           preferred_interaction_times: Json | null
           preferred_techniques:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status: string | null
           trigger_patterns: string[] | null
@@ -609,7 +945,7 @@ export type Database = {
           notification_preferences?: Json | null
           preferred_interaction_times?: Json | null
           preferred_techniques?:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status?: string | null
           trigger_patterns?: string[] | null
@@ -627,7 +963,7 @@ export type Database = {
           notification_preferences?: Json | null
           preferred_interaction_times?: Json | null
           preferred_techniques?:
-            | Database['public']['Enums']['technique_category'][]
+            | Database["public"]["Enums"]["technique_category"][]
             | null
           relationship_status?: string | null
           trigger_patterns?: string[] | null
@@ -715,7 +1051,7 @@ export type Database = {
       get_technique_success_by_urge: {
         Args: never
         Returns: {
-          category: Database['public']['Enums']['technique_category']
+          category: Database["public"]["Enums"]["technique_category"]
           intensity: number
           successful_interventions: number
           total_interventions: number
@@ -724,16 +1060,20 @@ export type Database = {
       upsert_user_preferences: { Args: { p: Json }; Returns: undefined }
     }
     Enums: {
-      hunger_type: 'physical' | 'emotional'
-      insight_kind: 'emotion' | 'trigger'
-      phone_verification_status: 'verified' | 'pending_email' | 'not_verified'
-      safety_flag_level: 'green' | 'yellow' | 'red'
+      coaching_session_status: "active" | "completed" | "paused"
+      garden_element_status: "seed" | "seedling" | "flower"
+      garden_related_feature: "journal" | "challenge" | "course"
+      hunger_type: "physical" | "emotional"
+      insight_kind: "emotion" | "trigger"
+      phone_verification_status: "verified" | "pending_email" | "not_verified"
+      planner_task_status: "todo" | "in-progress" | "done"
+      safety_flag_level: "green" | "yellow" | "red"
       technique_category:
-        | 'breathing'
-        | 'urge_surfing'
-        | 'delay'
-        | 'safe_plate'
-        | 'reframing'
+        | "breathing"
+        | "urge_surfing"
+        | "delay"
+        | "safe_plate"
+        | "reframing"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -741,33 +1081,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -776,23 +1116,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -801,23 +1141,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -826,52 +1166,57 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
   public: {
     Enums: {
-      hunger_type: ['physical', 'emotional'],
-      insight_kind: ['emotion', 'trigger'],
-      phone_verification_status: ['verified', 'pending_email', 'not_verified'],
-      safety_flag_level: ['green', 'yellow', 'red'],
+      coaching_session_status: ["active", "completed", "paused"],
+      garden_element_status: ["seed", "seedling", "flower"],
+      garden_related_feature: ["journal", "challenge", "course"],
+      hunger_type: ["physical", "emotional"],
+      insight_kind: ["emotion", "trigger"],
+      phone_verification_status: ["verified", "pending_email", "not_verified"],
+      planner_task_status: ["todo", "in-progress", "done"],
+      safety_flag_level: ["green", "yellow", "red"],
       technique_category: [
-        'breathing',
-        'urge_surfing',
-        'delay',
-        'safe_plate',
-        'reframing',
+        "breathing",
+        "urge_surfing",
+        "delay",
+        "safe_plate",
+        "reframing",
       ],
     },
   },
 } as const
+
